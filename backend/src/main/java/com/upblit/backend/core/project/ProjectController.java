@@ -12,9 +12,17 @@ public class ProjectController {
     private ProjectService projectService;
 
     @PostMapping
-    public ResponseEntity<?> createProject(@RequestBody String projectName, Long OrganizationId){
-        return projectService.createProject(projectName, OrganizationId);
+    public ResponseEntity<?> createProject(@RequestBody ProjectDTO projectDTO) {
+        return projectService.createProject(projectDTO);
     }
+
+    @PutMapping("/{projectId}")
+    public ResponseEntity<?> updateProject(@PathVariable Long projectId,
+                                           @RequestParam Long organizationId,
+                                           @RequestBody ProjectDTO projectDTO) {
+        return projectService.updateProject(projectId, organizationId, projectDTO);
+    }
+
     @GetMapping("/id")
     public ResponseEntity<?> getProject(@RequestBody Long ProjectId, Long OrganizationId){
         return projectService.getProject(ProjectId, OrganizationId);
@@ -22,6 +30,11 @@ public class ProjectController {
     @GetMapping
     public ResponseEntity<?> getAllProject(@RequestParam Long OrganizationId){
         return projectService.getAllProjects(OrganizationId);
+    }
+
+    @DeleteMapping("/{projectId}")
+    public ResponseEntity<?> deleteProject(@PathVariable Long projectId, @RequestParam Long organizationId) {
+        return projectService.deleteProject(projectId, organizationId);
     }
 }
 

@@ -2,6 +2,7 @@ package com.upblit.backend.security.OAuth;
 
 import com.upblit.backend.core.User;
 import com.upblit.backend.core.UserRepository;
+import com.upblit.backend.core.Plan;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
@@ -35,12 +36,14 @@ public class CustomOAuth2UserService implements OAuth2UserService<OAuth2UserRequ
         existing.setUsername(username);
         existing.setEmail(email);
         existing.setAvatarUrl(avatarUrl);
-        existing.setAccessToken(token);
+        if (existing.getPlan() == null || existing.getPlan().isBlank()) {
+            existing.setPlan(Plan.PIRATES.name());
+        }
         existing.setLastLogin(Instant.now());
 
         User userdetails = userRepository.save(existing);
 
-        return new CustomOAuth2User(user,userdetails ,token);
+        return new CustomOAuth2User(user,userdetails);
     }
 }
 

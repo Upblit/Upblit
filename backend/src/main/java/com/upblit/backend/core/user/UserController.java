@@ -13,6 +13,12 @@ public class UserController {
     public User create(@RequestBody User user){
         return userService.CreateUser(user);
     }
+
+    @PutMapping
+    public User update(@RequestBody User user){
+        return userService.updateCurrentUser(user);
+    }
+
     @GetMapping
     public User findAll(@RequestParam("username") String username){
         return userService.findUserByUsername(username);

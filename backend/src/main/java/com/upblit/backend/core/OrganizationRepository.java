@@ -2,6 +2,7 @@ package com.upblit.backend.core;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
 import java.util.Optional;
 
 public interface OrganizationRepository extends JpaRepository<Organization, Long> {
@@ -10,7 +11,5 @@ public interface OrganizationRepository extends JpaRepository<Organization, Long
 
     Optional<Organization> findByIdAndUsersId(Long  id, Long userId);
 
-    Optional<Organization> findByUsersId(Long userId);
-
-
+    List<Organization> findByUsersId(Long userId);
 }

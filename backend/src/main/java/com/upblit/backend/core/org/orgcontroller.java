@@ -16,19 +16,61 @@ public class orgcontroller {
     private SupabaseService supabaseService;
 
     @Autowired
+    private LogoImageProcessor logoImageProcessor;
+
+    @Autowired
     private OrganizationService organizationService;
 
     @PostMapping
-    public Organization create(        @ModelAttribute OrganizationDTO orgDTO,
-                                 @RequestParam("file") MultipartFile file) throws Exception {
+    public ResponseEntity<?> create(@ModelAttribute OrganizationDTO orgDTO,
+                                    @RequestParam("file") MultipartFile file) {
+        try {
+            LogoImageProcessor.ProcessedLogo processedLogo = logoImageProcessor.validateAndCropToSquare(file);
+            String LogoUrl = supabaseService.uploadFile(
+                processedLogo.content(),
+                processedLogo.filename(),
+                processedLogo.contentType(),
+                "Avatars"
+            );
+            return ResponseEntity.ok(organizationService.create(orgDTO,LogoUrl));
+        } catch (IllegalArgumentException exception) {
+            return ResponseEntity.badRequest().body(exception.getMessage());
+        } catch (Exception exception) {
+            return ResponseEntity.internalServerError().body("Failed to create organization");
+        }
+    }
 
-        String LogoUrl = supabaseService.uploadFile(file,"Avatars");
-        return organizationService.create(orgDTO,LogoUrl);
+    @PutMapping("/{id}")
+    public ResponseEntity<?> update(@PathVariable Long id,
+                                    @ModelAttribute OrganizationDTO orgDTO,
+                                    @RequestParam(value = "file", required = false) MultipartFile file) {
+        try {
+            String logoUrl = null;
+            if (file != null && !file.isEmpty()) {
+                LogoImageProcessor.ProcessedLogo processedLogo = logoImageProcessor.validateAndCropToSquare(file);
+                logoUrl = supabaseService.uploadFile(
+                    processedLogo.content(),
+                    processedLogo.filename(),
+                    processedLogo.contentType(),
+                    "Avatars"
+                );
+            }
+
+            return organizationService.update(id, orgDTO, logoUrl);
+        } catch (IllegalArgumentException exception) {
+            return ResponseEntity.badRequest().body(exception.getMessage());
+        } catch (Exception exception) {
+            return ResponseEntity.internalServerError().body("Failed to update organization");
+        }
     }
     @GetMapping
      public ResponseEntity<?> get(){
-        return organizationService.findAll().map(organization -> ResponseEntity.ok().body(organization))
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok().body(organizationService.findAll());
 
      }
+
+    @DeleteMapping("/{id}")
+    public ResponseEntity<?> delete(@PathVariable Long id) {
+        return organizationService.delete(id);
+    }
 }

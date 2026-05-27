@@ -24,14 +24,16 @@ public class JWTService {
     public SecretKey getSigningKey(){
         return Keys.hmacShaKeyFor(SECRET.getBytes(StandardCharsets.UTF_8));
     }
-    public String generateToken(String userId, String avatarUrl, String username) {
+    public String generateToken(String userId, String avatarUrl, String username, String email, String plan) {
         return Jwts.builder()
                 .subject(userId)
                 .issuer("upblit")
                 .issuedAt(new Date())
                 .expiration(new Date(System.currentTimeMillis() + 86400000))
-                .claim("avatarUrl", avatarUrl)
-                .claim("username", username)
+                .claim("avatar", avatarUrl)
+                .claim("name", username)
+                .claim("email", email)
+                .claim("plan", plan)
                 .signWith(getSigningKey())
                 .compact();
     }
@@ -58,10 +60,6 @@ public class JWTService {
 
     public String getSubjectFromToken(String token) {
         return getClaimsFromToken(token).getSubject();
-    }
-
-    public String getAccessTokenFromClaims(String token) {
-        return getClaimsFromToken(token).get("accessToken", String.class);
     }
 
     public boolean isTokenExpired(String token) {

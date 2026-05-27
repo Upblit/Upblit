@@ -15,4 +15,6 @@ public interface ProjectRepository extends JpaRepository<Project, Long> {
 
     Optional<Project> findByApplicationsIdAndOrganizationId(Long applicationId, Long organizationId);
 
+    boolean existsByIdAndOrganizationUsersId(Long projectId, Long userId);
+
 }

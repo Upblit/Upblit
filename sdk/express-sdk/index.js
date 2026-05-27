@@ -2,7 +2,7 @@ const axios = require("axios");
 
 let telemetry = [];
 
-const API_URL = "https://app.upblit.dev/api/v1/logscollector";
+const API_URL = "https://app.upblit.dev/ingest/traces";
 
 
 setInterval(async () => {
@@ -40,4 +40,8 @@ const upblit = (key) => {
     };
 };
 
+const log = (data) =>{
+    console.log(data);
+}
+upblit.log=log;
 module.exports = upblit;

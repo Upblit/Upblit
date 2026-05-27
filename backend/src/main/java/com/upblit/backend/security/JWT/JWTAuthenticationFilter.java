@@ -29,14 +29,14 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
         String authHeader = request.getHeader("Authorization");
         String token = null;
-        String githubId = null;
+        String userId = null;
 
         // Extract JWT token from Authorization header
         if (authHeader != null && authHeader.startsWith("Bearer ")) {
             token = authHeader.substring(7);
             try {
                 if (jwtService.validateToken(token)) {
-                    githubId = jwtService.getSubjectFromToken(token);
+                    userId = jwtService.getSubjectFromToken(token);
                 }
             } catch (Exception e) {
                 logger.warn("JWT token validation failed: " + e.getMessage());
@@ -44,9 +44,9 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
         }
 
         // Set authentication in security context if token is valid
-        if (githubId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
+        if (userId != null && SecurityContextHolder.getContext().getAuthentication() == null) {
             UsernamePasswordAuthenticationToken authToken =
-                    new UsernamePasswordAuthenticationToken(githubId, null, new ArrayList<>());
+                    new UsernamePasswordAuthenticationToken(userId, null, new ArrayList<>());
             authToken.setDetails(new WebAuthenticationDetailsSource().buildDetails(request));
             SecurityContextHolder.getContext().setAuthentication(authToken);
         }

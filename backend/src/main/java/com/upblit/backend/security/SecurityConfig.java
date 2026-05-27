@@ -1,14 +1,14 @@
 package com.upblit.backend.security;
 
-import com.upblit.backend.security.ApiKey.ApiKeyFilter;
 import com.upblit.backend.security.JWT.JWTAuthenticationFilter;
 import com.upblit.backend.security.JWT.JWTService;
 import com.upblit.backend.security.OAuth.CustomOAuth2UserService;
 import com.upblit.backend.security.OAuth.OAuth2SuccessHandler;
+import com.upblit.backend.security.RefreshToken.RefreshService;
+import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.core.annotation.Order;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
@@ -36,33 +36,13 @@ public class SecurityConfig {
     @Autowired
     private JWTAuthenticationFilter jwtAuthenticationFilter;
 
-    @Autowired
-    private ApiKeyFilter apiKeyFilter;
 
     @Bean
-    public OAuth2SuccessHandler oAuth2SuccessHandler(JWTService jwtService) {
-        return new OAuth2SuccessHandler(jwtService);
-    }
-    @Bean
-    @Order(1)
-    public SecurityFilterChain apiKeyFilterChain(HttpSecurity http) throws Exception {
-
-        http
-                .securityMatcher("/ingest/**")
-                .csrf(csrf -> csrf.disable())
-                .sessionManagement(session ->
-                        session.sessionCreationPolicy(SessionCreationPolicy.STATELESS)
-                )
-                .authorizeHttpRequests(auth -> auth
-                        .anyRequest().authenticated()
-                )
-                .addFilterBefore(apiKeyFilter, UsernamePasswordAuthenticationFilter.class);
-
-        return http.build();
+    public OAuth2SuccessHandler oAuth2SuccessHandler(JWTService jwtService, RefreshService refreshService) {
+        return new OAuth2SuccessHandler(jwtService,refreshService);
     }
 
     @Bean
-    @Order(2)
     public SecurityFilterChain filterChain(HttpSecurity http, OAuth2SuccessHandler oAuth2SuccessHandler) throws Exception {
         http
                 .cors(withDefaults())
@@ -70,9 +50,17 @@ public class SecurityConfig {
                 .sessionManagement(session -> session
                         .sessionCreationPolicy(SessionCreationPolicy.STATELESS)
                 )
+                .exceptionHandling(ex -> ex
+                        .authenticationEntryPoint((req, res, ex2) -> {
+                            res.setStatus(HttpServletResponse.SC_UNAUTHORIZED);
+                            res.setContentType("application/json");
+                            res.getWriter().write("{\"error\":\"Unauthorized\"}");
+                        })
+                )
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/",
+                                "/auth/**",
                                 "/login",
                                 "/oauth2/**",
                                 "/public/**",

@@ -4,6 +4,7 @@ import com.upblit.backend.core.User;
 import com.upblit.backend.core.UserRepository;
 import com.upblit.backend.core.user.UserService;
 import com.upblit.backend.security.JWT.JWTService;
+import com.upblit.backend.security.RefreshToken.RefreshService;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
@@ -17,12 +18,13 @@ import java.io.IOException;
 
 public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
     private final JWTService jwtService;
-
+    private final RefreshService refreshService;
     @Value("${frontend.uri}")
     String frontendUrl;
 
-    public OAuth2SuccessHandler(JWTService jwtService) {
+    public OAuth2SuccessHandler(JWTService jwtService, RefreshService refreshService) {
         this.jwtService = jwtService;
+        this.refreshService = refreshService;
     }
 
     @Override
@@ -35,14 +37,16 @@ public class OAuth2SuccessHandler implements AuthenticationSuccessHandler {
 
         assert customUser != null;
         User user = customUser.getUser();
-
+        String refresh = refreshService.createRefreshToken(user.getId());
         String jwt = jwtService.generateToken(
                 String.valueOf(user.getId()),
                 user.getAvatarUrl(),
-                user.getUsername()
+                user.getUsername(),
+            user.getEmail(),
+            user.getPlan()
         );
 
-        response.sendRedirect(frontendUrl + "/oauth-success?token=" + jwt);
+        response.sendRedirect(frontendUrl + "/oauth-success?token=" + jwt + "&refresh=" + refresh);
     }
     public static String extractUsername(CustomOAuth2User user) {
         Object login = user.getAttributes().get("login");

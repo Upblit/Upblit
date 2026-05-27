@@ -24,6 +24,9 @@ public class Project{
 
     private String name;
 
+    private String projectLocation;
+    private String cloudProviderName;
+
     private LocalDateTime createdAt;
 
     @ManyToOne(fetch = FetchType.LAZY)

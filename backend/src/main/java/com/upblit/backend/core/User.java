@@ -1,6 +1,7 @@
 package com.upblit.backend.core;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.upblit.backend.core.Plan;
 import jakarta.persistence.*;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -21,7 +22,7 @@ public class User {
 
     @Column(unique = true)
     private String githubId;
-
+    private String plan = Plan.PIRATES.name();
     private String username;
     private String email;
     private String avatarUrl;

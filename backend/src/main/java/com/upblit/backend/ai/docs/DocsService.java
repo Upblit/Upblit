@@ -5,15 +5,9 @@ import com.upblit.backend.ai.Doc;
 import com.upblit.backend.ai.DocRepository;
 import com.upblit.backend.ai.Tenant;
 import com.upblit.backend.ai.TenantRepository;
-import com.upblit.backend.core.UserRepository;
 import com.upblit.backend.security.UserdataUtil;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ProblemDetail;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ModelAttribute;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.time.Instant;
@@ -42,5 +36,18 @@ public class DocsService {
         doc.setCreated_at(Instant.now());
         doc.setUpdated_at(Instant.now());
         return  docRepository.save(doc);
+    }
+
+
+    public Doc delete(Long docsId) {
+        Doc doc = docRepository.findById(docsId).orElse(null);
+        if (doc == null){
+            System.out.println("docs not found");
+            return null;
+        }
+        Tenant tenant = tenantRepository.findByIdAndOrganizationUsersId(doc.getTenant().getId(), UserdataUtil.getCurrentUserId()).orElse(null);
+        if (tenant == null) return null;
+        docRepository.delete(doc);
+        return doc;
     }
 }

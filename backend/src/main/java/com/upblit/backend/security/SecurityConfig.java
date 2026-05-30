@@ -5,13 +5,17 @@ import com.upblit.backend.security.JWT.JWTService;
 import com.upblit.backend.security.OAuth.CustomOAuth2UserService;
 import com.upblit.backend.security.OAuth.OAuth2SuccessHandler;
 import com.upblit.backend.security.RefreshToken.RefreshService;
+import com.upblit.backend.core.UserRepository;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
 import org.springframework.security.config.http.SessionCreationPolicy;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.client.registration.ClientRegistrationRepository;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.authentication.UsernamePasswordAuthenticationFilter;
@@ -19,6 +23,8 @@ import org.springframework.web.cors.CorsConfiguration;
 import org.springframework.web.cors.CorsConfigurationSource;
 import org.springframework.web.cors.UrlBasedCorsConfigurationSource;
 
+import java.net.URLEncoder;
+import java.nio.charset.StandardCharsets;
 import java.util.Arrays;
 
 import static org.springframework.security.config.Customizer.withDefaults;
@@ -26,6 +32,9 @@ import static org.springframework.security.config.Customizer.withDefaults;
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
+
+        @Value("${frontend.uri}")
+        private String frontendUrl;
 
     @Autowired
     private ClientRegistrationRepository clientRegistrationRepository;
@@ -38,9 +47,14 @@ public class SecurityConfig {
 
 
     @Bean
-    public OAuth2SuccessHandler oAuth2SuccessHandler(JWTService jwtService, RefreshService refreshService) {
-        return new OAuth2SuccessHandler(jwtService,refreshService);
+        public OAuth2SuccessHandler oAuth2SuccessHandler(JWTService jwtService, RefreshService refreshService, UserRepository userRepository) {
+                return new OAuth2SuccessHandler(jwtService, refreshService, userRepository);
     }
+
+        @Bean
+        public PasswordEncoder passwordEncoder() {
+                return new BCryptPasswordEncoder();
+        }
 
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http, OAuth2SuccessHandler oAuth2SuccessHandler) throws Exception {
@@ -61,6 +75,7 @@ public class SecurityConfig {
                         .requestMatchers(
                                 "/",
                                 "/auth/**",
+                                "/patreon/**",
                                 "/login",
                                 "/oauth2/**",
                                 "/public/**",
@@ -86,6 +101,10 @@ public class SecurityConfig {
                                 .userService(customOAuth2UserService)
                         )
                         .successHandler(oAuth2SuccessHandler)
+                        .failureHandler((request, response, exception) -> {
+                            String message = exception.getMessage() == null ? "Unable to sign in with that provider" : exception.getMessage();
+                            response.sendRedirect(frontendUrl + "/login?error=" + URLEncoder.encode(message, StandardCharsets.UTF_8));
+                        })
                 );
 
         return http.build();

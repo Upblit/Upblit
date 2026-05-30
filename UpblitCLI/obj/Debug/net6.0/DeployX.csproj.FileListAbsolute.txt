@@ -1,5 +1,0 @@
-C:\Users\mdeba\Onedrive\desktop\DeployX\cli\obj\Debug\net6.0\DeployX.csproj.AssemblyReference.cache
-C:\Users\mdeba\Onedrive\desktop\DeployX\cli\obj\Debug\net6.0\DeployX.GeneratedMSBuildEditorConfig.editorconfig
-C:\Users\mdeba\Onedrive\desktop\DeployX\cli\obj\Debug\net6.0\DeployX.AssemblyInfoInputs.cache
-C:\Users\mdeba\Onedrive\desktop\DeployX\cli\obj\Debug\net6.0\DeployX.AssemblyInfo.cs
-C:\Users\mdeba\Onedrive\desktop\DeployX\cli\obj\Debug\net6.0\DeployX.csproj.CoreCompileInputs.cache

@@ -61,10 +61,10 @@ It’s like Devops-team, but open, agentic, and customizable — empowering team
 ## 🚀 Getting Started
 
 ### 🧰 Prerequisites
-- Java 17+
+- Java 21+
 - Maven 3.9+
 - Node.js 18+
-- Docker 
+- Docker
 - Git
 
 ### ⚡ Setup
@@ -92,6 +92,24 @@ npm run dev
 ```
 
 Then open **[http://localhost:3000](http://localhost:3000)** to see the dashboard.
+
+#### CLI
+
+Build the `upblit` CLI (Go) and use it to authenticate, select orgs/projects/apps, generate API keys, and query recent telemetry:
+
+```bash
+cd Upblit/UpblitCLI
+go build -o upblit .
+
+# Login via browser
+./upblit login
+
+# List organizations
+./upblit org list
+
+# Create an app (requires a selected project)
+./upblit app create my-service --env staging -d "Description"
+```
 
 ---
 

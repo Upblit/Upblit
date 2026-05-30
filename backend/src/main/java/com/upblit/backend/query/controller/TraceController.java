@@ -1,8 +1,7 @@
 package com.upblit.backend.query.controller;
 
-import com.upblit.backend.query.dto.PaginatedResponse;
 import com.upblit.backend.query.model.Trace;
-import com.upblit.backend.query.service.ProjectAccessService;
+import com.upblit.backend.query.ProjectAccessService;
 import com.upblit.backend.query.service.TraceService;
 import lombok.RequiredArgsConstructor;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -10,7 +9,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.time.Instant;
-import java.util.List;
 import java.util.Map;
 
 @RestController

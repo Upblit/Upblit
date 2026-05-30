@@ -11,4 +11,7 @@ public class EmailDTO {
     private String template;
     private String name;
     private String email;
+    private String inviteLink;
+    private String verificationLink;
+    private String organizationName;
 }

@@ -1,0 +1,12 @@
+global:
+  scrape_interval: 15s
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['prometheus:9090']
+
+  - job_name: 'upblit-services'
+    metrics_path: /metrics
+    static_configs:
+      - targets: ['backend:8080', 'email:3001', 'ingestor:8081', 'pinger:8082', 'frontend:3000']

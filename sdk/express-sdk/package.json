@@ -1,6 +1,6 @@
 {
   "name": "upblit-express",
-  "version": "1.0.1",
+  "version": "2.0.0",
   "description": "The Upblit SDK for express framework",
   "homepage": "https://github.com/Debashismitra01/Upblit#readme",
   "bugs": {
@@ -18,6 +18,8 @@
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "dependencies": {
-    "axios": "^1.13.5"
+    "async_hooks": "^1.0.0",
+    "axios": "^1.13.5",
+    "crypto": "^1.0.1"
   }
 }

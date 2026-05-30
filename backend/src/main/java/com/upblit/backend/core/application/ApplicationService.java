@@ -9,7 +9,6 @@ import org.springframework.http.ProblemDetail;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import java.util.Collections;
-import java.util.List;
 
 @Service
 @Transactional
@@ -37,36 +36,20 @@ public class ApplicationService {
             return ResponseEntity.status(HttpStatus.FORBIDDEN).build();
         }
 
-        // --- Quota check ---
+        // Quota check: total applications across the entire org
         Organization org = project.getOrganization();
         Plan plan = org.getPlan() != null ? org.getPlan() : Plan.PIRATES;
         PlanLimits limits = PlanLimits.of(plan);
 
-        // Check org-wide application cap
         long totalOrgApps = applicationsRepository.countByProjectOrganizationId(org.getId());
         if (totalOrgApps >= limits.maxApplicationsPerOrg) {
             throw new QuotaExceededException(
-                "applications (org-wide)",
+                "applications",
                 (int) totalOrgApps,
                 limits.maxApplicationsPerOrg,
                 plan
             );
         }
-
-        // Check per-project application cap
-        List<Application> existingApps = applicationsRepository
-                .findByProjectId(applicationDTO.getProjectId())
-                .orElse(Collections.emptyList());
-
-        if (existingApps.size() >= limits.maxApplicationsPerProject) {
-            throw new QuotaExceededException(
-                "applications",
-                existingApps.size(),
-                limits.maxApplicationsPerProject,
-                plan
-            );
-        }
-
 
         Application application = new Application();
         application.setName(applicationDTO.getName());

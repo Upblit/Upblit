@@ -1,0 +1,82 @@
+services:
+  prometheus:
+    image: prom/prometheus:latest
+    volumes:
+      - ./prometheus/prometheus.yml:/etc/prometheus/prometheus.yml:ro
+    ports:
+      - 9090:9090
+    networks:
+      - observability
+
+  grafana:
+    image: grafana/grafana:latest
+    ports:
+      - 3000:3000
+    depends_on:
+      - prometheus
+    networks:
+      - observability
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.17.0
+    environment:
+      - discovery.type=single-node
+      - ES_JAVA_OPTS=-Xms512m -Xmx512m
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    networks:
+      - observability
+
+  kibana:
+    image: docker.elastic.co/kibana/kibana:7.17.0
+    ports:
+      - 5601:5601
+    depends_on:
+      - elasticsearch
+    networks:
+      - observability
+
+  logstash:
+    image: docker.elastic.co/logstash/logstash:7.17.0
+    volumes:
+      - ./logstash/pipeline:/usr/share/logstash/pipeline:ro
+    ports:
+      - 5044:5044
+    depends_on:
+      - elasticsearch
+    networks:
+      - observability
+
+  filebeat:
+    build:
+      context: ./filebeat
+    user: root
+    volumes:
+      - /var/lib/docker/containers:/var/lib/docker/containers:ro
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    command: ["filebeat", "-e", "--strict.perms=false"]
+    depends_on:
+      - logstash
+    networks:
+      - observability
+
+  nats:
+    image: nats:2.9.18-alpine
+    ports:
+      - 4222:4222
+      - 8222:8222
+    networks:
+      - observability
+
+volumes:
+  esdata:
+
+networks:
+  observability:
+    driver: bridge

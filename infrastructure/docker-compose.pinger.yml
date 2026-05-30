@@ -1,0 +1,16 @@
+services:
+  pinger:
+    build:
+      context: ../pinger
+    env_file:
+      - ../pinger/.env
+    ports:
+      - 8082:8082
+    logging:
+      driver: json-file
+    networks:
+      - observability
+
+networks:
+  observability:
+    driver: bridge

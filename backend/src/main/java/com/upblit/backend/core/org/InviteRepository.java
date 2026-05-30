@@ -17,4 +17,8 @@ public interface InviteRepository extends JpaRepository<Invite, UUID> {
     List<Invite> findAllByOrganizationIdAndActive(Long organizationId, boolean active);
 
     List<Invite> findAllByIdAndUserId(UUID id, Long userId);
+
+    void deleteAllByOrganizationId(Long organizationId);
+
+    void deleteAllByUserId(Long userId);
 }

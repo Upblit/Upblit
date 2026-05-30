@@ -23,16 +23,23 @@ public class orgcontroller {
 
     @PostMapping
     public ResponseEntity<?> create(@ModelAttribute OrganizationDTO orgDTO,
-                                    @RequestParam("file") MultipartFile file) {
+                                    @RequestParam(value = "file", required = false) MultipartFile file) {
         try {
-            LogoImageProcessor.ProcessedLogo processedLogo = logoImageProcessor.validateAndCropToSquare(file);
-            String LogoUrl = supabaseService.uploadFile(
-                processedLogo.content(),
-                processedLogo.filename(),
-                processedLogo.contentType(),
-                "Avatars"
-            );
-            return ResponseEntity.ok(organizationService.create(orgDTO,LogoUrl));
+            String LogoUrl = null;
+            if (file != null && !file.isEmpty()) {
+                LogoImageProcessor.ProcessedLogo processedLogo = logoImageProcessor.validateAndCropToSquare(file);
+                LogoUrl = supabaseService.uploadFile(
+                    processedLogo.content(),
+                    processedLogo.filename(),
+                    processedLogo.contentType(),
+                    "Avatars"
+                );
+            } else {
+                // No file provided from frontend; use demo logo URL as sanitization fallback
+                LogoUrl = "https://emdcswqcxgzsfqicsddb.supabase.co/storage/v1/object/public/Avatars/demourl.jpg";
+            }
+
+            return ResponseEntity.ok(organizationService.createWithOwner(orgDTO, LogoUrl));
         } catch (IllegalArgumentException exception) {
             return ResponseEntity.badRequest().body(exception.getMessage());
         } catch (Exception exception) {

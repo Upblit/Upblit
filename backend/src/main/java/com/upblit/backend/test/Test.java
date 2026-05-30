@@ -15,6 +15,10 @@ public class Test {
     @Autowired
     private RestTemplate restTemplate;
 
+    @GetMapping("/health")
+    public String health() {
+        return "OK";
+    }
 
     @PostMapping
     public String test2(@RequestBody String body){

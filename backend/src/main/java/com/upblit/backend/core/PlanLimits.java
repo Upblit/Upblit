@@ -8,26 +8,23 @@ package com.upblit.backend.core;
  * SUPERNOVA → pro tier
  * WARLORD   → enterprise (unlimited)
  *
- * maxApplicationsPerOrg: total applications allowed across ALL projects in one org.
+ * maxApplicationsPerOrg: total applications across ALL projects in one org (not per project).
  */
 public enum PlanLimits {
 
     PIRATES(
         5,   // maxMembersPerOrg
         3,   // maxProjectsPerOrg
-        10,  // maxApplicationsPerProject
         10   // maxApplicationsPerOrg
     ),
 
     SUPERNOVA(
         20,  // maxMembersPerOrg
         10,  // maxProjectsPerOrg
-        50,  // maxApplicationsPerProject
         50   // maxApplicationsPerOrg
     ),
 
     WARLORD(
-        Integer.MAX_VALUE,
         Integer.MAX_VALUE,
         Integer.MAX_VALUE,
         Integer.MAX_VALUE
@@ -35,13 +32,12 @@ public enum PlanLimits {
 
     public final int maxMembersPerOrg;
     public final int maxProjectsPerOrg;
-    public final int maxApplicationsPerProject;
+    /** Total applications allowed across ALL projects in the org — not per project. */
     public final int maxApplicationsPerOrg;
 
-    PlanLimits(int maxMembersPerOrg, int maxProjectsPerOrg, int maxApplicationsPerProject, int maxApplicationsPerOrg) {
+    PlanLimits(int maxMembersPerOrg, int maxProjectsPerOrg, int maxApplicationsPerOrg) {
         this.maxMembersPerOrg = maxMembersPerOrg;
         this.maxProjectsPerOrg = maxProjectsPerOrg;
-        this.maxApplicationsPerProject = maxApplicationsPerProject;
         this.maxApplicationsPerOrg = maxApplicationsPerOrg;
     }
 

@@ -1,5 +1,6 @@
 package com.upblit.backend.security.RefreshToken;
 
+import com.upblit.backend.security.RefreshTokenRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -15,7 +16,7 @@ public class RefreshService {
             Base64.getUrlEncoder().withoutPadding();
 
     @Autowired
-    private RefreshRepository refreshRepository;
+    private RefreshTokenRepository refreshRepository;
 
     public String createRefreshToken(Long userId ) {
         Refresh refresh = new Refresh();

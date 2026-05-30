@@ -1,0 +1,222 @@
+{
+  "openapi": "3.0.3",
+  "info": {
+    "title": "Upblitpinger API",
+    "version": "1.0.0",
+    "description": "API for uptime monitors and uptime check history."
+  },
+  "servers": [
+    {
+      "url": "http://localhost:8085"
+    }
+  ],
+  "paths": {
+    "/healthz": {
+      "get": {
+        "summary": "Health check",
+        "responses": {
+          "200": {
+            "description": "Service is healthy",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/HealthResponse"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/uptime/monitors": {
+      "get": {
+        "summary": "List monitors",
+        "parameters": [
+          {
+            "name": "projectId",
+            "in": "query",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Monitor list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UptimeMonitor"
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "post": {
+        "summary": "Create monitor",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateMonitorRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created monitor",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UptimeMonitor"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/uptime/checks": {
+      "post": {
+        "summary": "Record a check result",
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "$ref": "#/components/schemas/CreateCheckRequest"
+              }
+            }
+          }
+        },
+        "responses": {
+          "201": {
+            "description": "Created uptime check",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "$ref": "#/components/schemas/UptimeCheckRecord"
+                }
+              }
+            }
+          }
+        }
+      }
+    },
+    "/uptime/monitors/{monitorId}/results": {
+      "get": {
+        "summary": "Get check history for a monitor",
+        "parameters": [
+          {
+            "name": "monitorId",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "from",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          },
+          {
+            "name": "to",
+            "in": "query",
+            "schema": {
+              "type": "string",
+              "format": "date-time"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Check history",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "$ref": "#/components/schemas/UptimeCheckRecord"
+                  }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "schemas": {
+      "HealthResponse": {
+        "type": "object",
+        "properties": {
+          "status": {
+            "type": "string",
+            "example": "ok"
+          }
+        }
+      },
+      "UptimeMonitor": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "integer", "format": "int64" },
+          "url": { "type": "string" },
+          "projectId": { "type": "integer", "format": "int64" },
+          "applicationId": { "type": "integer", "format": "int64" },
+          "organizationId": { "type": "integer", "format": "int64" },
+          "currentStatus": { "type": "string" },
+          "lastCheckAt": { "type": "string", "format": "date-time", "nullable": true },
+          "createdAt": { "type": "string", "format": "date-time" },
+          "updatedAt": { "type": "string", "format": "date-time" }
+        }
+      },
+      "CreateMonitorRequest": {
+        "type": "object",
+        "required": ["url", "projectId"],
+        "properties": {
+          "url": { "type": "string" },
+          "projectId": { "type": "integer", "format": "int64" },
+          "applicationId": { "type": "integer", "format": "int64" },
+          "organizationId": { "type": "integer", "format": "int64" }
+        }
+      },
+      "CreateCheckRequest": {
+        "type": "object",
+        "required": ["monitorId"],
+        "properties": {
+          "monitorId": { "type": "string" },
+          "timestamp": { "type": "string", "format": "date-time" },
+          "responseMs": { "type": "integer", "format": "int64" },
+          "statusCode": { "type": "integer", "format": "int32" },
+          "success": { "type": "boolean" },
+          "error": { "type": "string" }
+        }
+      },
+      "UptimeCheckRecord": {
+        "type": "object",
+        "properties": {
+          "id": { "type": "string" },
+          "monitorId": { "type": "string" },
+          "projectId": { "type": "integer", "format": "int64" },
+          "url": { "type": "string" },
+          "timestamp": { "type": "string", "format": "date-time" },
+          "responseMs": { "type": "integer", "format": "int64" },
+          "statusCode": { "type": "integer", "format": "int32" },
+          "success": { "type": "boolean" },
+          "error": { "type": "string" }
+        }
+      }
+    }
+  }
+}

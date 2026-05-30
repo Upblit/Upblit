@@ -23,16 +23,30 @@ public class InviteService {
 
     @Autowired
     private OrganizationService organizationService;
+    
+    @Autowired
+    private OrganizationMemberRepository memberRepository;
 
     public Invite createInvite(Long organizationId) {
-        if (!isOrganizationAccessibleByCurrentUser(organizationId)) {
+        return createInvite(organizationId, null);
+    }
+
+    public Invite createInvite(Long organizationId, String email) {
+        // Only Owner or Admin can create invites
+        Long currentUserId = UserdataUtil.getCurrentUserId();
+        var member = memberRepository.findByOrganizationIdAndUserId(organizationId, currentUserId).orElse(null);
+        if (member == null) {
+            return null;
+        }
+        if (member.getRole() != OrganizationRole.OWNER && member.getRole() != OrganizationRole.ADMIN) {
             return null;
         }
 
         Invite invite = new Invite();
         invite.setOrganizationId(organizationId);
+        invite.setEmail(email);
         invite.setPublicToken(UUID.randomUUID().toString());
-        invite.setCreatedById(UserdataUtil.getCurrentUserId());
+        invite.setCreatedById(currentUserId);
         invite.setCreatedAt(Instant.now());
         invite.setExpiresAt(Instant.now().plusSeconds(7L * 24 * 60 * 60));
         invite.setActive(true);
@@ -91,6 +105,21 @@ public class InviteService {
         }
 
         invite.setActive(false);
+        return inviteRepository.save(invite);
+    }
+
+    public Invite activateInvite(UUID id) {
+        Optional<Invite> optionalInvite = inviteRepository.findById(id);
+        if (optionalInvite.isEmpty()) {
+            return null;
+        }
+
+        Invite invite = optionalInvite.get();
+        if (!isOrganizationAccessibleByCurrentUser(invite.getOrganizationId())) {
+            return null;
+        }
+
+        invite.setActive(true);
         return inviteRepository.save(invite);
     }
 
@@ -177,5 +206,9 @@ public class InviteService {
 
     private boolean isOrganizationAccessibleByCurrentUser(Long organizationId) {
         return organizationRepository.findByIdAndUsersId(organizationId, UserdataUtil.getCurrentUserId()).isPresent();
+    }
+
+    public Organization getAccessibleOrganization(Long organizationId) {
+        return organizationRepository.findByIdAndUsersId(organizationId, UserdataUtil.getCurrentUserId()).orElse(null);
     }
 }

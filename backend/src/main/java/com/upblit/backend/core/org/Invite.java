@@ -29,6 +29,7 @@ public class Invite {
     private Long userId;
 
     private Long organizationId;
+    private String email;
 
     @Column(unique = true, nullable = false)
     private String publicToken;

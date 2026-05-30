@@ -9,4 +9,5 @@ public interface TenantRepository extends JpaRepository<Tenant,Long> {
     Optional<Tenant> findByOrganizationIdAndName(Long OrganizationId, String name);
     Optional<Tenant> findByIdAndOrganizationId(Long Id,Long OrganizationId);
     Optional<Tenant> findByIdAndOrganizationUsersId(Long id, Long users_id);
+    void deleteAllByOrganizationId(Long organizationId);
 }

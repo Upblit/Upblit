@@ -1,0 +1,67 @@
+---
+title: Authentication
+description: How to authenticate with the Upblit API.
+---
+
+# API Authentication
+
+The Upblit API uses two authentication mechanisms depending on the caller.
+
+## JWT (Dashboard / User Requests)
+
+All dashboard API calls use a JWT Bearer token obtained after GitHub OAuth login.
+
+```http
+Authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...
+```
+
+### Obtaining a Token
+
+1. Redirect the user to `GET /oauth2/authorization/github`
+2. After GitHub authorization, the backend issues a JWT and redirects to the frontend
+3. The frontend stores the JWT in `localStorage["token"]`
+
+### Token Expiry
+
+JWTs expire after a configured duration. When a request returns `401 Unauthorized`, the frontend clears the token and redirects to `/login?reason=session_expired`.
+
+### Refresh Tokens
+
+A refresh token is issued alongside the JWT. Use it to obtain a new JWT without re-authenticating:
+
+```http
+POST /refresh
+Content-Type: application/json
+
+{
+  "refreshToken": "your-refresh-token"
+}
+```
+
+---
+
+## API Key (SDK / Ingest Requests)
+
+SDK ingest endpoints authenticate via an API key in the `x-api-key` header.
+
+```http
+POST /ingest/traces
+x-api-key: upblit_live_xxxxxxxxxxxx
+Content-Type: application/json
+```
+
+API keys are generated per application from the dashboard. They are scoped to a single application and cannot be used across applications.
+
+### Generating an API Key
+
+```http
+POST /apikey?ApplicationId={applicationId}
+Authorization: Bearer {jwt}
+```
+
+**Response:**
+```json
+"upblit_live_xxxxxxxxxxxx"
+```
+
+The key is returned as a plain string. Store it securely — it is not retrievable after generation.

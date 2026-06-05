@@ -1,0 +1,35 @@
+---
+title: React SDK (Coming Soon)
+description: React SDK for Upblit — in development.
+---
+
+# React SDK
+
+> **Status**: Coming Soon — the React SDK is not yet implemented.
+
+The React SDK will provide browser-side error boundary tracing, Web Vitals capture, and user session correlation.
+
+## Planned Features
+
+- Error boundary tracing — capture React render errors as traces
+- Web Vitals (LCP, FID, CLS) as metrics
+- User session correlation — link frontend events to backend traces
+- Page navigation spans
+
+## Planned Usage
+
+```tsx
+import { UpblitProvider, useUpblit } from 'upblit-react'
+
+function App() {
+  return (
+    <UpblitProvider apiKey={process.env.NEXT_PUBLIC_UPBLIT_KEY}>
+      <YourApp />
+    </UpblitProvider>
+  )
+}
+```
+
+## Track Progress
+
+Follow the React SDK development in `Upblit/sdk/react-sdk/`.

@@ -1,0 +1,38 @@
+---
+title: Users API
+description: Fetch user profile information via the Upblit API.
+---
+
+# Users API
+
+## Get User by Username
+
+Returns the profile of a user by their GitHub username.
+
+```http
+GET /User?username={username}
+Authorization: Bearer {jwt}
+```
+
+**Query Parameters:**
+
+| Parameter | Required | Description |
+|---|---|---|
+| `username` | Yes | GitHub username |
+
+**Response:** `200 OK`
+```json
+{
+  "id": 1,
+  "githubId": "12345678",
+  "username": "octocat",
+  "email": "octocat@github.com",
+  "avatarUrl": "https://avatars.githubusercontent.com/u/12345678",
+  "accessToken": "gho_...",
+  "lastLogin": "2026-05-27T10:00:00Z"
+}
+```
+
+**Notes:**
+- The `username` is read from `localStorage["username"]` in the dashboard
+- The `accessToken` field contains the GitHub OAuth access token — handle with care

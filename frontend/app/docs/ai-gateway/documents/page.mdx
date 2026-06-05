@@ -1,0 +1,55 @@
+---
+title: Documents
+description: Upload and manage knowledge-base documents for AI tenants.
+---
+
+# AI Documents
+
+Documents are files uploaded to an AI tenant to serve as a knowledge source.
+
+## Uploading a Document
+
+### Via Dashboard
+
+1. Go to `/dashboard/ai-gateway`
+2. Select a tenant from the list
+3. Click **Upload Document** or drag a file into the upload area
+4. An animated progress bar shows upload progress
+5. A success or error toast appears on completion
+
+### Via API
+
+```http
+POST /ai/docs?TenantId={tenantId}
+Authorization: Bearer {jwt}
+Content-Type: multipart/form-data
+
+file: <your-file>
+```
+
+**Response:** `200 OK`
+
+## Supported File Types
+
+Any text-based document format is supported. Common formats:
+- PDF (`.pdf`)
+- Word documents (`.docx`)
+- Plain text (`.txt`)
+- Markdown (`.md`)
+
+Maximum file size: **10 MB**
+
+## How Documents Are Stored
+
+1. The backend receives the multipart upload
+2. The file is sent to **Supabase object storage** via `SupabaseService`
+3. The Supabase CDN URL is stored in MongoDB alongside the file metadata
+4. The file is served directly from Supabase's CDN — not proxied through the backend
+
+## Listing Documents
+
+> **Note**: A `GET /ai/docs?TenantId={id}` endpoint is planned. The dashboard will show uploaded documents per tenant once this is implemented.
+
+## Deleting Documents
+
+> **Note**: A `DELETE /ai/docs/{docId}` endpoint is planned.

@@ -1,0 +1,61 @@
+---
+title: Observability Overview
+description: How Upblit collects and displays telemetry data.
+---
+
+# Observability Overview
+
+Upblit's observability layer gives you distributed traces and structured logs for every HTTP request your instrumented applications handle — with zero configuration beyond adding the SDK middleware.
+
+## What Gets Collected
+
+### Traces
+
+A **trace** represents a single request flowing through your system. It contains one or more **spans**:
+
+- **Root span** — created by the middleware for every incoming HTTP request
+- **Service spans** — created by `sdk.service()` for internal service calls
+- **External spans** — created by `sdk.call()` for outbound HTTP calls
+
+Each span records:
+- `traceId` — shared across all spans in one request
+- `spanId` — unique per span
+- `parentSpanId` — links child spans to their parent
+- `requestMethod` — e.g., `controller:POST`, `service:getUserById`
+- `requestURL` — HTTP path (empty for internal spans)
+- `responseStatus` — HTTP status code
+- `durationMs` — wall-clock duration
+
+### Logs
+
+A **log entry** is a structured message emitted by your application code. Log entries are correlated to traces via `traceId`.
+
+Each log entry records:
+- `level` — `fatal`, `error`, `warn`, `info`, `debug`
+- `message` — the log text
+- `traceId` — correlates to a trace (if emitted within a request context)
+- `timestamp` — server-side receipt time
+- `clientTimestamp` — SDK-side emission time
+
+## How Data Flows
+
+```
+Your App → SDK Middleware → In-Memory Buffer → POST /ingest/traces
+                                             → POST /ingest/logs
+                                                    ↓
+                                             MongoDB (stored)
+                                                    ↓
+                                             Dashboard Query
+```
+
+Data is buffered in memory and flushed every **30 seconds** (configurable). On flush failure, the batch is re-queued — no data is dropped.
+
+## Viewing Telemetry
+
+Go to your project's Observability page:
+
+```
+/dashboard/orgs/[orgId]/projects/[projectId]/observability
+```
+
+Telemetry and logs are fetched in parallel when the page loads.

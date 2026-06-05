@@ -1,0 +1,65 @@
+---
+title: Structured Logs
+description: Understanding structured logs in Upblit.
+---
+
+# Structured Logs
+
+Upblit collects structured log entries from your SDK-instrumented applications. Logs are correlated to traces via `traceId`, giving you full context for every log message.
+
+## Log Entry Fields
+
+| Field | Type | Description |
+|---|---|---|
+| `level` | string | `fatal`, `error`, `warn`, `info`, `debug` |
+| `message` | string | The log text |
+| `traceId` | UUID or null | Correlates to a trace (null if outside request context) |
+| `type` | string | `"app"` for application logs |
+| `timestamp` | ISO8601 | Server-side receipt time |
+| `clientTimestamp` | ISO8601 | SDK-side emission time |
+
+## Log Levels
+
+| Level | When to Use | Flush Behavior |
+|---|---|---|
+| `fatal` | Unrecoverable error — app cannot continue | Flushed immediately |
+| `error` | Recoverable error — operation failed | Buffered (30s flush) |
+| `warn` | Something unexpected but non-fatal | Buffered |
+| `info` | Normal operational events | Buffered |
+| `debug` | Detailed diagnostic information | Buffered |
+
+## Emitting Logs
+
+```javascript
+// Express SDK
+upblit.log('User signed in')                    // info
+upblit.log('warn', 'Rate limit approaching')
+upblit.log('error', 'Payment failed: ' + err.message)
+upblit.log('fatal', 'Cannot connect to database')
+```
+
+```go
+// Go SDK
+sdk.Log("info", "User signed in")
+sdk.Log("error", "Payment failed: " + err.Error())
+```
+
+```python
+# Python SDK
+upblit.log("User signed in")
+upblit.log("error", "Payment failed")
+```
+
+## Viewing Logs in the Dashboard
+
+Go to your project's Observability page and click the **Logs** tab.
+
+### Filtering
+
+- **Level pills** — click `ERROR`, `WARN`, `INFO`, `DEBUG` to toggle visibility
+- **Search** — case-insensitive substring match on the message field
+- When no level pills are active, all levels are shown
+
+## Trace Correlation
+
+When a log is emitted inside a request context (i.e., within the middleware's async scope), the `traceId` is automatically attached. This lets you click a trace in the Traces tab and see all related logs.

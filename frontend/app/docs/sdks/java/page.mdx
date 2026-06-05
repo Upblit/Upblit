@@ -1,0 +1,43 @@
+---
+title: Java SDK (Coming Soon)
+description: Java SDK for Upblit — in development.
+---
+
+# Java SDK
+
+> **Status**: Coming Soon — the Java SDK is not yet implemented.
+
+The Java SDK will provide Spring Boot auto-configuration and servlet filter instrumentation for Java applications.
+
+## Planned Features
+
+- Spring Boot auto-configuration (zero-config setup)
+- Servlet filter for automatic HTTP request tracing
+- `@Traced` annotation for method-level spans
+- Structured logging integration
+- Same buffering and flush behavior as other SDKs
+
+## Planned Usage
+
+```java
+// application.properties
+upblit.api-key=${UPBLIT_API_KEY}
+
+// That's it — auto-configuration handles the rest
+```
+
+```java
+// Manual span
+@Service
+public class UserService {
+
+    @Traced("getUserById")
+    public User getUser(String id) {
+        return userRepository.findById(id).orElseThrow();
+    }
+}
+```
+
+## Track Progress
+
+Follow the Java SDK development in `Upblit/sdk/java-sdk/`.

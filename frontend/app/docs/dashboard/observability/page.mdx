@@ -1,0 +1,58 @@
+---
+title: Observability
+description: View distributed traces and logs for your project.
+---
+
+# Observability
+
+The Observability page gives you a real-time view of distributed traces and structured logs for all applications in a project.
+
+Navigate to: `/dashboard/orgs/[orgId]/projects/[projectId]/observability`
+
+## Traces
+
+The **Traces** tab shows all distributed trace records for the project.
+
+### Trace Table Columns
+
+| Column | Description |
+|---|---|
+| Trace ID | Unique identifier for the trace (UUID) |
+| Application | Which application emitted this trace |
+| Timestamp | When the trace was recorded |
+| Span Count | Number of spans in this trace |
+
+### Expanding a Trace
+
+Click a trace row to expand it and see all spans. Each span shows:
+- **Method** — e.g., `controller:POST`, `service:getUserById`, `external:stripe`
+- **URL** — the HTTP path or empty for internal spans
+- **Status** — HTTP status code (color-coded: green for 2xx, red for 5xx)
+- **Duration** — wall-clock time in milliseconds
+- **Span ID / Parent Span ID** — for reconstructing the call tree
+
+### Filtering Traces
+
+Use the **Application** filter dropdown to show only traces from a specific application.
+
+## Logs
+
+The **Logs** tab shows structured log entries for the project.
+
+### Log Table Columns
+
+| Column | Description |
+|---|---|
+| Timestamp | When the log was emitted |
+| Level | `fatal`, `error`, `warn`, `info`, `debug` |
+| Message | The log message |
+| Trace ID | Correlates the log to a trace (if available) |
+
+### Filtering Logs
+
+- **Level pills** — toggle `ERROR`, `WARN`, `INFO`, `DEBUG` to show/hide levels
+- **Search** — case-insensitive substring match on the message field
+
+## Performance
+
+Tables with more than 100 rows use virtual scrolling to keep the UI responsive.

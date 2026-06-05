@@ -1,0 +1,8 @@
+{
+  "index": "Overview",
+  "service-boundaries": "Service Boundaries",
+  "telemetry-pipeline": "Telemetry Pipeline",
+  "database": "Database Architecture",
+  "security": "Security Model",
+  "multi-tenancy": "Multi-Tenancy"
+}

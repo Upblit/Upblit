@@ -1,0 +1,98 @@
+---
+title: Installation
+description: Install and run Upblit locally.
+---
+
+# Installation
+
+## Running the Backend
+
+The backend is a Spring Boot application. You need Java 21 and Maven.
+
+### Prerequisites
+
+- Java 21
+- Maven 3.9+
+- A MongoDB Atlas cluster (free tier works)
+- A PostgreSQL database
+- A GitHub OAuth App
+
+### Environment Variables
+
+Create `Upblit/backend/.env` with the following:
+
+```env
+MONGODB_URI=mongodb+srv://<user>:<password>@<cluster>.mongodb.net/<db>
+POSTGRES_URL=jdbc:postgresql://<host>:<port>/<db>
+POSTGRES_USERNAME=<username>
+POSTGRES_PASSWORD=<password>
+
+GITHUB_CLIENT_ID=<your-github-oauth-app-client-id>
+GITHUB_CLIENT_SECRET=<your-github-oauth-app-client-secret>
+REDIRECT_URI=http://localhost:8080/login/oauth2/code/github
+
+FRONTEND_URI=http://localhost:3000
+JWT_SECRET=<min-32-character-random-string>
+
+EMAIL_URI=http://localhost:3001
+EMAIL_SECRET=<any-secret-string>
+
+SUPABASE_API_KEY=<your-supabase-service-role-key>
+SUPABASE_URI=https://<project-ref>.supabase.co
+```
+
+### Start the Backend
+
+```bash
+cd Upblit/backend
+./mvnw spring-boot:run
+```
+
+The API will be available at `http://localhost:8080`.
+
+---
+
+## Running the Frontend
+
+The frontend is a Next.js application.
+
+### Environment Variables
+
+Create `Upblit/frontend/.env`:
+
+```env
+NEXT_PUBLIC_BACKEND_URI=http://localhost:8080
+NEXT_PUBLIC_API_URL=http://localhost:8080
+```
+
+### Start the Frontend
+
+```bash
+cd Upblit/frontend
+npm install
+npm run dev
+```
+
+The dashboard will be available at `http://localhost:3000`.
+
+---
+
+## Running the Email Service
+
+```bash
+cd Upblit/email
+npm install
+node Index.js
+```
+
+The email service runs on port 3000 by default. If running alongside the frontend locally, change the port in `Index.js` or use a different port via environment variable.
+
+---
+
+## GitHub OAuth App Setup
+
+1. Go to [GitHub Developer Settings](https://github.com/settings/developers)
+2. Click **New OAuth App**
+3. Set **Homepage URL** to `http://localhost:3000`
+4. Set **Authorization callback URL** to `http://localhost:8080/login/oauth2/code/github`
+5. Copy the **Client ID** and **Client Secret** into your `.env`

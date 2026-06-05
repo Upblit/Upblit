@@ -1,0 +1,97 @@
+---
+title: Quickstart
+description: Get up and running with Upblit in under 5 minutes.
+---
+
+# Quickstart
+
+Get your first project deployed and instrumented in under 5 minutes.
+
+## Prerequisites
+
+- A GitHub account (Upblit uses GitHub OAuth for authentication)
+- Node.js 18+, Go 1.21+, or Python 3.9+ depending on your SDK choice
+
+## Step 1 — Sign In
+
+Navigate to the Upblit dashboard and click **Login with GitHub**. Upblit uses GitHub OAuth — no separate password required.
+
+## Step 2 — Create an Organization
+
+After signing in, you'll land on the Organizations page.
+
+1. Click **New Organization**
+2. Enter a name and description
+3. Upload a logo (optional, max 5 MB, image files only)
+4. Click **Create**
+
+An organization is the top-level container for all your projects and team members.
+
+## Step 3 — Create a Project
+
+Inside your organization:
+
+1. Click **New Project**
+2. Enter a project name
+3. Click **Create**
+
+A project groups related applications together (e.g., `api-server`, `worker`, `frontend`).
+
+## Step 4 — Create an Application
+
+Inside your project:
+
+1. Click **New Application**
+2. Enter a name and description
+3. Select an environment: `production`, `staging`, or `development`
+4. Click **Create**
+
+## Step 5 — Generate an API Key
+
+On the application card, click **Generate API Key**. Copy the key — it's shown only once.
+
+This key is what your SDK uses to send telemetry to Upblit.
+
+## Step 6 — Instrument Your App
+
+Install the SDK for your language and add two lines of code:
+
+```bash
+# Node.js / Express
+npm install upblit-express
+```
+
+```javascript
+const upblit = require('upblit-express')
+app.use(upblit('YOUR_API_KEY'))
+```
+
+```bash
+# Go
+go get github.com/upblit/go-sdk
+```
+
+```go
+sdk := upblit.New("YOUR_API_KEY")
+defer sdk.Close()
+router.Use(sdk.Middleware())
+```
+
+```bash
+# Python
+pip install upblit
+```
+
+```python
+import upblit
+upblit.init("YOUR_API_KEY")
+app.add_middleware(upblit.Middleware)
+```
+
+## Step 7 — View Your Traces
+
+Send a few requests to your instrumented app. Within 30 seconds, traces will appear in the **Observability** tab of your project dashboard.
+
+---
+
+Next: [Installation →](/docs/getting-started/installation)

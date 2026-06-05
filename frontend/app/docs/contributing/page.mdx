@@ -1,0 +1,72 @@
+---
+title: Contributing
+description: How to contribute to Upblit.
+---
+
+# Contributing to Upblit
+
+Upblit is open source. Contributions of all kinds are welcome — bug fixes, new features, documentation improvements, and SDK implementations.
+
+## Repository Structure
+
+```
+Upblit/
+├── backend/          ← Spring Boot API (Java 21)
+├── frontend/         ← Next.js dashboard (TypeScript)
+├── email/            ← Email microservice (Node.js)
+├── sdk/              ← SDK stubs (not yet implemented)
+├── UpblitCLI/        ← Upblit CLI (Go)
+└── docs/             ← This documentation site
+
+SDK/
+├── Express-sdk/      ← Express SDK (Node.js) — production
+├── Go-sdk/           ← Go SDK — production
+└── Python-sdk/       ← Python SDK — production
+```
+
+## Getting Started
+
+1. Fork the repository on GitHub
+2. Clone your fork locally
+3. Set up the development environment — see [Installation](/docs/getting-started/installation)
+4. Create a feature branch: `git checkout -b feat/your-feature`
+5. Make your changes
+6. Run tests and linting
+7. Push and open a pull request
+
+## Coding Standards
+
+Before contributing, read the relevant standards:
+
+- [Coding Guidelines](/docs/contributing/coding-guidelines) — language-specific conventions
+- [Architecture Rules](/docs/contributing/architecture-rules) — invariants you must not break
+
+## Areas That Need Help
+
+| Area | What's Needed |
+|---|---|
+| Java SDK | Full implementation in `Upblit/sdk/java-sdk/` |
+| React SDK | Full implementation in `Upblit/sdk/react-sdk/` |
+| npm SDK | Generic Node.js SDK in `Upblit/sdk/npm-sdk/` |
+| CLI commands | `upblit live`, `upblit deploy`, `upblit logs`, `upblit rollback` |
+| CI/CD pipeline | GitHub Actions workflows for build, test, deploy |
+| Docker Compose | Local full-stack development setup |
+| MongoDB indexes | Add indexes and TTL to telemetry collections |
+| RBAC | Admin/member roles within organizations |
+| Metrics SDK | Metrics emitter for all three SDKs |
+
+## Pull Request Guidelines
+
+- Keep PRs focused — one feature or fix per PR
+- Write a clear description of what changed and why
+- Reference any related issues
+- Ensure the build passes before requesting review
+- Do not force-push to shared branches
+
+## Reporting Bugs
+
+Open a GitHub issue with:
+- A clear title
+- Steps to reproduce
+- Expected vs. actual behavior
+- Environment details (OS, runtime version, SDK version)

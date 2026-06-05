@@ -1,0 +1,12 @@
+{
+  "index": "Overview",
+  "authentication": "Authentication",
+  "organizations": "Organizations",
+  "projects": "Projects",
+  "applications": "Applications",
+  "api-keys": "API Keys",
+  "telemetry": "Telemetry",
+  "ingest": "Ingest (SDK)",
+  "ai": "AI Gateway",
+  "users": "Users"
+}

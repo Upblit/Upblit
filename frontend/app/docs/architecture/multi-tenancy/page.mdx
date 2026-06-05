@@ -1,0 +1,77 @@
+---
+title: Multi-Tenancy
+description: How Upblit isolates data between organizations.
+---
+
+# Multi-Tenancy
+
+Upblit uses **shared database, shared schema** multi-tenancy. All organizations share the same PostgreSQL tables and MongoDB collections. Data isolation is enforced at the application layer.
+
+## Tenant Hierarchy
+
+```
+User (GitHub identity)
+└── Organization  ← top-level tenant
+    ├── Plan (billing tier)
+    ├── Invite (membership)
+    └── Project
+        └── Application
+            ├── API Key
+            └── Telemetry (Traces, Logs in MongoDB)
+```
+
+## Data Isolation
+
+### PostgreSQL
+
+Every query is scoped to the authenticated user's organizations:
+
+```java
+// Correct — scoped to user's orgs
+organizationRepository.findByUsersContaining(currentUser)
+
+// Wrong — returns all orgs (never do this)
+organizationRepository.findAll()
+```
+
+### MongoDB
+
+Every telemetry query includes `projectId` or `applicationId` as a filter:
+
+```java
+// Correct
+traceRepository.findByProjectId(projectId)
+
+// Wrong — returns all tenants' data
+traceRepository.findAll()
+```
+
+### API Key Scoping
+
+When the backend receives an ingest request:
+1. Validates `x-api-key` against `ApiClient` table
+2. Resolves `applicationId` from the key record
+3. Resolves `projectId` from the application record
+4. Stores telemetry with both IDs — ensuring it's always associated with the correct tenant
+
+## AI Gateway Tenancy
+
+AI tenants are also scoped to an organization:
+
+```
+Organization
+└── AI Tenant (organizationId field)
+    └── AI Document
+```
+
+All AI tenant queries must include the `organizationId` filter.
+
+## Current Model vs. Future Options
+
+| Model | When to Consider |
+|---|---|
+| Shared schema (current) | < 1,000 organizations, standard isolation |
+| Schema-per-tenant | > 1,000 organizations, compliance requirements |
+| Database-per-tenant | Enterprise customers requiring complete isolation |
+
+The current model is appropriate for the current scale. Do not migrate without an explicit product and engineering decision.

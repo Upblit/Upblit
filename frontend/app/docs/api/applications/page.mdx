@@ -1,0 +1,77 @@
+---
+title: Applications API
+description: Create and list applications via the Upblit API.
+---
+
+# Applications API
+
+## List Applications
+
+Returns all applications within a project.
+
+```http
+GET /applications?projectId={projectId}
+Authorization: Bearer {jwt}
+```
+
+**Query Parameters:**
+
+| Parameter | Required | Description |
+|---|---|---|
+| `projectId` | Yes | The project ID |
+
+**Response:** `200 OK`
+```json
+[
+  {
+    "id": 100,
+    "name": "checkout-api",
+    "description": "Handles payment processing",
+    "environment": "production",
+    "organizationId": 1,
+    "projectId": 10
+  }
+]
+```
+
+---
+
+## Create Application
+
+Creates a new application within a project.
+
+```http
+POST /applications
+Authorization: Bearer {jwt}
+Content-Type: application/json
+
+{
+  "name": "checkout-api",
+  "description": "Handles payment processing",
+  "environment": "production",
+  "organizationId": 1,
+  "projectId": 10
+}
+```
+
+**Request Body:**
+
+| Field | Required | Description |
+|---|---|---|
+| `name` | Yes | Application name |
+| `description` | No | Application description |
+| `environment` | Yes | `production`, `staging`, or `development` |
+| `organizationId` | Yes | Parent organization ID |
+| `projectId` | Yes | Parent project ID |
+
+**Response:** `200 OK`
+```json
+{
+  "id": 100,
+  "name": "checkout-api",
+  "description": "Handles payment processing",
+  "environment": "production",
+  "organizationId": 1,
+  "projectId": 10
+}
+```

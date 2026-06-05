@@ -1,0 +1,79 @@
+---
+title: API Reference Overview
+description: Upblit REST API reference.
+---
+
+# API Reference
+
+The Upblit backend exposes a REST API on port `8080`. All endpoints (except OAuth2 callbacks and SDK ingest) require a valid JWT.
+
+## Base URL
+
+```
+http://localhost:8080        # local development
+https://api.upblit.com       # production (when deployed)
+```
+
+## Authentication
+
+Most endpoints require a JWT Bearer token:
+
+```http
+Authorization: Bearer {your-jwt-token}
+```
+
+SDK ingest endpoints use an API key instead:
+
+```http
+x-api-key: {your-api-key}
+```
+
+See [Authentication](/docs/api/authentication) for details.
+
+## Endpoint Groups
+
+| Group | Base Path | Description |
+|---|---|---|
+| [Organizations](/docs/api/organizations) | `/org` | Create and list organizations |
+| [Projects](/docs/api/projects) | `/project` | Create and list projects |
+| [Applications](/docs/api/applications) | `/applications` | Create and list applications |
+| [API Keys](/docs/api/api-keys) | `/apikey` | Generate API keys |
+| [Telemetry](/docs/api/telemetry) | `/logs` | Query traces and logs |
+| [Ingest](/docs/api/ingest) | `/ingest` | SDK telemetry ingestion |
+| [AI Gateway](/docs/api/ai) | `/ai` | Tenants and documents |
+| [Users](/docs/api/users) | `/User` | User profile |
+
+## OpenAPI / Swagger
+
+An interactive API reference is available at the Swagger UI:
+
+```
+Upblit/swagger/swagger/
+```
+
+The OpenAPI spec is at `Upblit/swagger/swagger/public/swagger.json`.
+
+## Response Format
+
+All endpoints return JSON. Error responses include a message:
+
+```json
+{
+  "message": "Organization not found",
+  "status": 404
+}
+```
+
+## Pagination
+
+Some list endpoints support pagination via `page` and `size` query parameters. Paginated responses use the `PaginatedResponse<T>` wrapper:
+
+```json
+{
+  "content": [...],
+  "totalElements": 42,
+  "totalPages": 5,
+  "page": 0,
+  "size": 10
+}
+```

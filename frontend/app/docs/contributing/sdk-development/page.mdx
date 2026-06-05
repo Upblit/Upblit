@@ -1,0 +1,110 @@
+---
+title: SDK Development
+description: How to build and extend Upblit SDKs.
+---
+
+# SDK Development
+
+## Universal Behavioral Contract
+
+Every SDK must implement the same public API regardless of language. This ensures consistent behavior for users switching between languages.
+
+### Required Methods
+
+| Method | Description |
+|---|---|
+| `SDK(apiKey, options?)` | Constructor — initializes the SDK |
+| `middleware()` | Returns HTTP middleware that instruments all requests |
+| `service(name, fn)` | Wraps `fn` in a `service:{name}` span |
+| `controller(name, fn)` | Wraps `fn` in a `controller:{name}` span |
+| `call(name, fn)` | Wraps `fn` in an `external:{name}` span |
+| `log(level, message)` | Emits a structured log entry |
+| `flush()` | Manually flushes all buffered traces and logs |
+| `close()` | Stops background flusher and flushes remaining buffer |
+
+### Required Options
+
+| Option | Default | Description |
+|---|---|---|
+| `baseURL` | `https://ingest.upblit.com` | Ingest endpoint base URL |
+| `flushInterval` | `30` (seconds) | How often to auto-flush |
+
+---
+
+## Middleware Behavior
+
+The middleware must:
+
+1. Skip `GET /health` — do not trace health check requests
+2. Generate a `traceId` (UUID v4) and `rootSpanId` (UUID v4) per request
+3. Store both in async-local / thread-local / context storage
+4. On response finish: push the root span to the trace buffer with:
+   - `requestMethod`: `"controller:{HTTP_METHOD}"` (e.g., `"controller:POST"`)
+   - `requestURL`: the request path
+   - `responseStatus`: the HTTP status code
+   - `durationMs`: wall-clock time from request start to response finish
+   - `parentSpanId`: `null` (root span has no parent)
+
+---
+
+## Span Helper Behavior
+
+Each span helper must:
+
+1. Read the current `spanId` from context as `parentSpanId`
+2. Generate a new `spanId`
+3. Set the new `spanId` as current in context
+4. Execute `fn()`
+5. On completion (success or error): push span to buffer, restore `parentSpanId` as current
+6. On error: set `responseStatus = 500`
+
+---
+
+## Transport
+
+```
+POST {baseURL}/ingest/traces
+POST {baseURL}/ingest/logs
+Header: x-api-key: {apiKey}
+Header: Content-Type: application/json
+```
+
+Payload:
+```json
+{
+  "timestamp": "<ISO8601 flush time>",
+  "traces": [...]
+}
+```
+
+---
+
+## Testing Your SDK
+
+Every SDK should have tests covering:
+
+- [ ] Middleware creates root span with correct fields
+- [ ] `service()` / `call()` create child spans with correct `parentSpanId`
+- [ ] Context propagation works across async calls
+- [ ] On flush failure, batch is re-queued (not dropped)
+- [ ] `fatal` log level triggers immediate flush
+- [ ] `close()` flushes remaining buffer before stopping
+
+---
+
+## Ingest URL
+
+All SDKs must use `https://ingest.upblit.com` as the default base URL.
+
+> **Current inconsistency**: The Go SDK uses `ingest.upblit.com` and the Python SDK uses `ingest.upblit.dev`. Both need to be aligned to `ingest.upblit.com`.
+
+---
+
+## Adding a New SDK
+
+1. Create the directory: `Upblit/sdk/<language>-sdk/`
+2. Implement the universal behavioral contract
+3. Write tests
+4. Write a README with installation, quickstart, and API reference
+5. Publish to the appropriate package registry
+6. Add a documentation page at `docs/src/app/docs/sdks/<language>/page.mdx`

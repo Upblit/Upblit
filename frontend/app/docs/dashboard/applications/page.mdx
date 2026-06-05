@@ -1,0 +1,50 @@
+---
+title: Applications
+description: Create and manage applications within a project.
+---
+
+# Applications
+
+An **application** is a single deployable service or app within a project. Each application:
+- Has its own environment label (`production`, `staging`, `development`)
+- Gets its own API key for SDK authentication
+- Has its own telemetry stream (traces and logs)
+
+## Viewing Applications
+
+Navigate to `/dashboard/orgs/[orgId]/projects/[projectId]/apps` to see all applications in a project.
+
+Each application card shows:
+- Name and description
+- Environment badge (color-coded)
+- **Generate API Key** button
+
+## Environment Badge Colors
+
+| Environment | Color |
+|---|---|
+| `production` | Red |
+| `staging` | Yellow / Amber |
+| `development` | Green |
+| Unknown | Grey |
+
+## Creating an Application
+
+1. Click **New Application** on the apps page
+2. Fill in:
+   - **Name** (required)
+   - **Description** (optional)
+   - **Environment**: `production`, `staging`, or `development`
+3. Click **Create**
+
+## Generating an API Key
+
+1. Click **Generate API Key** on an application card
+2. The key is displayed in a modal — **copy it immediately**
+3. The key is shown only once and is never stored in the dashboard after you close the modal
+
+Use the key in your SDK configuration:
+
+```env
+UPBLIT_API_KEY=upblit_live_xxxxxxxxxxxx
+```

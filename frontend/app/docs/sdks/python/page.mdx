@@ -1,0 +1,107 @@
+---
+title: Python SDK
+description: Instrument your Python application with Upblit.
+---
+
+# Python SDK
+
+The Upblit Python SDK instruments your Python ASGI/WSGI application with distributed tracing and structured logging.
+
+## Installation
+
+```bash
+pip install upblit
+```
+
+## Basic Setup (FastAPI)
+
+```python
+import os
+import upblit
+from fastapi import FastAPI
+
+upblit.init(os.environ["UPBLIT_API_KEY"])
+
+app = FastAPI()
+app.add_middleware(upblit.Middleware)
+
+@app.get("/users/{user_id}")
+async def get_user(user_id: str):
+    return await fetch_user(user_id)
+```
+
+## Basic Setup (Flask / WSGI)
+
+```python
+import os
+import upblit
+from flask import Flask
+
+upblit.init(os.environ["UPBLIT_API_KEY"])
+
+app = Flask(__name__)
+# WSGI middleware wrapping
+app.wsgi_app = upblit.WSGIMiddleware(app.wsgi_app)
+```
+
+## Span Helpers (Async)
+
+```python
+import upblit
+
+async def get_user(user_id: str):
+    return await upblit.service("getUserById", lambda: db.find_user(user_id))
+
+async def charge_card(amount: int):
+    return await upblit.call("stripe", lambda: stripe.charge(amount))
+```
+
+## Span Helpers (Instance)
+
+```python
+sdk = upblit.SDK(api_key)
+
+async def get_user(user_id: str):
+    return await sdk.service("getUserById", lambda: db.find_user(user_id))
+```
+
+## Logging
+
+```python
+import upblit
+
+upblit.log("User signed in")                    # level defaults to "info"
+upblit.log("warn", "Rate limit approaching")
+upblit.log("error", "Payment failed")
+upblit.log("fatal", "Database connection lost") # flushed immediately
+```
+
+## Manual Flush
+
+```python
+upblit.flush()  # flush all buffered traces and logs
+```
+
+## Graceful Shutdown
+
+```python
+upblit.close()  # stops background thread and flushes remaining buffer
+```
+
+## Configuration
+
+```python
+sdk = upblit.SDK(
+    api_key=os.environ["UPBLIT_API_KEY"],
+    base_url="https://ingest.upblit.com",  # default
+    flush_interval=30.0,                    # seconds, default
+)
+```
+
+## Thread Safety
+
+All buffer operations use `threading.RLock`. The SDK is safe to use from multiple threads.
+
+## Async Support
+
+Span helpers (`service`, `call`, `controller`) are `async` functions and work with `asyncio`. They also accept sync callables and wrap them automatically.

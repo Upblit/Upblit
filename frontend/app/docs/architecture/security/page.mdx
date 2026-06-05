@@ -1,0 +1,87 @@
+---
+title: Security Model
+description: How Upblit handles authentication, authorization, and secrets.
+---
+
+# Security Model
+
+## Authentication
+
+Upblit uses **GitHub OAuth 2.0** as the sole authentication provider. There are no username/password accounts.
+
+### Flow
+
+```
+Browser → GET /oauth2/authorization/github
+       → GitHub login + authorization
+       → Backend callback: CustomOAuth2UserService
+           creates/updates User in PostgreSQL
+       → OAuth2SuccessHandler issues JWT + refresh token
+       → Frontend stores JWT in localStorage["token"]
+       → All API calls: Authorization: Bearer {jwt}
+```
+
+### Components
+
+| Component | File | Responsibility |
+|---|---|---|
+| `SecurityConfig` | `security/SecurityConfig.java` | Spring Security filter chain, CORS, permit rules |
+| `JWTAuthenticationFilter` | `security/JWT/JWTAuthenticationFilter.java` | Validates JWT on every request |
+| `JWTService` | `security/JWT/JWTService.java` | Issues and validates JWT tokens |
+| `CustomOAuth2UserService` | `security/OAuth/CustomOAuth2UserService.java` | Creates/updates User after GitHub OAuth |
+| `OAuth2SuccessHandler` | `security/OAuth/OAuth2SuccessHandler.java` | Issues JWT after successful OAuth |
+| `RefreshService` | `security/RefreshToken/RefreshService.java` | Manages refresh token lifecycle |
+
+---
+
+## API Key Authentication
+
+SDK ingest endpoints use API keys instead of JWT.
+
+- Keys are generated per application via `POST /apikey?ApplicationId={id}`
+- Keys are validated against the `ApiClient` table in PostgreSQL
+- The backend resolves `applicationId` and `projectId` from the key on every ingest request
+- Keys are scoped to one application — they cannot be reused across applications
+
+---
+
+## Authorization
+
+All resource endpoints verify that the authenticated user has access to the requested resource before returning data. The `ProjectAccessService` handles project-level access checks for telemetry queries.
+
+---
+
+## Secrets Management
+
+All secrets are injected via environment variables — never hardcoded in source:
+
+| Secret | Environment Variable |
+|---|---|
+| JWT signing key | `JWT_SECRET` (min 256-bit) |
+| GitHub OAuth client secret | `GITHUB_CLIENT_SECRET` |
+| PostgreSQL password | `POSTGRES_PASSWORD` |
+| MongoDB URI (contains credentials) | `MONGODB_URI` |
+| Supabase service role key | `SUPABASE_API_KEY` |
+| Email service secret | `EMAIL_SECRET` |
+
+The `Upblit/backend/.env` file is gitignored and must never be committed.
+
+---
+
+## Transport Security
+
+- All production traffic must use HTTPS
+- CORS is configured to allow only the `FRONTEND_URI` origin
+- The backend sets appropriate security headers in production
+
+---
+
+## Known Security Gaps
+
+| Gap | Risk | Priority |
+|---|---|---|
+| No explicit RBAC roles (admin/member) | Any org member can perform admin actions | Critical |
+| API key storage format unverified | If stored in plaintext, a DB breach exposes all keys | High |
+| No rate limiting on ingest endpoints | Storage abuse possible | High |
+| No rate limiting on auth endpoints | Brute-force possible | High |
+| Client-side file validation only | Malicious files could bypass size/type limits | Medium |

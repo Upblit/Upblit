@@ -1,0 +1,47 @@
+---
+title: Authentication
+description: How authentication works in Upblit.
+---
+
+# Authentication
+
+Upblit uses **GitHub OAuth 2.0** for authentication. There are no usernames or passwords — your GitHub account is your identity.
+
+## How It Works
+
+```
+Browser → Dashboard → GET /oauth2/authorization/github
+       → GitHub login page
+       → User authorizes Upblit
+       → GitHub redirects to backend callback
+       → Backend creates/updates your user record
+       → Backend issues a JWT access token
+       → Dashboard stores JWT in localStorage
+       → All API calls use: Authorization: Bearer {token}
+```
+
+## JWT Tokens
+
+After OAuth, the backend issues a short-lived **JWT access token** and a **refresh token**.
+
+- The JWT is stored in `localStorage` under the key `"token"`
+- All dashboard API calls attach it as `Authorization: Bearer {token}`
+- If the token expires, the dashboard automatically redirects to `/login?reason=session_expired`
+
+## API Key Authentication (SDKs)
+
+SDKs do **not** use JWT. They use an **API key** scoped to a specific application.
+
+```
+SDK → POST /ingest/traces
+    → Header: x-api-key: <your-api-key>
+```
+
+API keys are generated per application from the dashboard. They are shown only once — store them securely.
+
+## Security Notes
+
+- API keys are scoped to a single application — they cannot be used across applications
+- Never commit API keys to source control
+- If a key is compromised, generate a new one from the dashboard (revocation endpoint coming soon)
+- The JWT is stored in `localStorage` — this is the standard SPA pattern and is acceptable when combined with HTTPS and proper CORS configuration

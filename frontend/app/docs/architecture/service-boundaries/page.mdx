@@ -1,0 +1,63 @@
+---
+title: Service Boundaries
+description: What each service owns and what it must not do.
+---
+
+# Service Boundaries
+
+Each service in Upblit has a clear ownership boundary. Crossing these boundaries creates hidden coupling and makes the system harder to change.
+
+## Backend API
+
+**Owns:** All business logic, authentication, telemetry ingest/query, AI Gateway, email coordination, file storage coordination.
+
+**Must not:**
+- Store files on local disk (use Supabase)
+- Send emails directly (delegate to the email service)
+- Expose raw stack traces in API responses
+
+## Frontend
+
+**Owns:** All user-facing UI, dashboard, authentication flow, client-side state.
+
+**Must not:**
+- Call `fetch()` directly in components — use `src/lib/api.ts`
+- Store API keys in `localStorage` or `sessionStorage`
+- Implement business logic (delegate to backend)
+
+## Email Service
+
+**Owns:** Email template rendering, delivery via Resend, webhook handling via Svix.
+
+**Must not:**
+- Access the database directly
+- Handle user authentication
+
+## SDKs (Express / Go / Python)
+
+**Owns:** HTTP request instrumentation, trace/log buffering and flushing, span context propagation.
+
+**Must not:**
+- Access the database directly
+- Modify the HTTP request or response beyond trace context
+- Throw errors that crash the instrumented application
+- Read environment variables (accept config via constructor)
+
+## Upblit CLI
+
+**Owns:** Git-based deployment workflow automation.
+
+**Must not:**
+- Store credentials
+- Require external dependencies beyond Go stdlib
+
+## Boundary Violations to Watch For
+
+| Violation | Risk |
+|---|---|
+| Component calling `fetch()` directly | Inconsistent auth, hard to maintain |
+| Backend module importing another module's internals | Breaks Spring Modulith enforcement |
+| SDK reading environment variables | Breaks the constructor-parameter contract |
+| Email service accessing PostgreSQL | Creates hidden coupling |
+| Frontend storing API keys in localStorage | Security risk |
+| Backend writing files to local disk | Files lost on container restart |

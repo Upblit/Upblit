@@ -1,0 +1,106 @@
+---
+title: Go SDK
+description: Instrument your Go HTTP application with Upblit.
+---
+
+# Go SDK
+
+The Upblit Go SDK instruments your Go HTTP server with distributed tracing and structured logging.
+
+## Installation
+
+```bash
+go get github.com/upblit/go-sdk
+```
+
+## Basic Setup
+
+```go
+package main
+
+import (
+    "net/http"
+    "os"
+
+    upblit "github.com/upblit/go-sdk"
+)
+
+func main() {
+    sdk := upblit.New(os.Getenv("UPBLIT_API_KEY"))
+    defer sdk.Close()
+
+    mux := http.NewServeMux()
+    mux.HandleFunc("/users/", handleGetUser)
+
+    // Wrap your handler with the middleware
+    http.ListenAndServe(":8080", sdk.Middleware()(mux))
+}
+```
+
+## Options
+
+```go
+sdk := upblit.New(
+    os.Getenv("UPBLIT_API_KEY"),
+    upblit.WithBaseURL("https://ingest.upblit.com"),   // default
+    upblit.WithFlushInterval(30 * time.Second),         // default
+    upblit.WithHTTPClient(customHTTPClient),            // optional
+)
+```
+
+## Span Helpers
+
+```go
+import (
+    "context"
+    upblit "github.com/upblit/go-sdk"
+)
+
+// Service span
+func getUser(ctx context.Context, id string) (*User, error) {
+    result, err := sdk.Service(ctx, "getUserById", func() (any, error) {
+        return db.FindUser(ctx, id)
+    })
+    return result.(*User), err
+}
+
+// External call span
+func chargeCard(ctx context.Context, amount int) error {
+    _, err := sdk.Call(ctx, "stripe", func() (any, error) {
+        return nil, stripe.Charge(ctx, amount)
+    })
+    return err
+}
+```
+
+## Logging
+
+```go
+sdk.Log("info", "User signed in")
+sdk.Log("error", "Payment failed")
+sdk.Log("fatal", "Database connection lost") // flushed immediately
+```
+
+## Manual Flush
+
+```go
+// Flush all buffered traces and logs
+if err := sdk.Flush(ctx); err != nil {
+    log.Printf("flush error: %v", err)
+}
+```
+
+## Graceful Shutdown
+
+```go
+sdk := upblit.New(apiKey)
+defer sdk.Close() // stops background flusher and flushes remaining buffer
+```
+
+## Thread Safety
+
+All buffer operations are protected by a `sync.Mutex`. The SDK is safe to use from multiple goroutines.
+
+## Context Propagation
+
+The Go SDK uses `context.Context` for trace propagation. Pass the context through your call chain and the SDK will automatically link child spans to the correct parent.

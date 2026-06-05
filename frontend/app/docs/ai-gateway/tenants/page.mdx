@@ -1,0 +1,52 @@
+---
+title: Tenants
+description: Create and manage AI tenants in Upblit.
+---
+
+# AI Tenants
+
+An **AI tenant** is a named knowledge-base context linked to an organization. You can create multiple tenants per organization to separate knowledge bases by product, team, or use case.
+
+## Creating a Tenant
+
+### Via Dashboard
+
+1. Go to `/dashboard/ai-gateway`
+2. Fill in the **Create Tenant** form:
+   - **Name** — a label for this tenant (e.g., `"Product Docs"`, `"Support KB"`)
+   - **Organization** — select the organization this tenant belongs to
+3. Click **Create**
+
+The tenant appears in the list immediately.
+
+### Via API
+
+```http
+POST /ai/tenant
+Authorization: Bearer {jwt}
+Content-Type: application/json
+
+{
+  "name": "Product Docs",
+  "organizationId": 42
+}
+```
+
+**Response:**
+```json
+{
+  "id": "64f1a2b3c4d5e6f7a8b9c0d1",
+  "name": "Product Docs",
+  "organizationId": 42
+}
+```
+
+## Listing Tenants
+
+Tenants are listed on the AI Gateway page. Each tenant shows its name and the number of documents uploaded.
+
+> **Note**: A `GET /ai/tenant?organizationId={id}` endpoint is planned but not yet implemented. The dashboard currently shows tenants from local state after creation.
+
+## Tenant Isolation
+
+Each tenant is scoped to one organization. Users can only access tenants belonging to organizations they are members of.

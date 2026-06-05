@@ -1,0 +1,60 @@
+---
+title: Distributed Traces
+description: Understanding distributed traces in Upblit.
+---
+
+# Distributed Traces
+
+A **trace** represents the full journey of a single request through your system. Upblit automatically builds traces from spans emitted by your SDK-instrumented applications.
+
+## Trace Structure
+
+```
+Trace (traceId: "550e8400-...")
+├── Root Span (parentSpanId: null)
+│   requestMethod: "controller:POST"
+│   requestURL: "/api/checkout"
+│   responseStatus: 200
+│   durationMs: 145
+│
+├── Service Span (parentSpanId: rootSpanId)
+│   requestMethod: "service:validateCart"
+│   durationMs: 12
+│
+└── External Span (parentSpanId: serviceSpanId)
+    requestMethod: "external:stripe"
+    durationMs: 89
+```
+
+## Span Fields
+
+| Field | Type | Description |
+|---|---|---|
+| `traceId` | UUID string | Shared across all spans in one request |
+| `spanId` | UUID string | Unique per span |
+| `parentSpanId` | UUID string or null | Links to parent span; null for root |
+| `requestMethod` | string | `type:name` format |
+| `requestURL` | string | HTTP path or empty for internal spans |
+| `responseStatus` | number | HTTP status code |
+| `durationMs` | number | Wall-clock duration in milliseconds |
+| `timestamp` | ISO8601 | When the span was recorded |
+
+## Span Method Prefixes
+
+| Prefix | Created By | Example |
+|---|---|---|
+| `controller:` | Middleware (automatic) | `controller:POST` |
+| `service:` | `sdk.service(name, fn)` | `service:getUserById` |
+| `external:` | `sdk.call(name, fn)` | `external:stripe` |
+
+## Viewing Traces in the Dashboard
+
+Go to your project's Observability page and click the **Traces** tab. Each row represents one trace. Click a row to expand it and see all spans.
+
+## Filtering
+
+Use the **Application** dropdown to filter traces by a specific application within the project.
+
+## Trace Retention
+
+Traces are stored in MongoDB. There is currently no TTL (time-to-live) configured — all traces are retained indefinitely. A 90-day retention policy is planned.

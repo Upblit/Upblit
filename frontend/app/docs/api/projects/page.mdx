@@ -1,0 +1,61 @@
+---
+title: Projects API
+description: Create and list projects via the Upblit API.
+---
+
+# Projects API
+
+## List Projects
+
+Returns all projects within an organization.
+
+```http
+GET /project?OrganizationId={organizationId}
+Authorization: Bearer {jwt}
+```
+
+**Query Parameters:**
+
+| Parameter | Required | Description |
+|---|---|---|
+| `OrganizationId` | Yes | The organization ID |
+
+**Response:** `200 OK`
+```json
+[
+  {
+    "id": 10,
+    "name": "checkout-platform"
+  }
+]
+```
+
+---
+
+## Create Project
+
+Creates a new project within an organization.
+
+```http
+POST /project?OrganizationId={organizationId}
+Authorization: Bearer {jwt}
+Content-Type: application/json
+
+"checkout-platform"
+```
+
+> **Note:** The request body is a raw JSON string (not an object). This is the existing API contract.
+
+**Query Parameters:**
+
+| Parameter | Required | Description |
+|---|---|---|
+| `OrganizationId` | Yes | The organization ID |
+
+**Response:** `200 OK`
+```json
+{
+  "id": 10,
+  "name": "checkout-platform"
+}
+```

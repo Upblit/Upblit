@@ -1,0 +1,105 @@
+---
+title: Telemetry Flow
+description: How telemetry data moves from your app to the Upblit dashboard.
+---
+
+# Telemetry Flow
+
+This page explains the complete path telemetry data takes from your instrumented application to the Upblit dashboard.
+
+## End-to-End Flow
+
+```
+Your App
+  │
+  ├── HTTP request arrives
+  │     SDK Middleware creates traceId + rootSpanId
+  │     Stores in AsyncLocal / context.Context / threading.local
+  │
+  ├── App code runs
+  │     sdk.service() / sdk.call() create child spans
+  │     sdk.log() creates log entries
+  │
+  ├── Response sent
+  │     Root span pushed to trace buffer
+  │
+  └── Every 30 seconds (flush interval)
+        SDK flushes trace buffer → POST /ingest/traces
+        SDK flushes log buffer  → POST /ingest/logs
+              │
+              ├── Backend validates x-api-key header
+              ├── Resolves applicationId + projectId from API key
+              └── Stores in MongoDB (traces + logs collections)
+
+Dashboard
+  └── GET /logs/project?id={projectId}
+        MongoDB query: { projectId: projectId }
+        Returns: Trace[]
+```
+
+## Ingest Payload Format
+
+### Traces
+
+```json
+{
+  "timestamp": "2026-05-27T10:00:00.000Z",
+  "traces": [
+    {
+      "timestamp": "2026-05-27T10:00:00.123Z",
+      "requestMethod": "controller:POST",
+      "requestURL": "/api/checkout",
+      "responseStatus": 200,
+      "traceId": "550e8400-e29b-41d4-a716-446655440000",
+      "spanId": "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+      "parentSpanId": null,
+      "durationMs": 145
+    }
+  ]
+}
+```
+
+### Logs
+
+```json
+{
+  "timestamp": "2026-05-27T10:00:00.000Z",
+  "logs": [
+    {
+      "traceId": "550e8400-e29b-41d4-a716-446655440000",
+      "level": "error",
+      "type": "app",
+      "message": "Payment processing failed: timeout",
+      "timestamp": "2026-05-27T10:00:00.456Z",
+      "clientTimestamp": "2026-05-27T10:00:00.450Z"
+    }
+  ]
+}
+```
+
+## Buffer Behavior
+
+```
+SDK initialized
+  │
+  └── Background flush thread/goroutine starts (interval: 30s)
+        │
+        ├── Timer fires → flush()
+        │     ├── FlushTraces: drain buffer → POST /ingest/traces
+        │     │     ├── Success: buffer cleared
+        │     │     └── Failure: batch re-queued at front of buffer
+        │     └── FlushLogs: drain buffer → POST /ingest/logs
+        │           ├── Success: buffer cleared
+        │           └── Failure: batch re-queued at front of buffer
+        │
+        └── sdk.close() called
+              Flush remaining buffer, stop thread
+```
+
+## Authentication
+
+The ingest endpoint authenticates via the `x-api-key` header. The backend:
+1. Validates the key against the `ApiClient` table in PostgreSQL
+2. Resolves `applicationId` from the key record
+3. Resolves `projectId` from the application record
+4. Stores telemetry with both IDs in MongoDB

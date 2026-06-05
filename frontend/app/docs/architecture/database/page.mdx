@@ -1,0 +1,84 @@
+---
+title: Database Architecture
+description: How Upblit uses PostgreSQL, MongoDB, and Supabase.
+---
+
+# Database Architecture
+
+Upblit uses three storage systems, each chosen for a specific purpose.
+
+## PostgreSQL — Identity and Structure
+
+Managed by Spring JPA with `ddl-auto=update`. Stores all relational, transactional data.
+
+### Entity Relationships
+
+```
+User ──────────────── Organization ──── Project ──── Application ──── ApiClient
+                           │
+                           ├── Invite
+                           └── Plan
+
+User ──── RefreshToken
+```
+
+### Tables
+
+| Table | Description |
+|---|---|
+| `user` | GitHub-authenticated users |
+| `organization` | Top-level tenant containers |
+| `project` | Project groupings within an org |
+| `application` | Individual services within a project |
+| `api_client` | API keys scoped to applications |
+| `invite` | Pending org membership invitations |
+| `plan` | Billing/feature tiers |
+| `refresh_token` | JWT refresh tokens |
+
+### Connection
+
+Configured via `POSTGRES_URL`, `POSTGRES_USERNAME`, `POSTGRES_PASSWORD` environment variables. Connection pooling via HikariCP.
+
+---
+
+## MongoDB Atlas — Telemetry and AI Content
+
+Managed by Spring Data MongoDB. Stores high-volume, schema-flexible data.
+
+### Collections
+
+| Collection | Description |
+|---|---|
+| `traces` | Distributed trace spans from SDKs |
+| `logs` | Structured log entries from SDKs |
+| `metrics` | Application metrics (SDK emitter not yet built) |
+| `tenants` | AI Gateway tenants |
+| `docs` | AI document metadata |
+
+### Connection
+
+Configured via `MONGODB_URI` environment variable (MongoDB Atlas connection string).
+
+---
+
+## Supabase — File Storage
+
+Used for binary file storage. The backend stores the Supabase CDN URL in the database.
+
+| Content | Stored In |
+|---|---|
+| Organization logos | `Organization.logoUrl` (PostgreSQL) |
+| AI documents | `Doc.supabaseUrl` (MongoDB) |
+
+Files are served directly from Supabase's CDN — not proxied through the backend.
+
+---
+
+## Design Decisions
+
+| Decision | Rationale |
+|---|---|
+| PostgreSQL for identity | Relational integrity for user-org-project-app hierarchy; ACID transactions for API key generation |
+| MongoDB for telemetry | High write throughput; flexible schema for span data; no joins needed for trace queries |
+| Supabase for files | Managed object storage with CDN; avoids local disk dependency in containers |
+| `ddl-auto=update` | Acceptable for development; should switch to `validate` + Flyway before production scale |

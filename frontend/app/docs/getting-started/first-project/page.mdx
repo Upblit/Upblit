@@ -1,0 +1,89 @@
+---
+title: Your First Project
+description: Walk through creating your first organization, project, and application.
+---
+
+# Your First Project
+
+This guide walks through the full hierarchy: **Organization → Project → Application → API Key → Telemetry**.
+
+## The Hierarchy
+
+```
+Organization (e.g., "Acme Corp")
+└── Project (e.g., "E-commerce Platform")
+    └── Application (e.g., "checkout-api")
+        └── API Key → used by SDK to send telemetry
+```
+
+## 1. Create an Organization
+
+An organization is your top-level workspace. It can contain multiple projects and multiple team members.
+
+1. Go to `/dashboard/orgs`
+2. Click **New Organization**
+3. Fill in name, description, and optionally upload a logo
+4. Click **Create**
+
+## 2. Create a Project
+
+A project groups related applications. Think of it as a product or service boundary.
+
+1. Click your organization to enter it
+2. Click **New Project**
+3. Enter a name (e.g., `checkout-platform`)
+4. Click **Create**
+
+## 3. Create an Application
+
+An application is a single deployable service. Each application gets its own API key.
+
+1. Click your project
+2. Click **New Application**
+3. Enter:
+   - **Name**: e.g., `checkout-api`
+   - **Description**: e.g., `Handles payment processing`
+   - **Environment**: `production`, `staging`, or `development`
+4. Click **Create**
+
+## 4. Generate an API Key
+
+1. On the application card, click **Generate API Key**
+2. Copy the key immediately — it is shown only once
+3. Store it in your application's environment variables:
+
+```env
+UPBLIT_API_KEY=upblit_live_xxxxxxxxxxxx
+```
+
+## 5. Instrument Your Application
+
+Add the SDK to your application and pass the API key:
+
+```javascript
+// Express.js
+const upblit = require('upblit-express')
+app.use(upblit(process.env.UPBLIT_API_KEY))
+```
+
+```go
+// Go
+sdk := upblit.New(os.Getenv("UPBLIT_API_KEY"))
+defer sdk.Close()
+```
+
+```python
+# Python / FastAPI
+import upblit, os
+upblit.init(os.environ["UPBLIT_API_KEY"])
+```
+
+## 6. View Telemetry
+
+Send a few HTTP requests to your instrumented app. Within 30 seconds (the default flush interval), traces will appear in:
+
+`Dashboard → Your Org → Your Project → Observability`
+
+You'll see:
+- **Traces** — distributed trace spans with timing and status
+- **Logs** — structured log entries correlated to traces

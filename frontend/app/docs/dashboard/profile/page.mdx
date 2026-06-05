@@ -1,0 +1,30 @@
+---
+title: Profile
+description: View your user profile in Upblit.
+---
+
+# Profile
+
+The Profile page shows your account information fetched from the Upblit backend.
+
+Navigate to: `/dashboard/profile`
+
+## What's Shown
+
+| Field | Description |
+|---|---|
+| Avatar | Your GitHub profile picture |
+| Username | Your GitHub username |
+| Email | Your GitHub email address |
+| GitHub ID | Your GitHub user ID |
+| Last Login | When you last authenticated |
+
+## Logging Out
+
+Click your avatar in the top-right header to open the user menu, then click **Logout**. This:
+1. Removes the JWT from `localStorage`
+2. Redirects you to the homepage (`/`)
+
+## Editing Your Profile
+
+Profile information is read-only in the dashboard — it reflects your GitHub account. To update your name, email, or avatar, update them on GitHub and log in again.

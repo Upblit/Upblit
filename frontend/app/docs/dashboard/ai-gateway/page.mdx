@@ -1,0 +1,47 @@
+---
+title: AI Gateway
+description: Manage AI tenants and upload knowledge-base documents.
+---
+
+# AI Gateway
+
+The AI Gateway lets you create AI tenants scoped to your organization and upload knowledge-base documents for each tenant.
+
+Navigate to: `/dashboard/ai-gateway`
+
+## Tenants
+
+An **AI tenant** is a named knowledge-base context linked to an organization. You can have multiple tenants per organization (e.g., one per product, one per team).
+
+### Creating a Tenant
+
+1. Go to `/dashboard/ai-gateway`
+2. Fill in the **Create Tenant** form:
+   - **Name** — a label for this tenant
+   - **Organization** — select the org this tenant belongs to
+3. Click **Create**
+
+The tenant appears in the tenant list immediately.
+
+## Documents
+
+Each tenant can have multiple documents uploaded as its knowledge base.
+
+### Uploading a Document
+
+1. Select a tenant from the list
+2. Click **Upload Document** or drag a file into the upload area
+3. Supported formats: PDF, DOCX, TXT, and other text-based formats
+4. Maximum file size: 10 MB
+
+An animated progress bar shows upload progress. A success or error toast appears on completion.
+
+### How Documents Are Stored
+
+Documents are stored in **Supabase object storage**. The backend stores the file metadata (name, URL, upload time) in MongoDB. The actual file content is served via Supabase's CDN.
+
+## Use Cases
+
+- Upload product documentation for an AI assistant
+- Upload API specs for a code-generation agent
+- Upload internal runbooks for an ops assistant

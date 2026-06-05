@@ -1,0 +1,42 @@
+---
+title: AI Gateway Overview
+description: Manage AI tenants and knowledge-base documents in Upblit.
+---
+
+# AI Gateway
+
+The Upblit AI Gateway lets you create isolated AI knowledge-base contexts (tenants) per organization and upload documents that AI agents can use as a knowledge source.
+
+## Concepts
+
+| Term | Description |
+|---|---|
+| **Tenant** | A named AI context scoped to an organization. Think of it as a knowledge-base namespace. |
+| **Document** | A file uploaded to a tenant. Used as a knowledge source for AI queries. |
+
+## Hierarchy
+
+```
+Organization
+└── AI Tenant (e.g., "Product Docs")
+    ├── Document: api-reference.pdf
+    ├── Document: onboarding-guide.docx
+    └── Document: runbook.md
+```
+
+## Use Cases
+
+- Upload product documentation for an AI assistant
+- Upload API specs for a code-generation agent
+- Upload internal runbooks for an ops assistant
+- Separate knowledge bases per product or team within one organization
+
+## Getting Started
+
+1. Go to `/dashboard/ai-gateway`
+2. [Create a tenant](/docs/ai-gateway/tenants) linked to your organization
+3. [Upload documents](/docs/ai-gateway/documents) to the tenant
+
+## Storage
+
+Documents are stored in **Supabase object storage**. The backend stores file metadata (name, URL, upload time) in MongoDB. File content is served via Supabase's CDN — the backend does not proxy file downloads.

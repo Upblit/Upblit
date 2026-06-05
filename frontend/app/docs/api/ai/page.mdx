@@ -1,0 +1,74 @@
+---
+title: AI Gateway API
+description: Create AI tenants and upload documents via the Upblit API.
+---
+
+# AI Gateway API
+
+## Create Tenant
+
+Creates a new AI tenant scoped to an organization.
+
+```http
+POST /ai/tenant
+Authorization: Bearer {jwt}
+Content-Type: application/json
+
+{
+  "name": "Product Docs",
+  "organizationId": 1
+}
+```
+
+**Request Body:**
+
+| Field | Required | Description |
+|---|---|---|
+| `name` | Yes | Tenant name |
+| `organizationId` | Yes | Organization this tenant belongs to |
+
+**Response:** `200 OK`
+```json
+{
+  "id": "64f1a2b3c4d5e6f7a8b9c0d3",
+  "name": "Product Docs",
+  "organizationId": 1
+}
+```
+
+---
+
+## Upload Document
+
+Uploads a document to an AI tenant.
+
+```http
+POST /ai/docs?TenantId={tenantId}
+Authorization: Bearer {jwt}
+Content-Type: multipart/form-data
+
+file: <your-document>
+```
+
+**Query Parameters:**
+
+| Parameter | Required | Description |
+|---|---|---|
+| `TenantId` | Yes | The tenant ID to upload to |
+
+**Response:** `200 OK`
+
+**Notes:**
+- Maximum file size: 10 MB
+- Files are stored in Supabase object storage
+- Supported formats: PDF, DOCX, TXT, MD, and other text-based formats
+
+---
+
+## Planned Endpoints
+
+| Endpoint | Description | Status |
+|---|---|---|
+| `GET /ai/tenant?organizationId={id}` | List tenants for an org | Planned |
+| `GET /ai/docs?TenantId={id}` | List documents for a tenant | Planned |
+| `DELETE /ai/docs/{docId}` | Delete a document | Planned |

@@ -1,0 +1,80 @@
+---
+title: Ingest API (SDK)
+description: SDK telemetry ingestion endpoints.
+---
+
+# Ingest API
+
+These endpoints are called by Upblit SDKs to send telemetry data. They authenticate via API key, not JWT.
+
+## Ingest Traces
+
+Sends a batch of distributed trace spans.
+
+```http
+POST /ingest/traces
+x-api-key: {your-api-key}
+Content-Type: application/json
+
+{
+  "timestamp": "2026-05-27T10:00:00.000Z",
+  "traces": [
+    {
+      "timestamp": "2026-05-27T10:00:00.123Z",
+      "requestMethod": "controller:POST",
+      "requestURL": "/api/checkout",
+      "responseStatus": 200,
+      "traceId": "550e8400-e29b-41d4-a716-446655440000",
+      "spanId": "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+      "parentSpanId": null,
+      "durationMs": 145
+    }
+  ]
+}
+```
+
+**Headers:**
+
+| Header | Required | Description |
+|---|---|---|
+| `x-api-key` | Yes | Application API key |
+| `Content-Type` | Yes | Must be `application/json` |
+
+**Response:** `200 OK`
+
+---
+
+## Ingest Logs
+
+Sends a batch of structured log entries.
+
+```http
+POST /ingest/logs
+x-api-key: {your-api-key}
+Content-Type: application/json
+
+{
+  "timestamp": "2026-05-27T10:00:00.000Z",
+  "logs": [
+    {
+      "traceId": "550e8400-e29b-41d4-a716-446655440000",
+      "level": "error",
+      "type": "app",
+      "message": "Payment processing failed: timeout",
+      "timestamp": "2026-05-27T10:00:00.456Z",
+      "clientTimestamp": "2026-05-27T10:00:00.450Z"
+    }
+  ]
+}
+```
+
+**Response:** `200 OK`
+
+---
+
+## Notes
+
+- The `timestamp` at the envelope level is the flush time (when the SDK sent the batch)
+- Individual span/log `timestamp` fields are the actual event times
+- The backend resolves `applicationId` and `projectId` from the API key automatically
+- You do not need to include `applicationId` or `projectId` in the payload

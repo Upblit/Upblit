@@ -1,0 +1,38 @@
+---
+title: Organizations
+description: Create and manage organizations in Upblit.
+---
+
+# Organizations
+
+An **organization** is the top-level container in Upblit. It groups projects, team members, and billing under one roof.
+
+## Viewing Organizations
+
+Navigate to `/dashboard/orgs` to see all organizations you belong to. Each organization card shows:
+- Organization logo
+- Name and description
+- Member count
+
+## Creating an Organization
+
+1. Click **New Organization** on the orgs page
+2. Fill in:
+   - **Name** (required)
+   - **Description** (optional)
+   - **Logo** (optional — image file, max 5 MB)
+3. Click **Create**
+
+The organization is created immediately and appears in your list.
+
+## Organization Logos
+
+Logos are stored in Supabase object storage. Supported formats: JPEG, PNG, WebP, GIF. Maximum size: 5 MB.
+
+## Inviting Members
+
+Use the **Invite** feature to add team members to your organization. Invited users receive an email and can join with their GitHub account.
+
+## Navigating Into an Organization
+
+Click an organization card to navigate to its projects at `/dashboard/orgs/[orgId]/projects`.

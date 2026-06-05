@@ -1,0 +1,65 @@
+---
+title: Organizations API
+description: Create and list organizations via the Upblit API.
+---
+
+# Organizations API
+
+## List Organizations
+
+Returns all organizations the authenticated user belongs to.
+
+```http
+GET /org
+Authorization: Bearer {jwt}
+```
+
+**Response:** `200 OK`
+```json
+[
+  {
+    "id": 1,
+    "name": "Acme Corp",
+    "description": "Our main organization",
+    "logoUrl": "https://cdn.supabase.co/...",
+    "createdDate": "2026-01-15T10:00:00Z"
+  }
+]
+```
+
+---
+
+## Create Organization
+
+Creates a new organization with an optional logo.
+
+```http
+POST /org?name={name}&description={description}
+Authorization: Bearer {jwt}
+Content-Type: multipart/form-data
+
+file: <logo-image>   (optional)
+```
+
+**Query Parameters:**
+
+| Parameter | Required | Description |
+|---|---|---|
+| `name` | Yes | Organization name |
+| `description` | No | Organization description |
+
+**Response:** `200 OK`
+```json
+{
+  "id": 2,
+  "name": "New Org",
+  "description": "A new organization",
+  "logoUrl": "https://cdn.supabase.co/...",
+  "createdDate": "2026-05-27T10:00:00Z"
+}
+```
+
+**Notes:**
+- Logo is uploaded to Supabase storage
+- Maximum logo size: 10 MB (server-side), 5 MB (client-side validation)
+- Supported logo formats: image files only

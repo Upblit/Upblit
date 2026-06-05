@@ -1,0 +1,37 @@
+---
+title: API Keys API
+description: Generate API keys for applications via the Upblit API.
+---
+
+# API Keys API
+
+## Generate API Key
+
+Generates a new API key for an application. The key is returned once and cannot be retrieved again.
+
+```http
+POST /apikey?ApplicationId={applicationId}
+Authorization: Bearer {jwt}
+```
+
+**Query Parameters:**
+
+| Parameter | Required | Description |
+|---|---|---|
+| `ApplicationId` | Yes | The application ID to generate a key for |
+
+**Response:** `200 OK`
+```
+"upblit_live_xxxxxxxxxxxx"
+```
+
+The response is a plain JSON string (not an object).
+
+---
+
+## Security Notes
+
+- The key is shown **once** — store it immediately in your secrets manager or environment variables
+- Keys are scoped to a single application
+- If a key is compromised, generate a new one from the dashboard
+- Key revocation (`DELETE /apikey/{id}`) is planned but not yet implemented

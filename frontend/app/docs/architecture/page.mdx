@@ -1,0 +1,77 @@
+---
+title: Architecture Overview
+description: High-level architecture of the Upblit platform.
+---
+
+# Architecture Overview
+
+Upblit is a multi-service platform. Each service has a clear responsibility and communicates with others through well-defined interfaces.
+
+## Services
+
+| Service | Path | Runtime | Responsibility |
+|---|---|---|---|
+| Backend API | `Upblit/backend/` | Spring Boot 4 / Java 21 | Business logic, auth, telemetry ingest/query, AI Gateway |
+| Frontend | `Upblit/frontend/` | Next.js 16 / React 19 | Dashboard UI, marketing page |
+| Email Service | `Upblit/email/` | Node.js / Express | Email delivery via Resend |
+| Upblit CLI | `Upblit/UpblitCLI/` | Go | Git-based deployment workflows |
+| Express SDK | `SDK/Express-sdk/` | Node.js | HTTP instrumentation for Express apps |
+| Go SDK | `SDK/Go-sdk/` | Go | HTTP instrumentation for Go apps |
+| Python SDK | `SDK/Python-sdk/` | Python | HTTP instrumentation for Python apps |
+
+## Data Stores
+
+| Store | Type | Used For |
+|---|---|---|
+| PostgreSQL | Relational | Users, Organizations, Projects, Applications, API Keys, Invites, Refresh Tokens |
+| MongoDB Atlas | Document | Traces, Logs, Metrics, AI Docs, AI Tenants |
+| Supabase | Object Storage | Organization logos, AI documents |
+
+## High-Level Diagram
+
+```
+Browser / SDK
+    │
+    ├── Dashboard (Next.js) ──────────────────────────────────────────────────┐
+    │                                                                          │
+    └── SDK (Express / Go / Python)                                           │
+              │                                                                │
+              │  POST /ingest/traces                                           │
+              │  POST /ingest/logs                                             │
+              │  x-api-key: {key}                                             │
+              │                                                                │
+              ▼                                                                ▼
+        Spring Boot API (port 8080)  ◄──── Authorization: Bearer {jwt} ──────┘
+              │
+              ├── PostgreSQL (identity + structure)
+              ├── MongoDB Atlas (telemetry + AI content)
+              ├── Supabase (file storage)
+              └── Email Service (Node.js, port 3001)
+                        │
+                        └── Resend (email delivery)
+```
+
+## Backend Module Structure
+
+The backend uses **Spring Modulith** to enforce module boundaries at compile time:
+
+| Module | Package | Responsibility |
+|---|---|---|
+| `core` | `com.upblit.backend.core` | Users, Orgs, Projects, Apps, API Keys, Invites |
+| `query` | `com.upblit.backend.query` | Telemetry read path: Traces, Logs, Metrics |
+| `ai` | `com.upblit.backend.ai` | AI Gateway: Tenants, Docs |
+| `security` | `com.upblit.backend.security` | JWT, OAuth2, Refresh Tokens |
+| `email` | `com.upblit.backend.email` | Email dispatch coordination |
+| `Library` | `com.upblit.backend.Library` | Supabase integration |
+| `config` | `com.upblit.backend.config` | Exception handling, HTTP client config |
+
+## Multi-Tenancy
+
+Upblit uses **shared database, shared schema** multi-tenancy. All organizations share the same PostgreSQL tables and MongoDB collections. Isolation is enforced at the application layer via `organizationId`, `projectId`, and `applicationId` filters on every query.
+
+## Further Reading
+
+- [Service Boundaries](/docs/architecture/service-boundaries)
+- [Telemetry Pipeline](/docs/architecture/telemetry-pipeline)
+- [Database Architecture](/docs/architecture/database)
+- [Security Model](/docs/architecture/security)

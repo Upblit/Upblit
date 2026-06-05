@@ -1,0 +1,107 @@
+---
+title: Coding Guidelines
+description: Language-specific coding conventions for Upblit contributors.
+---
+
+# Coding Guidelines
+
+## General Principles
+
+1. **Match the existing style** — read the surrounding file before writing new code
+2. **No unnecessary abstractions** — only introduce one when there is clear evidence of duplication
+3. **Explicit over implicit** — prefer explicit types, explicit error handling, explicit data flow
+4. **No speculative features** — only implement what the current task requires
+5. **Security by default** — validate inputs, never log secrets, never expose tokens
+
+---
+
+## Backend (Java / Spring Boot)
+
+### Package Structure
+
+Follow the existing module layout: `com.upblit.backend.<module>.<layer>`
+
+Layers: `controller`, `service`, `repository`, `model` / entity, `DTO`
+
+### Naming
+
+| Type | Convention | Example |
+|---|---|---|
+| Controller | `PascalCaseController.java` | `ApplicationController.java` |
+| Service | `PascalCaseService.java` | `OrganizationService.java` |
+| Repository | `PascalCaseRepository.java` | `TraceRepository.java` |
+| Entity | `PascalCase.java` | `Organization.java` |
+| DTO | `PascalCaseDTO.java` | `OrganizationDTO.java` |
+
+### Rules
+
+- Use `ResponseEntity<T>` for all controller return types
+- Use `Optional<T>` from repositories — never return `null` from service methods
+- Use `WebClient` for outbound HTTP — not `RestTemplate`
+- All env-sensitive config via `${ENV_VAR}` in `application.properties`
+- Use Lombok `@Data`, `@Builder`, `@NoArgsConstructor`, `@AllArgsConstructor` where appropriate
+- Never expose JPA entities directly in API responses — use DTOs
+
+---
+
+## Frontend (TypeScript / Next.js)
+
+### Rules
+
+- All backend calls go through `src/lib/api.ts` or `src/lib/upblit-api.ts` — never call `fetch()` directly in a component
+- Use `"use client"` directive only when needed (event handlers, hooks, browser APIs)
+- CSS Modules for component-specific styles — `ComponentName.module.css` co-located with the component
+- All icons from `lucide-react` — no other icon libraries
+- All animations via `framer-motion` — no CSS transitions for interactive animations
+- All images via `next/image` — never `<img>` tags
+- No `any` types without a comment explaining why
+- Use `normalizeProject`, `normalizeApplication`, `normalizeOrganization` helpers when mapping API responses
+
+### Dark Theme Tokens
+
+```
+Background:  #000 / #1c1b1b
+Text:        #e5e2e1 / #c3c5d9
+Borders:     #353534 / #434656
+Brand blue:  #0052ff
+```
+
+---
+
+## SDKs
+
+### All SDKs Must
+
+- Buffer traces and logs separately in memory
+- Flush on a configurable interval (default 30s)
+- Re-queue failed batches on transport error — never drop data
+- Use `x-api-key` header for authentication
+- Skip `GET /health` in middleware — do not trace health checks
+- Accept `baseURL` and `flushInterval` as constructor parameters — never read env vars
+
+### Span Naming
+
+Always use the `type:name` prefix format:
+
+```
+controller:POST
+service:getUserById
+external:stripe
+```
+
+---
+
+## Go
+
+- Use `PascalCase` for exported types and functions
+- Use `camelCase` for unexported identifiers
+- Use `snake_case` for file names
+- All buffer operations must be protected by `sync.Mutex`
+- Use functional options pattern for SDK configuration
+
+## Python
+
+- Use `snake_case` for functions and variables
+- Use `PascalCase` for classes
+- All buffer operations must use `threading.RLock`
+- Async span helpers must work with both sync and async callables

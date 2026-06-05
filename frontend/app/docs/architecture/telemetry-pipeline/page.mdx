@@ -1,0 +1,66 @@
+---
+title: Telemetry Pipeline
+description: Architecture of the Upblit telemetry ingest and query pipeline.
+---
+
+# Telemetry Pipeline
+
+## Ingest Path
+
+```
+Instrumented App
+  │
+  ├── SDK Middleware (every HTTP request)
+  │     Creates traceId + rootSpanId
+  │     Stores in async-local context
+  │
+  ├── App code runs
+  │     sdk.service() / sdk.call() → child spans pushed to buffer
+  │     sdk.log() → log entries pushed to buffer
+  │
+  ├── Response sent → root span pushed to buffer
+  │
+  └── Every 30s: SDK flushes buffers
+        POST /ingest/traces  (x-api-key header)
+        POST /ingest/logs    (x-api-key header)
+              │
+              ├── Backend validates API key → resolves applicationId + projectId
+              └── Stores in MongoDB
+```
+
+## Query Path
+
+```
+Dashboard
+  └── GET /logs/project?id={projectId}
+        │
+        ├── ProjectAccessService: verify user has access
+        ├── TraceRepository.findByProjectId(projectId)
+        └── Returns Trace[] with embedded spans
+```
+
+## MongoDB Collections
+
+| Collection | Purpose | Key Indexes |
+|---|---|---|
+| `traces` | Distributed trace spans | `projectId`, `applicationId`, `traceId` |
+| `logs` | Structured log entries | `projectId`, `applicationId`, `traceId`, `level` |
+| `metrics` | Application metrics (planned) | TBD |
+
+## Buffering and Reliability
+
+- Traces and logs are buffered **separately** in memory
+- Default flush interval: **30 seconds** (configurable per SDK)
+- On transport failure: batch is **re-queued** at the front of the buffer — no data loss
+- `fatal` log level: flushed **immediately**, not buffered
+- On `sdk.close()`: remaining buffer is flushed before the background thread/goroutine stops
+
+## Known Gaps
+
+| Gap | Impact |
+|---|---|
+| No MongoDB indexes configured | Slow queries at scale |
+| No TTL on telemetry collections | Unbounded storage growth |
+| No pagination on query endpoints | Large responses for active projects |
+| No rate limiting on ingest | Storage abuse possible |
+| Ingest URL inconsistency across SDKs | Go uses `ingest.upblit.com`, Python uses `ingest.upblit.dev` |

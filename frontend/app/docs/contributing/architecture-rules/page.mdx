@@ -1,0 +1,72 @@
+---
+title: Architecture Rules
+description: Invariants you must not break when contributing to Upblit.
+---
+
+# Architecture Rules
+
+These are load-bearing architectural decisions. Breaking them creates cascading problems across the system.
+
+## Rule 1 — Spring Modulith Boundaries
+
+The backend uses Spring Modulith. Each top-level package is a module. Do not import a class from one module's internals into another module.
+
+**Modules:** `core`, `query`, `ai`, `security`, `email`, `Library`, `config`
+
+## Rule 2 — Dual Database Strategy
+
+- **PostgreSQL** → relational, transactional data (users, orgs, projects, apps, keys)
+- **MongoDB** → high-volume, schema-flexible data (traces, logs, metrics, AI content)
+
+Do not store telemetry in PostgreSQL. Do not store user/org/project data in MongoDB.
+
+## Rule 3 — Authentication Architecture
+
+- GitHub OAuth2 only — no username/password
+- JWT for dashboard API calls
+- API key (`x-api-key`) for SDK ingest calls
+- Do not bypass `JWTAuthenticationFilter`
+- Do not add new auth providers without updating `SecurityConfig`, `CustomOAuth2UserService`, and `OAuth2SuccessHandler`
+
+## Rule 4 — SDK Ingest Contract
+
+All SDKs must use:
+
+```
+POST /ingest/traces   (x-api-key header)
+POST /ingest/logs     (x-api-key header)
+```
+
+Do not change endpoint paths or payload structure without updating all three SDKs simultaneously.
+
+## Rule 5 — Frontend Route Hierarchy
+
+All dashboard pages must be children of `dashboard/layout.tsx`. The layout provides the auth guard, sidebar, and header. Do not create dashboard pages outside this layout.
+
+## Rule 6 — File Storage
+
+Files go to Supabase — not local disk, not PostgreSQL, not MongoDB binary fields. Local disk does not persist across container restarts.
+
+## Rule 7 — Email Service Isolation
+
+All email sending goes through the email microservice via HTTP. Do not add email-sending logic to the Spring Boot backend.
+
+## Rule 8 — SDK Repository
+
+Production SDK implementations live in `SDK/` at the workspace root:
+- `SDK/Express-sdk/`
+- `SDK/Go-sdk/`
+- `SDK/Python-sdk/`
+
+The `Upblit/sdk/` directory contains empty stubs. Do not develop SDKs there.
+
+## Rule 9 — No Hardcoded Configuration
+
+All environment-sensitive values via environment variables:
+- Backend: `${ENV_VAR}` in `application.properties`
+- Frontend: `NEXT_PUBLIC_*` env vars
+- SDKs: constructor parameters only — no env var reading inside SDK code
+
+## Rule 10 — API Keys Are Never Re-Displayed
+
+Once an API key is shown in the `ApiKeyModal`, it must be cleared from component state when the modal closes. It must never be stored in `localStorage`, `sessionStorage`, or cookies.

@@ -1,0 +1,45 @@
+---
+title: Dashboard Overview
+description: Navigate the Upblit dashboard.
+---
+
+# Dashboard Overview
+
+The Upblit dashboard is a Next.js web application that gives you a full view of your organizations, projects, applications, telemetry, and AI Gateway.
+
+## Route Structure
+
+```
+/dashboard                          → redirects to /dashboard/orgs
+/dashboard/orgs                     → list all your organizations
+/dashboard/orgs/[orgId]/projects    → projects within an org
+/dashboard/orgs/[orgId]/projects/[projectId]/apps          → applications
+/dashboard/orgs/[orgId]/projects/[projectId]/observability → traces + logs
+/dashboard/ai-gateway               → AI tenant management
+/dashboard/profile                  → your user profile
+```
+
+## Navigation
+
+The dashboard has a persistent **left sidebar** with:
+
+| Section | Description |
+|---|---|
+| Overview | Dashboard home |
+| Organizations | List and manage your orgs |
+| Observability | Traces and logs |
+| AI Gateway | AI tenant and document management |
+| Profile | Your account details |
+
+On mobile (< 768px), the sidebar collapses to icon-only mode.
+
+## Authentication Guard
+
+All `/dashboard/*` routes require a valid JWT token. If you're not logged in, you'll be redirected to `/login`. If your session expires, you'll be redirected to `/login?reason=session_expired`.
+
+## Dark Theme
+
+The dashboard uses a dark theme throughout:
+- Background: `#000` / `#1c1b1b`
+- Text: `#e5e2e1` / `#c3c5d9`
+- Brand blue: `#0052ff`

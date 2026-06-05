@@ -1,0 +1,57 @@
+---
+title: SDK Overview
+description: Upblit SDKs for automatic telemetry instrumentation.
+---
+
+# SDK Overview
+
+Upblit SDKs automatically instrument your HTTP applications to emit distributed traces and structured logs — with minimal code changes.
+
+## Available SDKs
+
+| SDK | Language | Status | Package |
+|---|---|---|---|
+| [Express SDK](/docs/sdks/express) | Node.js | Stable (v2.0.0) | `upblit-express` |
+| [Go SDK](/docs/sdks/go) | Go | Stable | `github.com/upblit/go-sdk` |
+| [Python SDK](/docs/sdks/python) | Python | Stable | `upblit` (PyPI) |
+| [Java SDK](/docs/sdks/java) | Java | Coming Soon | — |
+| [React SDK](/docs/sdks/react) | TypeScript | Coming Soon | — |
+
+## How SDKs Work
+
+Every SDK follows the same pattern:
+
+1. **Middleware** intercepts every incoming HTTP request
+2. A `traceId` and root `spanId` are generated and stored in async-local/thread-local context
+3. Your app code runs normally
+4. Span helpers (`service()`, `call()`, `controller()`) create child spans
+5. On response: the root span is pushed to an in-memory buffer
+6. Every 30 seconds (configurable): the buffer is flushed to `POST /ingest/traces` and `POST /ingest/logs`
+
+## Span Naming Convention
+
+All SDKs use a `type:name` prefix for span names:
+
+| Prefix | Meaning | Example |
+|---|---|---|
+| `controller:` | HTTP handler | `controller:POST` |
+| `service:` | Internal service call | `service:getUserById` |
+| `external:` | Outbound HTTP call | `external:stripe` |
+
+## Ingest Endpoint
+
+All SDKs send data to:
+
+```
+POST https://ingest.upblit.com/ingest/traces
+POST https://ingest.upblit.com/ingest/logs
+Header: x-api-key: <your-api-key>
+```
+
+## Buffering Behavior
+
+- Traces and logs are buffered in memory separately
+- Default flush interval: **30 seconds**
+- On flush failure: the batch is re-queued (no data loss)
+- `fatal` log level: flushed immediately (not buffered)
+- On shutdown (`close()`): remaining buffer is flushed before exit

@@ -1,0 +1,85 @@
+---
+title: Telemetry API
+description: Query traces and logs via the Upblit API.
+---
+
+# Telemetry API
+
+## Get Traces for a Project
+
+Returns all distributed trace records for a project.
+
+```http
+GET /logs/project?id={projectId}
+Authorization: Bearer {jwt}
+```
+
+**Query Parameters:**
+
+| Parameter | Required | Description |
+|---|---|---|
+| `id` | Yes | The project ID |
+
+**Response:** `200 OK`
+```json
+[
+  {
+    "id": "64f1a2b3c4d5e6f7a8b9c0d1",
+    "projectId": 10,
+    "applicationId": 100,
+    "traceId": "550e8400-e29b-41d4-a716-446655440000",
+    "timestamp": "2026-05-27T10:00:00.000Z",
+    "telemetry": [
+      {
+        "timestamp": "2026-05-27T10:00:00.123Z",
+        "requestMethod": "controller:POST",
+        "requestURL": "/api/checkout",
+        "responseStatus": 200,
+        "traceId": "550e8400-e29b-41d4-a716-446655440000",
+        "spanId": "6ba7b810-9dad-11d1-80b4-00c04fd430c8",
+        "parentSpanId": null,
+        "durationMs": 145
+      }
+    ]
+  }
+]
+```
+
+---
+
+## Get All Logs
+
+Returns all log entries. Pagination is planned.
+
+```http
+GET /ingest/logs
+Authorization: Bearer {jwt}
+```
+
+**Response:** `200 OK`
+```json
+[
+  {
+    "id": "64f1a2b3c4d5e6f7a8b9c0d2",
+    "projectId": 10,
+    "applicationId": 100,
+    "traceId": "550e8400-e29b-41d4-a716-446655440000",
+    "level": "error",
+    "type": "app",
+    "message": "Payment processing failed: timeout",
+    "timestamp": "2026-05-27T10:00:00.456Z",
+    "clientTimestamp": "2026-05-27T10:00:00.450Z"
+  }
+]
+```
+
+---
+
+## Get Metrics
+
+Returns application metrics. The metrics model exists in the backend but no SDK emitter is implemented yet.
+
+```http
+GET /metrics
+Authorization: Bearer {jwt}
+```

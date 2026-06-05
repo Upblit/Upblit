@@ -1,0 +1,79 @@
+---
+title: Upblit CLI
+description: The Upblit command-line tool for Git-based deployments.
+---
+
+# Upblit CLI
+
+The `upblit` command-line tool provides lightweight access to the Upblit platform for authentication, organization/project/app selection, API key generation, and quick telemetry queries.
+
+## Usage
+
+```
+upblit help                 Show all commands
+upblit login                Login via browser
+upblit logout               Logout and remove saved tokens
+
+upblit org list             List all organizations for the user
+upblit org switch <orgId>   Switch current organization
+
+upblit project list         List projects for the selected org
+upblit project switch <id>  Switch current project
+
+upblit app list             List applications for the selected project
+upblit app switch <id>      Switch current application
+upblit app create <name> --env <env> -d "description"
+
+upblit generate apikey      Generate an API key for the selected application
+
+upblit log                 Last 10 logs
+upblit trace               Last 10 traces
+upblit uptime              Last 10 uptime entries
+upblit metrices            Last 10 metrics
+```
+
+## Installation
+
+Build from source and move the binary into your PATH:
+
+```bash
+cd Upblit/UpblitCLI
+go build -o upblit .
+
+# macOS / Linux
+mv upblit /usr/local/bin/upblit
+
+# Windows
+# Move upblit.exe to a directory in your PATH
+```
+
+## Examples
+
+Login via browser:
+
+```bash
+upblit login
+```
+
+Create a new application for the selected project:
+
+```bash
+upblit app create my-service --env staging -d "My service description"
+```
+
+Generate an API key for the currently selected application:
+
+```bash
+upblit generate apikey
+```
+
+View recent traces:
+
+```bash
+upblit trace
+```
+
+## Notes
+
+- Some commands require you to select an organization/project/application first using `upblit org switch`, `upblit project switch`, and `upblit app switch`.
+- `upblit app create` accepts `--env` (default `production`) and `-d` for description.

@@ -1,0 +1,12 @@
+{
+  "index": "Introduction",
+  "getting-started": "Getting Started",
+  "dashboard": "Dashboard",
+  "sdks": "SDKs",
+  "cli": "Upblit CLI",
+  "observability": "Observability",
+  "ai-gateway": "AI Gateway",
+  "api": "API Reference",
+  "architecture": "Architecture",
+  "contributing": "Contributing"
+}

@@ -1,0 +1,100 @@
+---
+title: Express SDK
+description: Instrument your Express.js application with Upblit.
+---
+
+# Express SDK
+
+The Upblit Express SDK automatically instruments your Express.js application with distributed tracing and structured logging.
+
+## Installation
+
+```bash
+npm install upblit-express
+```
+
+## Basic Setup
+
+```javascript
+const express = require('express')
+const upblit = require('upblit-express')
+
+const app = express()
+
+// Add Upblit middleware — must be added before your routes
+app.use(upblit(process.env.UPBLIT_API_KEY))
+
+app.get('/users/:id', async (req, res) => {
+  const user = await getUser(req.params.id)
+  res.json(user)
+})
+
+app.listen(3000)
+```
+
+The middleware automatically:
+- Creates a `traceId` and root span for every request
+- Records the HTTP method, URL, status code, and duration
+- Skips `GET /health` (health check endpoint)
+
+## Span Helpers
+
+Wrap internal calls to create child spans:
+
+```javascript
+const upblit = require('upblit-express')
+
+// Service layer span
+async function getUser(id) {
+  return await upblit.service('getUserById', async () => {
+    return await db.users.findById(id)
+  })
+}
+
+// External HTTP call span
+async function chargeCard(amount) {
+  return await upblit.call('stripe', async () => {
+    return await stripe.charges.create({ amount })
+  })
+}
+
+// Controller span (for nested route handlers)
+async function handleCheckout(req, res) {
+  return await upblit.controller('checkout', async () => {
+    // your handler logic
+  })
+}
+```
+
+## Logging
+
+```javascript
+const upblit = require('upblit-express')
+
+// Default level: info
+upblit.log('User signed in')
+
+// Explicit level
+upblit.log('warn', 'Rate limit approaching')
+upblit.log('error', 'Payment failed')
+upblit.log('fatal', 'Database connection lost') // flushed immediately
+```
+
+Log levels: `fatal`, `error`, `warn`, `info`, `debug`
+
+## Configuration
+
+```javascript
+// Custom ingest URL (e.g., for self-hosted)
+const upblit = require('upblit-express')
+// Pass options as second argument (coming in next version)
+app.use(upblit(process.env.UPBLIT_API_KEY))
+```
+
+## Context Propagation
+
+The SDK uses Node.js `AsyncLocalStorage` to propagate trace context across async calls. No manual context passing is required.
+
+## Package
+
+The Express SDK is published as `upblit-express`. The source is in `SDK/Express-sdk/`.

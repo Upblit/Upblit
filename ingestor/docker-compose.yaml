@@ -1,0 +1,51 @@
+version: "3.8"
+
+services:
+  zookeeper:
+    image: confluentinc/cp-zookeeper:7.5.0
+    container_name: zookeeper
+    ports:
+      - "2181:2181"
+    environment:
+      ZOOKEEPER_CLIENT_PORT: 2181
+
+  kafka:
+    image: confluentinc/cp-kafka:7.5.0
+    container_name: kafka
+    ports:
+      - "9092:9092"
+    depends_on:
+      - zookeeper
+    environment:
+      KAFKA_BROKER_ID: 1
+      KAFKA_ZOOKEEPER_CONNECT: zookeeper:2181
+
+      # 👇 critical for docker networking
+      KAFKA_ADVERTISED_LISTENERS: PLAINTEXT://kafka:9092
+      KAFKA_LISTENERS: PLAINTEXT://0.0.0.0:9092
+
+      KAFKA_OFFSETS_TOPIC_REPLICATION_FACTOR: 1
+
+  kafka-init:
+    image: confluentinc/cp-kafka:7.5.0
+    depends_on:
+      - kafka
+    entrypoint: ["/bin/sh", "-c"]
+    command: |
+      "
+      sleep 10 &&
+      kafka-topics --create --topic traces-topic --bootstrap-server kafka:9092 --replication-factor 1 --partitions 3 &&
+      kafka-topics --create --topic logs-topic --bootstrap-server kafka:9092 --replication-factor 1 --partitions 3
+      "
+
+  app:
+    build: .
+    container_name: upblit-ingestor
+    depends_on:
+      - kafka
+    ports:
+      - "9000:9000"
+    env_file:
+      - .env
+    environment:
+      KAFKA_BROKER: kafka:9092

@@ -1,0 +1,51 @@
+# Go build artifacts
+*.exe
+*.exe~
+*.dll
+*.so
+*.dylib
+*.test
+*.out
+*.cover
+*.prof
+
+# Go workspace file
+go.work
+go.work.sum
+
+# Binaries
+bin/
+dist/
+build/
+
+
+# Dependency directories
+vendor/
+
+# Environment variables
+.env
+.env.*
+!.env.example
+
+# Logs
+*.log
+logs/
+tmp/
+
+#IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+
+.DS_Store
+Thumbs.db
+
+coverage.out
+coverage.html
+
+docker-compose.override.yml
+
+*.local

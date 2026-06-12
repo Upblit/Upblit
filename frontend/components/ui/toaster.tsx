@@ -79,9 +79,9 @@ function ToastItem({ toast }: { toast: Toast }) {
       }}
       className={`
         relative flex w-full max-w-sm items-start gap-3.5 overflow-hidden
-        rounded-2xl border ${borderColor} bg-[#111111]/95 backdrop-blur-xl
+        rounded-2xl border ${borderColor} bg-card/95 backdrop-blur-xl
         p-4 shadow-2xl ${glowColor}
-        ring-1 ring-white/[0.04]
+        ring-1 ring-border/20
       `}
     >
       {/* Subtle left accent bar */}
@@ -105,12 +105,12 @@ function ToastItem({ toast }: { toast: Toast }) {
 
       {/* Content */}
       <div className="flex-1 min-w-0 pr-2">
-        <p className="text-sm font-semibold text-white/95 leading-snug">
+        <p className="text-sm font-semibold text-foreground/95 leading-snug">
           {toast.title}
         </p>
 
         {toast.description && (
-          <p className="mt-1 text-xs text-white/55 leading-relaxed">
+          <p className="mt-1 text-xs text-muted-foreground leading-relaxed">
             {toast.description}
           </p>
         )}
@@ -119,7 +119,7 @@ function ToastItem({ toast }: { toast: Toast }) {
         {isQuota && (
           <div className="mt-3 flex items-center gap-2">
             {toast.plan && (
-              <span className="inline-flex items-center rounded-md bg-white/[0.06] border border-white/[0.08] px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-amber-400/80">
+              <span className="inline-flex items-center rounded-md bg-muted/40 border border-border px-2 py-0.5 text-[10px] font-bold uppercase tracking-widest text-amber-400/80">
                 {toast.plan}
               </span>
             )}
@@ -140,7 +140,7 @@ function ToastItem({ toast }: { toast: Toast }) {
       {/* Dismiss button */}
       <button
         onClick={handleDismiss}
-        className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-lg text-white/30 transition-colors hover:bg-white/[0.06] hover:text-white/70"
+        className="mt-0.5 flex h-6 w-6 shrink-0 items-center justify-center rounded-lg text-muted-foreground/50 transition-colors hover:bg-muted hover:text-foreground"
         aria-label="Dismiss"
       >
         <XIcon className="h-3.5 w-3.5" />

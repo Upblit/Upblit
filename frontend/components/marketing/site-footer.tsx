@@ -27,12 +27,12 @@ const columns = [
   {
     title: "Company",
     links: [
+      { label: "Community", href: "/community" },
       { label: "Support", href: "/contact" },
       { label: "Patreon", href: patreonUrl, external: true },
-      { label: "Contact", href: "/contact" },
       { label: "Docs", href: "https://docs.upblit.dev" },
       { label: "Dashboard", href: "/dashboard" },
-        { label: "Sign in", href: "/login" },
+      { label: "Sign in", href: "/login" },
     ],
   },
   {
@@ -50,52 +50,39 @@ const columns = [
 
 export function SiteFooter() {
   return (
-    <footer className="border-t border-white/[0.08] bg-[#08090b] px-5 py-12 text-sm sm:px-8 lg:px-12">
-      <div className="mx-auto max-w-7xl">
-        <div className="grid gap-10 lg:grid-cols-[1.1fr_2fr]">
-          <div>
-            <Link href="/" aria-label="Upblit home">
-              <Image src="/logo.png" alt="Upblit" width={108} height={36} className="w-28 opacity-90" style={{ height: "auto" }} />
-            </Link>
-            <p className="mt-5 max-w-sm leading-6 text-white/48">
-              A student-built observability workbench for logs, traces, metrics, API keys, and AI-assisted incident notes.
-            </p>
-            <div className="mt-6 flex flex-wrap gap-2">
-              {["OAuth", "API scopes", "Trace context", "Retention notes"].map((item) => (
-                <span key={item} className="rounded-md border border-white/[0.08] bg-white/[0.03] px-2 py-1 text-xs text-white/46">
-                  {item}
-                </span>
-              ))}
-            </div>
-          </div>
-
-          <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
-            {columns.map((column) => (
-              <div key={column.title}>
-                <h2 className="text-xs font-medium uppercase tracking-[0.14em] text-white/36">{column.title}</h2>
-                <ul className="mt-4 space-y-2">
-                  {column.links.map((link) => (
-                    <li key={`${column.title}-${link.href}-${link.label}`}>
-                      {link.external ? (
-                        <a href={link.href} target="_blank" rel="noreferrer" className="text-white/55 transition hover:text-white">
-                          {link.label}
-                        </a>
-                      ) : (
-                        <Link href={link.href} className="text-white/55 transition hover:text-white">
-                          {link.label}
-                        </Link>
-                      )}
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            ))}
-          </div>
+    <footer className="border-t border-[#1f1f1f] bg-[#0a0a0a] px-4 py-10 sm:px-6 lg:px-8">
+      <div className="mx-auto grid max-w-[1500px] gap-10 font-mono text-xs lg:grid-cols-[0.9fr_2fr]">
+        <div>
+          <Link href="/" aria-label="Upblit home">
+            <Image src="/logo.png" alt="Upblit" width={108} height={36} className="h-auto w-24 opacity-90 brightness-0 invert" />
+          </Link>
+          <p className="mt-5 max-w-sm leading-6 text-[#737373]">
+            Observability for logs, traces, metrics, API keys, and AI-assisted incident notes.
+          </p>
+          <p className="mt-6 text-[#525252]">Copyright 2026 Upblit.</p>
         </div>
 
-        <div className="mt-10 flex flex-col gap-3 border-t border-white/[0.08] pt-6 text-xs text-white/35 sm:flex-row sm:items-center sm:justify-between">
-          <p>Copyright 2026 Upblit. All rights reserved.</p>
-          <p>Built for telemetry review, API operations, and incident response.</p>
+        <div className="grid gap-8 sm:grid-cols-2 lg:grid-cols-4">
+          {columns.map((column) => (
+            <div key={column.title}>
+              <h2 className="uppercase text-[#525252]">{column.title}</h2>
+              <ul className="mt-4 space-y-2">
+                {column.links.map((link) => (
+                  <li key={`${column.title}-${link.href}-${link.label}`}>
+                    {link.external || link.href.startsWith("http") ? (
+                      <a href={link.href} target={link.href.startsWith("http") ? "_blank" : undefined} rel={link.href.startsWith("http") ? "noreferrer" : undefined} className="text-[#a3a3a3] hover:text-[#f5f5f5]">
+                        {link.label}
+                      </a>
+                    ) : (
+                      <Link href={link.href} className="text-[#a3a3a3] hover:text-[#f5f5f5]">
+                        {link.label}
+                      </Link>
+                    )}
+                  </li>
+                ))}
+              </ul>
+            </div>
+          ))}
         </div>
       </div>
     </footer>

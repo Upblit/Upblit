@@ -75,7 +75,7 @@ export function UptimeDowntimeChart({ results }: UptimeDowntimeChartProps) {
 
   if (!results.length) {
     return (
-      <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-8 text-center text-sm text-muted-foreground">
+      <div className="rounded-2xl border border-border bg-card p-8 text-center text-sm text-muted-foreground">
         No downtime data yet.
       </div>
     )
@@ -101,7 +101,7 @@ export function UptimeDowntimeChart({ results }: UptimeDowntimeChartProps) {
 
       <div className="rounded-2xl border border-white/[0.08] bg-white/[0.02] p-5">
         <div className="mb-4">
-          <h3 className="text-lg font-semibold text-white/90">Downtime trend</h3>
+          <h3 className="text-lg font-semibold text-foreground/90">Downtime trend</h3>
           <p className="mt-1 text-sm text-muted-foreground">Failed checks grouped across the selected window.</p>
         </div>
 
@@ -113,7 +113,7 @@ export function UptimeDowntimeChart({ results }: UptimeDowntimeChartProps) {
                 <stop offset="95%" stopColor="#ef4444" stopOpacity={0.02} />
               </linearGradient>
             </defs>
-            <CartesianGrid strokeDasharray="3 3" className="stroke-white/[0.05]" />
+            <CartesianGrid strokeDasharray="3 3" className="stroke-foreground/[0.05]" />
             <XAxis
               dataKey="label"
               tick={{ fontSize: 12 }}
@@ -162,9 +162,9 @@ interface StatCardProps {
 }
 
 function StatCard({ label, value, unit, variant = "default" }: StatCardProps) {
-  let borderColor = "border-white/[0.08]"
-  let bgColor = "bg-white/[0.01]"
-  let textColor = "text-white/90"
+  let borderColor = "border-border"
+  let bgColor = "bg-card"
+  let textColor = "text-foreground/90"
 
   if (variant === "error") {
     borderColor = "border-red-500/25"

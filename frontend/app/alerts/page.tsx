@@ -94,8 +94,8 @@ export default function AlertsPage() {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <SidebarInset className="bg-[#0a0a0a]">
-        <header className="flex h-16 shrink-0 items-center gap-2 border-b border-white/[0.05]">
+      <SidebarInset className="bg-background">
+        <header className="flex h-16 shrink-0 items-center gap-2 border-b border-border">
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ms-1" />
             <Separator orientation="vertical" className="me-2 data-vertical:h-4 data-vertical:self-auto" />
@@ -119,13 +119,13 @@ export default function AlertsPage() {
           <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
             <div>
               <p className="text-xs uppercase tracking-[0.28em] text-muted-foreground">Observability</p>
-              <h1 className="mt-2 text-3xl font-bold tracking-tight text-white/90">Global alerts</h1>
+              <h1 className="mt-2 text-3xl font-bold tracking-tight text-foreground/90">Global alerts</h1>
               <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
                 Review anomaly and service alerts across the active organization&apos;s projects.
               </p>
             </div>
 
-            <Button onClick={() => void loadAlerts()} variant="outline" className="border-white/[0.08] bg-white/[0.03] text-white hover:bg-white/[0.06]">
+            <Button onClick={() => void loadAlerts()} variant="outline" className="border-border bg-card text-foreground hover:bg-muted">
               <RefreshCwIcon className="mr-2 size-4" />
               Refresh
             </Button>
@@ -137,15 +137,15 @@ export default function AlertsPage() {
             <StatCard label="High / medium" value={(severityCounts.high ?? 0) + (severityCounts.medium ?? 0)} />
           </div>
 
-          <div className="rounded-2xl border border-white/[0.08] bg-[#111111] p-6 shadow-[0_24px_80px_rgba(0,0,0,0.25)]">
+          <div className="rounded-2xl border border-border bg-card p-5 shadow-[0_24px_80px_rgba(0,0,0,0.25)]">
             <div className="flex flex-col gap-3 sm:flex-row sm:items-center sm:justify-between">
               <div className="relative w-full max-w-md">
-                <SearchIcon className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-white/35" />
+                <SearchIcon className="pointer-events-none absolute left-3 top-1/2 size-4 -translate-y-1/2 text-foreground/35" />
                 <Input
                   value={searchQuery}
                   onChange={(event) => setSearchQuery(event.target.value)}
                   placeholder="Search alerts by title, message, source, or kind"
-                  className="h-11 border-white/[0.08] bg-[#0f0f0f] pl-10 text-white placeholder:text-white/35"
+                  className="h-11 border-border bg-background pl-10 text-foreground placeholder:text-foreground/35"
                 />
               </div>
 
@@ -155,7 +155,7 @@ export default function AlertsPage() {
                     key={severity}
                     type="button"
                     onClick={() => setSeverityFilter(severity)}
-                    className={severityFilter === severity ? "rounded-full bg-[#087f9c] px-3 py-1.5 text-sm font-medium text-white" : "rounded-full border border-white/[0.08] bg-white/[0.03] px-3 py-1.5 text-sm font-medium text-white/70 hover:bg-white/[0.06]"}
+                    className={severityFilter === severity ? "rounded-full bg-[#087f9c] px-3 py-1.5 text-sm font-medium text-white" : "rounded-full border border-border bg-card px-3 py-1.5 text-sm font-medium text-foreground/70 hover:bg-muted"}
                   >
                     {severity === "all" ? "All" : severityLabel(severity)}
                   </button>
@@ -170,20 +170,20 @@ export default function AlertsPage() {
             ) : null}
 
             {isLoading ? (
-              <div className="mt-6 rounded-2xl border border-white/[0.08] bg-white/[0.03] p-6 text-sm text-muted-foreground">
+              <div className="mt-6 rounded-2xl border border-border bg-card p-6 text-sm text-muted-foreground">
                 Loading alerts...
               </div>
             ) : filteredAlerts.length === 0 ? (
-              <div className="mt-6 flex flex-col items-center justify-center rounded-2xl border border-white/[0.08] bg-white/[0.03] px-6 py-16 text-center">
-                <AlertTriangleIcon className="size-10 text-white/35" />
-                <h2 className="mt-4 text-xl font-semibold text-white/90">No alerts match the current filters</h2>
+              <div className="mt-6 flex flex-col items-center justify-center rounded-2xl border border-border bg-card px-6 py-16 text-center">
+                <AlertTriangleIcon className="size-10 text-foreground/35" />
+                <h2 className="mt-4 text-xl font-semibold text-foreground/90">No alerts match the current filters</h2>
                 <p className="mt-2 max-w-md text-sm text-muted-foreground">
                   When anomaly detection or uptime checks emit an alert, it will appear here automatically.
                 </p>
               </div>
             ) : (
-              <div className="mt-6 overflow-hidden rounded-2xl border border-white/[0.08]">
-                <div className="grid grid-cols-12 gap-3 border-b border-white/[0.06] bg-white/[0.03] px-4 py-3 text-xs font-medium uppercase tracking-[0.16em] text-white/40">
+              <div className="mt-6 overflow-hidden rounded-2xl border border-foreground/[0.08]">
+                <div className="grid grid-cols-12 gap-3 border-b border-foreground/[0.06] bg-foreground/[0.03] px-4 py-3 text-xs font-medium uppercase tracking-[0.16em] text-foreground/40">
                   <div className="col-span-3">Alert</div>
                   <div className="col-span-2">Severity</div>
                   <div className="col-span-2">Source</div>
@@ -192,25 +192,25 @@ export default function AlertsPage() {
                   <div className="col-span-1 text-right">Time</div>
                 </div>
 
-                <div className="divide-y divide-white/[0.06] bg-[#101010]">
+                <div className="divide-y divide-foreground/[0.06] bg-[#101010]">
                   {filteredAlerts.map((alert) => {
                     const severity = (alert.severity ?? "unknown").toLowerCase()
-                    const rowClass = severityStyles[severity] ?? "border-white/[0.08] bg-white/[0.03] text-white/80"
+                    const rowClass = severityStyles[severity] ?? "border-foreground/[0.08] bg-foreground/[0.03] text-foreground/80"
                     return (
-                      <div key={alert.id} className="grid grid-cols-12 gap-3 px-4 py-4 text-sm text-white/74">
+                      <div key={alert.id} className="grid grid-cols-12 gap-3 px-4 py-4 text-sm text-foreground/74">
                         <div className="col-span-12 md:col-span-3">
-                          <p className="font-medium text-white/92">{alert.title || alert.subject || alert.kind || "Alert"}</p>
-                          <p className="mt-1 line-clamp-2 text-xs text-white/48">{alert.message || "No message provided."}</p>
+                          <p className="font-medium text-foreground/92">{alert.title || alert.subject || alert.kind || "Alert"}</p>
+                          <p className="mt-1 line-clamp-2 text-xs text-foreground/48">{alert.message || "No message provided."}</p>
                         </div>
                         <div className="col-span-6 md:col-span-2">
                           <span className={`inline-flex rounded-full border px-2.5 py-1 text-xs font-medium uppercase tracking-[0.18em] ${rowClass}`}>
                             {severityLabel(alert.severity)}
                           </span>
                         </div>
-                        <div className="col-span-6 md:col-span-2 text-white/60">{alert.source || alert.kind || "-"}</div>
-                        <div className="col-span-6 md:col-span-2 text-white/60">{alert.projectId ? projectNameById[alert.projectId] || `Project ${alert.projectId}` : "All projects"}</div>
-                        <div className="col-span-6 md:col-span-2 text-white/60">{alert.applicationId ? `Application ${alert.applicationId}` : "-"}</div>
-                        <div className="col-span-12 mt-2 text-right text-xs text-white/38 md:col-span-1 md:mt-0">{formatTime(alert.detectedAt || alert.createdAt)}</div>
+                        <div className="col-span-6 md:col-span-2 text-foreground/60">{alert.source || alert.kind || "-"}</div>
+                        <div className="col-span-6 md:col-span-2 text-foreground/60">{alert.projectId ? projectNameById[alert.projectId] || `Project ${alert.projectId}` : "All projects"}</div>
+                        <div className="col-span-6 md:col-span-2 text-foreground/60">{alert.applicationId ? `Application ${alert.applicationId}` : "-"}</div>
+                        <div className="col-span-12 mt-2 text-right text-xs text-foreground/38 md:col-span-1 md:mt-0">{formatTime(alert.detectedAt || alert.createdAt)}</div>
                       </div>
                     )
                   })}
@@ -226,9 +226,9 @@ export default function AlertsPage() {
 
 function StatCard({ label, value }: { label: string; value: number }) {
   return (
-    <div className="rounded-2xl border border-white/[0.08] bg-[#111111] p-5 shadow-[0_24px_80px_rgba(0,0,0,0.18)]">
+    <div className="rounded-2xl border border-border bg-card p-5 shadow-[0_24px_80px_rgba(0,0,0,0.18)]">
       <p className="text-xs uppercase tracking-[0.24em] text-muted-foreground">{label}</p>
-      <p className="mt-3 text-3xl font-bold text-white/90">{value}</p>
+      <p className="mt-3 text-3xl font-bold text-foreground/90">{value}</p>
     </div>
   )
 }

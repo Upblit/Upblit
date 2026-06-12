@@ -151,7 +151,7 @@ export function TeamSwitcher({
             <DropdownMenuTrigger asChild>
               <SidebarMenuButton
                 size="lg"
-                className="data-[state=open]:bg-white/[0.05] data-[state=open]:text-white hover:bg-white/[0.04] transition-all rounded-xl border border-transparent hover:border-white/[0.05] shadow-sm"
+                className="data-[state=open]:bg-muted data-[state=open]:text-foreground hover:bg-muted/50 transition-all rounded-xl border border-transparent hover:border-border/50 shadow-sm"
               >
                 <div className="flex aspect-square size-9 items-center justify-center rounded-lg bg-gradient-to-br from-[#087f9c] to-[#044c5e] text-white overflow-hidden shadow-inner ring-1 ring-white/10">
                   {activeTeam?.logoUrl ? (
@@ -161,7 +161,7 @@ export function TeamSwitcher({
                   )}
                 </div>
                 <div className="grid flex-1 text-start text-sm leading-tight ml-1">
-                  <span className="truncate font-bold text-white/95">{activeTeam?.name || "New organization"}</span>
+                  <span className="truncate font-bold text-foreground/95">{activeTeam?.name || "New organization"}</span>
                   <span className="truncate text-[11px] font-medium uppercase tracking-wider text-muted-foreground/80">
                     {activeTeam?.plan || "Create workspace"}
                   </span>
@@ -170,7 +170,7 @@ export function TeamSwitcher({
               </SidebarMenuButton>
             </DropdownMenuTrigger>
             <DropdownMenuContent
-              className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg border-white/[0.08] bg-[#111] text-foreground shadow-2xl"
+              className="w-(--radix-dropdown-menu-trigger-width) min-w-56 rounded-lg border-border bg-card text-foreground shadow-2xl"
               align="start"
               side={isMobile ? "bottom" : "right"}
               sideOffset={4}
@@ -182,9 +182,9 @@ export function TeamSwitcher({
                 <DropdownMenuItem
                   key={team.id}
                   onClick={() => setActiveOrgId(team.id)}
-                  className="gap-2 p-2 focus:bg-white/[0.05]"
+                  className="gap-2 p-2 focus:bg-muted"
                 >
-                  <div className="flex size-6 items-center justify-center rounded-md border border-white/[0.08] overflow-hidden">
+                  <div className="flex size-6 items-center justify-center rounded-md border border-border overflow-hidden">
                     {team.logoUrl ? (
                       <img src={team.logoUrl} alt={team.name} className="object-cover w-full h-full" />
                     ) : (
@@ -195,13 +195,13 @@ export function TeamSwitcher({
                   <DropdownMenuShortcut>Ctrl {index + 1}</DropdownMenuShortcut>
                 </DropdownMenuItem>
               ))}
-              <DropdownMenuSeparator className="bg-white/[0.08]" />
+              <DropdownMenuSeparator className="bg-border" />
               <DropdownMenuItem
                 disabled={availablePlans.length === 0}
                 onClick={() => setIsSheetOpen(true)}
-                className="gap-2 p-2 focus:bg-white/[0.05] disabled:opacity-40"
+                className="gap-2 p-2 focus:bg-muted disabled:opacity-40"
               >
-                <div className="flex size-6 items-center justify-center rounded-md border border-white/[0.08] bg-transparent">
+                <div className="flex size-6 items-center justify-center rounded-md border border-border bg-transparent">
                   <PlusIcon className="size-4" />
                 </div>
                 <div className="font-medium text-muted-foreground">Add organization</div>
@@ -212,25 +212,25 @@ export function TeamSwitcher({
       </SidebarMenu>
 
       <Sheet open={isSheetOpen} onOpenChange={setIsSheetOpen}>
-        <SheetContent className="bg-[#0a0a0a]/95 border-l border-white/[0.08] p-8 text-foreground sm:max-w-md">
+        <SheetContent className="bg-background/95 border-l border-border p-8 text-foreground sm:max-w-md">
           <SheetHeader className="gap-1.5 p-0">
-            <SheetTitle className="text-2xl font-bold text-white/95">New Organization</SheetTitle>
+            <SheetTitle className="text-2xl font-bold text-foreground/95">New Organization</SheetTitle>
             <SheetDescription>Create a workspace for projects, applications, and telemetry.</SheetDescription>
           </SheetHeader>
           <form onSubmit={createOrganization} className="mt-8 flex flex-col gap-5">
             <div className="flex flex-col gap-3">
-              <label htmlFor="org-name" className="text-sm font-semibold text-white/90">Organization name</label>
+              <label htmlFor="org-name" className="text-sm font-semibold text-foreground/90">Organization name</label>
               <Input
                 id="org-name"
                 value={orgName}
                 onChange={(event) => setOrgName(event.target.value)}
                 placeholder="e.g. Upblit Labs"
-                className="h-11 rounded-xl border-white/[0.08] bg-white/[0.03]"
+                className="h-11 rounded-xl border-border bg-muted/40 text-foreground"
               />
             </div>
             <div className="flex flex-col gap-3">
-              <span className="text-sm font-semibold text-white/90">Plan</span>
-              <div className="grid grid-cols-3 gap-2 rounded-xl border border-white/[0.08] bg-white/[0.02] p-1">
+              <span className="text-sm font-semibold text-foreground/90">Plan</span>
+              <div className="grid grid-cols-3 gap-2 rounded-xl border border-border bg-muted/20 p-1">
                 {plans.map((item) => (
                   <button
                     key={item}
@@ -241,8 +241,8 @@ export function TeamSwitcher({
                       plan === item
                         ? "bg-[#087f9c] text-white shadow-lg shadow-[#087f9c]/15"
                         : canCreatePlan(item)
-                          ? "text-muted-foreground hover:bg-white/[0.05] hover:text-white"
-                          : "cursor-not-allowed text-white/25"
+                          ? "text-muted-foreground hover:bg-muted hover:text-foreground"
+                          : "cursor-not-allowed text-muted-foreground/30"
                     }`}
                   >
                     {item}
@@ -252,9 +252,9 @@ export function TeamSwitcher({
               <p className="text-xs leading-5 text-muted-foreground">{quotaMessage}</p>
             </div>
             <div className="flex flex-col gap-3">
-              <label htmlFor="org-logo" className="text-sm font-semibold text-white/90">Logo</label>
+              <label htmlFor="org-logo" className="text-sm font-semibold text-foreground/90">Logo</label>
               <div className="flex items-center gap-4">
-                <div className="flex size-14 items-center justify-center overflow-hidden rounded-xl border border-white/[0.08] bg-white/[0.03]">
+                <div className="flex size-14 items-center justify-center overflow-hidden rounded-xl border border-border bg-muted/30">
                   {logoPreview ? (
                     <img src={logoPreview} alt="Organization logo preview" className="h-full w-full object-cover" />
                   ) : (
@@ -266,7 +266,7 @@ export function TeamSwitcher({
                   type="file"
                   accept="image/*"
                   onChange={handleLogoChange}
-                  className="h-auto border-white/[0.08] bg-white/[0.03] text-xs"
+                  className="h-auto border-border bg-muted/30 text-xs text-foreground"
                 />
               </div>
             </div>

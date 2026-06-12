@@ -46,8 +46,8 @@ export default function BillingPage() {
 
   return (
     <>
-      <header className="flex h-16 shrink-0 items-center gap-2 border-b border-white/[0.05]">
-        <div className="flex items-center gap-2 px-4">
+      <header className="flex h-16 shrink-0 items-center gap-2 border-b border-foreground/[0.05] bg-background">
+        <div className="flex items-center gap-2 px-4 ">
           <SidebarTrigger className="-ms-1" />
           <Breadcrumb>
             <BreadcrumbList>
@@ -65,12 +65,12 @@ export default function BillingPage() {
         </div>
       </header>
 
-      <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-8 p-8 pt-10">
-        <section className="rounded-2xl border border-white/[0.08] bg-[#111111] p-6 shadow-[0_24px_80px_rgba(0,0,0,0.25)]">
-          <div className="flex items-center justify-between gap-4 border-b border-white/[0.06] pb-5">
+      <main className="mx-auto bg-background flex w-full  flex-1 flex-col gap-8 p-8 pt-10 ">
+        <section className="rounded-2xl border border-foreground/[0.08] bg-background p-6 shadow-[0_24px_80px_rgba(0,0,0,0.25)]">
+          <div className="flex items-center justify-between gap-4 border-b border-foreground/[0.06] pb-5">
             <div>
               <p className="text-xs uppercase tracking-[0.28em] text-muted-foreground">Account</p>
-              <h1 className="mt-2 text-2xl font-semibold text-white">Billing</h1>
+              <h1 className="mt-2 text-2xl font-semibold text-foreground">Billing</h1>
               <p className="mt-2 text-sm text-muted-foreground">Invoices and billing history for your account.</p>
             </div>
           </div>
@@ -79,13 +79,13 @@ export default function BillingPage() {
             {loading ? (
               <p className="text-sm text-muted-foreground">Loading invoices…</p>
             ) : invoices.length === 0 ? (
-              <div className="rounded-lg bg-white/[0.02] border border-white/[0.04] p-6 text-sm text-muted-foreground">No invoices yet.</div>
+              <div className="rounded-lg bg-card border border-foreground/[0.04] p-6 text-sm text-muted-foreground">No invoices yet.</div>
             ) : (
               <div className="grid gap-4">
                 {invoices.map((inv) => (
-                  <div key={inv.id} className="rounded-lg bg-white/[0.02] border border-white/[0.04] p-4 flex items-center justify-between">
+                  <div key={inv.id} className="rounded-lg bg-card border border-foreground/[0.04] p-4 flex items-center justify-between">
                     <div>
-                      <div className="font-medium text-white">Invoice #{inv.id}</div>
+                      <div className="font-medium text-foreground">Invoice #{inv.id}</div>
                       <div className="text-sm text-muted-foreground">{inv.plan} • ${inv.amount.toFixed(2)}</div>
                       <div className="text-xs text-muted-foreground">{new Date(inv.periodStart).toLocaleDateString()} — {new Date(inv.periodEnd).toLocaleDateString()}</div>
                     </div>

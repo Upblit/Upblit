@@ -152,7 +152,7 @@ export function TracesTable({ traces, pagination, actions }: TracesTableProps) {
 
   if (!traces.length) {
     return (
-      <div className="rounded-lg border border-white/[0.08] bg-white/[0.01] p-8 text-center">
+      <div className="bg-background">
         <p className="text-muted-foreground">No traces available</p>
       </div>
     )

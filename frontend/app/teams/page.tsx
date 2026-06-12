@@ -352,7 +352,7 @@ export default function TeamSettingsPage() {
 
   return (
     <>
-      <header className="flex h-16 shrink-0 items-center gap-2 border-b border-white/[0.05]">
+      <header className="flex h-16 shrink-0 items-center gap-2 border-b border-border">
         <div className="flex items-center gap-2 px-4">
           <SidebarTrigger className="-ms-1" />
           <Separator orientation="vertical" className="me-2 data-vertical:h-4 data-vertical:self-auto" />
@@ -372,14 +372,14 @@ export default function TeamSettingsPage() {
 
       <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-8 p-8 pt-10">
         <div>
-          <h1 className="text-3xl font-bold tracking-tight text-white/90">Team</h1>
+          <h1 className="text-3xl font-bold tracking-tight text-foreground/90">Team</h1>
           <p className="mt-2 text-sm text-muted-foreground">Manage organization invites and members for {activeOrg?.name || "your workspace"}.</p>
         </div>
 
-        <section className="rounded-2xl border border-white/[0.08] bg-[#111111] p-6">
+        <section className="rounded-2xl border border-foreground/[0.12] bg-card p-6">
           <div className="flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
             <div>
-              <h2 className="text-lg font-bold text-white/90">Public invite link</h2>
+              <h2 className="text-lg font-bold text-foreground/90">Public invite link</h2>
               <p className="mt-2 text-sm text-muted-foreground">Generate a shareable frontend link for the currently selected organization.</p>
             </div>
             <Button
@@ -395,7 +395,7 @@ export default function TeamSettingsPage() {
           {publicLinkMessage && <p className="mt-4 text-sm text-muted-foreground">{publicLinkMessage}</p>}
 
           {publicInviteLink && (
-            <div className="mt-4 rounded-lg border border-white/[0.06] bg-white/[0.03] p-3">
+            <div className="mt-4 rounded-lg border-foreground/[0.2] bg-background p-3">
               <div className="flex flex-col gap-3 md:flex-row md:items-center md:justify-between">
                 <a className="break-all text-green-300 underline" href={publicInviteLink} target="_blank" rel="noreferrer">
                   {publicInviteLink}
@@ -408,10 +408,10 @@ export default function TeamSettingsPage() {
           )}
         </section>
 
-        <form onSubmit={sendInvite} className="rounded-2xl border border-white/[0.08] bg-[#111111] p-6">
+        <form onSubmit={sendInvite} className="rounded-2xl border border-foreground/[0.12] bg-card p-6">
           <div className="grid gap-4 md:grid-cols-[1fr_150px]">
             <div>
-              <label className="text-sm font-semibold text-white/90" htmlFor="invite-email">Invite by email</label>
+              <label className="text-sm font-semibold text-foreground/90" htmlFor="invite-email">Invite by email</label>
               <Input id="invite-email" value={email} onChange={(e) => setEmail(e.target.value)} placeholder="user@example.com" className="mt-2 h-11 border-white/[0.08] bg-white/[0.03]" />
             </div>
             <div className="flex items-end">
@@ -423,8 +423,8 @@ export default function TeamSettingsPage() {
           {inviteMessage && <p className="mt-3 text-sm text-muted-foreground">{inviteMessage}</p>}
         </form>
 
-        <section className="rounded-2xl border border-white/[0.08] bg-[#111111] p-6">
-          <h2 className="text-lg font-bold text-white/90">Pending invites</h2>
+        <section className="rounded-2xl border border-foreground/[0.12] bg-card p-6">
+          <h2 className="text-lg font-bold text-foreground/90">Pending invites</h2>
           <p className="mt-2 text-sm text-muted-foreground">Invites that have not yet been accepted.</p>
 
           <div className="mt-4 space-y-3">
@@ -432,13 +432,13 @@ export default function TeamSettingsPage() {
               <p className="text-sm text-muted-foreground">No pending invites.</p>
             ) : (
               invites.map((inv) => (
-                <div key={inv.id} className="flex flex-col gap-4 rounded-lg border border-white/[0.04] bg-white/[0.02] p-4 md:flex-row md:items-center md:justify-between">
+                <div key={inv.id} className="flex flex-col gap-4 rounded-lg border border-foreground/[0.12] bg-background p-4 md:flex-row md:items-center md:justify-between">
                   <div className="min-w-0">
                     <div className="flex items-center gap-2">
-                      <div className="font-medium text-white/90">
+                      <div className="font-medium text-text-foreground/90 truncate">
                         {inv.email ? inv.email : "Public invite"}
                       </div>
-                      <div className="rounded-full border border-white/[0.08] px-2 py-0.5 text-xs text-muted-foreground">
+                      <div className="rounded-full border border-foreground/[0.2] px-2 py-0.5 text-xs text-muted-foreground">
                         {inv.active ? "Active" : "Inactive"}
                       </div>
                     </div>
@@ -449,7 +449,7 @@ export default function TeamSettingsPage() {
                       <div className="mt-2 text-sm">
                         <div className="flex items-center gap-2">
                           <a
-                            className="break-all text-green-300 underline"
+                            className="break-all text-cyan-500 underline"
                             href={`${window.location.origin}/invite/public/${encodeURIComponent(inv.publicToken)}`}
                             target="_blank"
                             rel="noreferrer"
@@ -483,15 +483,15 @@ export default function TeamSettingsPage() {
                     ) : (
                       <>
                         {inv.active ? (
-                          <Button variant="ghost" onClick={() => deactivateInvite(inv.id)} className="text-yellow-400">
+                          <Button variant="ghost" onClick={() => deactivateInvite(inv.id)} className="text-yellow-500">
                             Deactivate
                           </Button>
                         ) : (
-                          <Button variant="ghost" onClick={() => activateInvite(inv.id)} className="text-emerald-400">
+                          <Button variant="ghost" onClick={() => activateInvite(inv.id)} className="text-emerald-500">
                             Activate
                           </Button>
                         )}
-                        <Button variant="ghost" onClick={() => cancelInvite(inv.id)} className="text-red-400">
+                        <Button variant="ghost" onClick={() => cancelInvite(inv.id)} className="text-red-500">
                           Delete
                         </Button>
                       </>
@@ -503,18 +503,18 @@ export default function TeamSettingsPage() {
           </div>
         </section>
 
-        <section className="rounded-2xl border border-white/[0.08] bg-[#111111] p-6">
-          <h2 className="text-lg font-bold text-white/90">Members</h2>
+        <section className="rounded-2xl border border-foreground/[0.12] bg-card p-6">
+          <h2 className="text-lg font-bold text-foreground/90">Members</h2>
           <p className="mt-2 text-sm text-muted-foreground">Current members of the active organization.</p>
 
           <div className="mt-4 space-y-3">
             {members.length ? (
               members.map((m) => (
-                <div key={m.id} className="flex items-center justify-between rounded-lg border border-white/[0.04] bg-white/[0.02] p-3 transition-colors hover:border-white/[0.08] hover:bg-white/[0.035]">
+                <div key={m.id} className="flex items-center justify-between rounded-lg border border-foreground/[0.12] bg-background p-3 transition-colors hover:border-foreground/[0.2] hover:bg-foreground/[0.05]">
                   <div>
-                    <div className="font-medium text-white/90">{m.username}</div>
+                    <div className="font-medium text-foreground/90">{m.username}</div>
                     <div className="text-xs text-muted-foreground">{m.email}</div>
-                    <div className="mt-2 flex items-center gap-2 text-sm text-muted-foreground">
+                    <div className="mt-2 flex items-center gap-2 text-sm text-foreground">
                       <label className="whitespace-nowrap">Role:</label>
                       {canChangeRole && m.id !== currentUserId ? (
                         <DropdownMenu>
@@ -523,18 +523,18 @@ export default function TeamSettingsPage() {
                               type="button"
                               variant="outline"
                               size="sm"
-                              className="h-8 gap-2 border-white/[0.08] bg-white/[0.04] px-3 text-xs text-white/90 hover:bg-white/[0.08]"
+                              className="h-8 gap-2 border-foreground/[0.2] bg-foreground/[0.04] px-3 text-xs text-foreground hover:bg-foreground/[0.08]"
                             >
                               {roleIcon(m.role)}
                               <span>{roleLabel(m.role)}</span>
                               <ChevronDown className="size-3.5 opacity-70" />
                             </Button>
                           </DropdownMenuTrigger>
-                          <DropdownMenuContent align="start" className="w-52 border-white/[0.08] bg-[#0f1115] text-white shadow-2xl">
+                          <DropdownMenuContent align="start" className="w-52 border-border bg-card text-foreground shadow-2xl">
                             <DropdownMenuLabel className="px-2 py-1 text-[11px] uppercase tracking-[0.22em] text-white/45">
                               Change role
                             </DropdownMenuLabel>
-                            <DropdownMenuSeparator className="bg-white/[0.08]" />
+                            <DropdownMenuSeparator className="bg-foreground/[0.08]" />
                             {roleOptions.map((option) => (
                               <DropdownMenuItem
                                 key={option.value}
@@ -542,13 +542,13 @@ export default function TeamSettingsPage() {
                                   event.preventDefault()
                                   void changeRole(m.id, option.value)
                                 }}
-                                className="cursor-pointer gap-2 px-2 py-2 text-sm text-white/85 focus:bg-white/10 focus:text-white"
+                                className="cursor-pointer gap-2 px-2 py-2 text-sm text-foreground/85 focus:bg-background/10 focus:text-text-foreground"
                               >
                                 {option.icon}
                                 <span>{option.label}</span>
                               </DropdownMenuItem>
                             ))}
-                            <DropdownMenuSeparator className="bg-white/[0.08]" />
+                            <DropdownMenuSeparator className="bg-foreground/[0.08]" />
                             <DropdownMenuItem
                               onSelect={(event) => {
                                 event.preventDefault()
@@ -562,7 +562,7 @@ export default function TeamSettingsPage() {
                           </DropdownMenuContent>
                         </DropdownMenu>
                       ) : (
-                        <div className="inline-flex items-center gap-2 rounded-full border border-white/[0.08] bg-white/[0.04] px-2.5 py-1 text-xs text-white/80">
+                        <div className="inline-flex items-center gap-2 rounded-full border border-foreground/[0.08] bg-foreground/[0.04] px-2.5 py-1 text-xs text-foreground/80">
                           {roleIcon(m.role)}
                           <span>{roleLabel(m.role)}</span>
                         </div>
@@ -584,7 +584,7 @@ export default function TeamSettingsPage() {
       </main>
 
       <AlertDialog open={Boolean(pendingOwnerTransfer)} onOpenChange={(open) => !open && setPendingOwnerTransfer(null)}>
-        <AlertDialogContent className="border-white/[0.08] bg-[#0f1115] text-white">
+        <AlertDialogContent className="border-border bg-card text-foreground">
           <AlertDialogHeader>
             <AlertDialogTitle>Transfer ownership?</AlertDialogTitle>
             <AlertDialogDescription className="text-white/65">

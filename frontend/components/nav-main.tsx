@@ -56,8 +56,8 @@ export function NavMain({
                       className={`
                         transition-all duration-200 ease-in-out h-10 px-3 rounded-lg
                         ${isActive
-                          ? "bg-white/[0.08] text-white font-semibold shadow-sm ring-1 ring-white/[0.05]"
-                          : "text-muted-foreground hover:bg-white/[0.04] hover:text-white/90"}
+                              ? "bg-sidebar-accent text-sidebar-accent-foreground font-semibold shadow-sm ring-1 ring-sidebar-border"
+                              : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"}
                       `}
                     >
                       <div className={`flex items-center justify-center ${isActive ? "text-[#087f9c]" : "opacity-80"}`}>
@@ -96,8 +96,8 @@ export function NavMain({
                 className={`
                   transition-all duration-200 ease-in-out h-10 px-3 rounded-lg
                   ${isActive 
-                    ? "bg-white/[0.08] text-white font-semibold shadow-sm ring-1 ring-white/[0.05]" 
-                    : "text-muted-foreground hover:bg-white/[0.04] hover:text-white/90"}
+                    ? "bg-sidebar-accent text-sidebar-accent-foreground font-semibold shadow-sm ring-1 ring-sidebar-border" 
+                    : "text-sidebar-foreground/70 hover:bg-sidebar-accent/50 hover:text-sidebar-foreground"}
                 `}
               >
                 <Link href={item.url} className="flex items-center gap-3">

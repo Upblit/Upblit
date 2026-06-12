@@ -5,7 +5,7 @@ export default function SettingsLayout({ children }: { children: React.ReactNode
   return (
     <SidebarProvider>
       <AppSidebar />
-      <SidebarInset className="bg-[#0a0a0a]">{children}</SidebarInset>
+      <SidebarInset className="bg-background">{children}</SidebarInset>
     </SidebarProvider>
   )
 }

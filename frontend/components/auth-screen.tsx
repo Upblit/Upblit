@@ -1,192 +1,100 @@
-import Image from "next/image";
-import Link from "next/link";
-import { CheckCircle2, ShieldCheck, Zap } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
+import Image from "next/image"
+import Link from "next/link"
 
 type AuthScreenProps = {
-  mode: "login" | "signup";
-  children: React.ReactNode;
-};
+  mode: "login" | "signup"
+  children: React.ReactNode
+}
 
-const modeCopy = {
+const copy = {
   login: {
-    eyebrow: "Welcome back",
-    title: "Sign in to your workspace",
-    description:
-      "Use email and password, or continue with GitHub and Google for faster access.",
-    footerPrompt: "Need an account?",
-    footerHref: "/signup",
-    footerLabel: "Create one for free",
+    title: "Sign in",
+    switchPrompt: "Need an account?",
+    switchHref: "/signup",
+    switchLabel: "Create one",
   },
   signup: {
-    eyebrow: "Get started for free",
-    title: "Create your Upblit account",
-    description:
-      "Email verification plus social sign‑in keeps onboarding simple without losing control of access.",
-    footerPrompt: "Already have an account?",
-    footerHref: "/login",
-    footerLabel: "Sign in",
+    title: "Create account",
+    switchPrompt: "Already have an account?",
+    switchHref: "/login",
+    switchLabel: "Sign in",
   },
-} as const;
+} as const
 
-const features = [
-  {
-    icon: CheckCircle2,
-    title: "Email verification",
-    desc: "Secure mailbox ownership confirmed on every sign‑up.",
-  },
-  {
-    icon: ShieldCheck,
-    title: "GitHub & Google OAuth",
-    desc: "One‑click social auth for you and your whole team.",
-  },
-  {
-    icon: Zap,
-    title: "Instant dashboard access",
-    desc: "Get into your workspace in seconds, every time.",
-  },
-];
+const stream = [
+  ["02:13:41.092", "warn", "checkout-api", "p95 crossed 900ms"],
+  ["02:13:41.204", "error", "payment-worker", "stripe.capture timeout"],
+  ["02:13:41.377", "match", "ai-runbook", "payment queue saturation"],
+  ["02:13:41.881", "info", "gateway", "retry budget at 62 percent"],
+  ["02:13:42.010", "info", "queue", "depth=1840 saturation=0.91"],
+  ["02:13:42.611", "trace", "orders", "tr_8f13a9 correlated"],
+]
+
+function TraceStream() {
+  return (
+    <aside className="hidden min-h-svh border-r border-[#1f1f1f] bg-[#0d0d0d] p-6 lg:block">
+      <div className="flex h-full flex-col justify-between">
+        <Link href="/" aria-label="Upblit home">
+          <Image src="/lanscapelogo.png" alt="Upblit" width={118} height={34} className="h-8 w-auto brightness-0 invert" priority />
+        </Link>
+
+        <div className="font-mono">
+          <div className="mb-3 flex items-center justify-between border border-[#1f1f1f] bg-[#111] px-3 py-2 text-xs">
+            <span className="uppercase text-[#525252]">live trace</span>
+            <span className="text-[#22d3ee]">prod-us-east-1</span>
+          </div>
+          <div className="border border-[#1f1f1f] bg-[#111]">
+            {stream.map(([time, level, service, message]) => (
+              <div key={`${time}-${service}`} className="grid grid-cols-[92px_62px_128px_1fr] border-b border-[#1f1f1f] px-3 py-3 text-xs last:border-b-0">
+                <span className="text-[#525252]">{time}</span>
+                <span className={level === "error" ? "text-red-400" : level === "warn" ? "text-amber-400" : level === "match" ? "text-[#22d3ee]" : "text-[#737373]"}>
+                  {level}
+                </span>
+                <span className="text-[#a3a3a3]">{service}</span>
+                <span className="truncate text-[#f5f5f5]">{message}</span>
+              </div>
+            ))}
+          </div>
+        </div>
+
+        <p className="font-mono text-xs text-[#525252]">Your workspace is scoped to your organization.</p>
+      </div>
+    </aside>
+  )
+}
 
 export function AuthScreen({ mode, children }: AuthScreenProps) {
-  const copy = modeCopy[mode];
+  const modeCopy = copy[mode]
 
   return (
-    <div className="relative min-h-svh overflow-hidden bg-[#030712]">
-      {/* ── Ambient gradient orbs ── */}
-      <div className="pointer-events-none absolute inset-0" aria-hidden="true">
-        <div className="absolute -left-48 -top-48 h-[700px] w-[700px] rounded-full bg-cyan-500/[0.09] blur-[140px]" />
-        <div className="absolute -right-48 top-1/3 h-[600px] w-[600px] rounded-full bg-violet-600/[0.07] blur-[130px]" />
-        <div className="absolute bottom-0 left-1/3 h-[500px] w-[500px] rounded-full bg-blue-700/[0.06] blur-[120px]" />
-      </div>
-
-      {/* ── Dot‑grid texture ── */}
-      <div
-        className="pointer-events-none absolute inset-0 opacity-[0.028]"
-        style={{
-          backgroundImage:
-            "radial-gradient(circle, rgba(255,255,255,0.6) 1px, transparent 1px)",
-          backgroundSize: "28px 28px",
-        }}
-        aria-hidden="true"
-      />
-
-      <div className="relative flex min-h-svh">
-        {/* ════════════════════════════════
-            LEFT PANEL – branding & features
-            ════════════════════════════════ */}
-        <aside className="hidden w-[52%] flex-col justify-between border-r border-white/[0.05] bg-white/[0.015] px-12 py-10 xl:px-16 lg:flex">
-          {/* Logo */}
-          <Link href="/" id="auth-logo-link">
-            <Image
-              src="/lanscapelogo.png"
-              alt="Upblit"
-              width={140}
-              height={36}
-              priority
-              className="h-9 w-auto object-contain brightness-0 invert"
-            />
+    <div className="grid min-h-svh bg-[#0a0a0a] text-[#f5f5f5] lg:grid-cols-[1.08fr_0.92fr]">
+      <TraceStream />
+      <main className="flex min-h-svh flex-col px-5 py-6 sm:px-8">
+        <div className="mb-8 flex items-center justify-between lg:hidden">
+          <Link href="/" aria-label="Upblit home">
+            <Image src="/lanscapelogo.png" alt="Upblit" width={112} height={32} className="h-8 w-auto brightness-0 invert" priority />
           </Link>
+          <Link href="/" className="border border-[#1f1f1f] px-3 py-2 font-mono text-xs uppercase text-[#a3a3a3]">
+            Home
+          </Link>
+        </div>
 
-          {/* Hero copy */}
-          <div className="max-w-md space-y-10">
-            <div className="space-y-5">
-              <p className="text-[0.68rem] font-semibold uppercase tracking-[0.32em] text-cyan-400/75">
-                {copy.eyebrow}
-              </p>
-              <h1 className="text-[2.75rem] font-bold leading-[1.08] tracking-tight text-white xl:text-5xl">
-                {copy.title}
-              </h1>
-              <p className="max-w-xs text-[0.9rem] leading-relaxed text-white/45">
-                {copy.description}
-              </p>
-            </div>
-
-            {/* Feature cards */}
-            <div className="flex flex-col gap-2.5">
-              {features.map((f) => {
-                const Icon = f.icon;
-                return (
-                  <div
-                    key={f.title}
-                    className="flex items-start gap-3.5 rounded-2xl border border-white/[0.055] bg-white/[0.025] p-4 backdrop-blur-sm"
-                  >
-                    <div className="flex h-8 w-8 shrink-0 items-center justify-center rounded-xl border border-cyan-400/15 bg-cyan-400/8">
-                      <Icon className="size-3.5 text-cyan-400" />
-                    </div>
-                    <div>
-                      <p className="text-sm font-semibold text-white/90">
-                        {f.title}
-                      </p>
-                      <p className="mt-0.5 text-xs leading-relaxed text-white/40">
-                        {f.desc}
-                      </p>
-                    </div>
-                  </div>
-                );
-              })}
-            </div>
+        <div className="mx-auto flex w-full max-w-[420px] flex-1 flex-col justify-center">
+          <div className="border border-[#1f1f1f] bg-[#111] p-5 sm:p-6">
+            <p className="font-mono text-xs uppercase text-[#525252]">upblit auth</p>
+            <h1 className="mt-3 font-mono text-3xl font-black text-[#f5f5f5]">{modeCopy.title}</h1>
+            <div className="mt-6">{children}</div>
+            <p className="mt-5 font-mono text-xs text-[#525252]">Your workspace is scoped to your organization.</p>
           </div>
 
-          <p className="text-[0.7rem] text-white/20">
-            © {new Date().getFullYear()} Upblit. All rights reserved.
-          </p>
-        </aside>
-
-        {/* ════════════════════════════════
-            RIGHT PANEL – auth form
-            ════════════════════════════════ */}
-        <main className="flex flex-1 flex-col items-center justify-center px-6 py-14 sm:px-10">
-          {/* Mobile header */}
-          <div className="mb-8 flex w-full max-w-sm items-center justify-between lg:hidden">
-            <Link href="/" id="auth-mobile-logo">
-              <Image
-                src="/lanscapelogo.png"
-                alt="Upblit"
-                width={120}
-                height={32}
-                priority
-                className="h-8 w-auto object-contain brightness-0 invert"
-              />
-            </Link>
-            <Button
-              asChild
-              variant="ghost"
-              size="sm"
-              className="rounded-full border border-white/10 text-white/45 hover:bg-white/5 hover:text-white"
-            >
-              <Link href="/" id="auth-back-home-mobile">
-                Back to home
-              </Link>
-            </Button>
-          </div>
-
-          {/* Card */}
-          <div className="relative w-full max-w-sm">
-            {/* Glow halo */}
-            <div className="pointer-events-none absolute -inset-3 rounded-3xl bg-cyan-400/[0.06] blur-2xl" aria-hidden="true" />
-
-            <div className="relative overflow-hidden rounded-2xl border border-white/[0.08] bg-white/[0.035] shadow-2xl shadow-black/60 backdrop-blur-2xl">
-              {/* Top shimmer line */}
-              <div className="h-px w-full bg-gradient-to-r from-transparent via-cyan-400/45 to-transparent" />
-
-              <div className="p-7 sm:p-8">{children}</div>
-            </div>
-          </div>
-
-          {/* Switch mode link */}
-          <p className="mt-7 text-sm text-white/35">
-            {copy.footerPrompt}{" "}
-            <Link
-              href={copy.footerHref}
-              className="font-medium text-cyan-400 transition-colors hover:text-cyan-300"
-              id="auth-switch-mode-link"
-            >
-              {copy.footerLabel}
+          <p className="mt-5 font-mono text-xs text-[#737373]">
+            {modeCopy.switchPrompt}{" "}
+            <Link href={modeCopy.switchHref} className="text-[#22d3ee] hover:text-[#67e8f9]">
+              {modeCopy.switchLabel}
             </Link>
           </p>
-        </main>
-      </div>
+        </div>
+      </main>
     </div>
-  );
+  )
 }

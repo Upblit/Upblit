@@ -143,15 +143,15 @@ export function NavUser({
             <DropdownMenuTrigger asChild>
               <SidebarMenuButton
                 size="lg"
-                className="data-[state=open]:bg-white/[0.05] data-[state=open]:text-white hover:bg-white/[0.04] transition-all rounded-xl border border-transparent hover:border-white/[0.05] shadow-sm mb-2"
+                className="data-[state=open]:bg-sidebar-accent data-[state=open]:text-sidebar-accent-foreground hover:bg-sidebar-accent/50 transition-all rounded-xl border border-transparent hover:border-sidebar-border shadow-sm mb-2"
               >
-                <Avatar className="h-9 w-9 rounded-lg border border-white/[0.1] shadow-inner">
+                <Avatar className="h-9 w-9 rounded-lg border border-sidebar-border/60 shadow-inner">
                   <AvatarImage src={user.avatar} alt={user.name} />
                   <AvatarFallback className="rounded-lg bg-gradient-to-br from-[#087f9c] to-[#044c5e] text-white">CN</AvatarFallback>
                 </Avatar>
                 <div className="grid flex-1 text-start text-sm leading-tight ml-1">
-                  <span className="truncate font-semibold text-white/95">{user.name}</span>
-                  <span className="truncate text-[11px] text-muted-foreground">{user.email}</span>
+                  <span className="truncate font-semibold text-sidebar-foreground">{user.name}</span>
+                  <span className="truncate text-[11px] text-sidebar-foreground/60">{user.email}</span>
                 </div>
                 <ChevronsUpDownIcon className="ms-auto size-4 opacity-50" />
               </SidebarMenuButton>
@@ -223,7 +223,7 @@ export function NavUser({
       </SidebarMenu>
 
       <Dialog open={accountOpen} onOpenChange={setAccountOpen}>
-        <DialogContent className="bg-[#0a0a0a] text-white sm:max-w-lg">
+        <DialogContent className="bg-background text-foreground sm:max-w-lg">
           <DialogHeader>
             <DialogTitle>Account</DialogTitle>
             <DialogDescription className="text-muted-foreground">
@@ -233,15 +233,15 @@ export function NavUser({
 
           <form onSubmit={saveProfile} className="grid gap-4">
             <div>
-              <label className="text-sm font-semibold text-white/90" htmlFor="account-username">Username</label>
-              <Input id="account-username" value={profileUsername} onChange={(event) => setProfileUsername(event.target.value)} className="mt-2 h-11 border-white/[0.08] bg-white/[0.03]" />
+              <label className="text-sm font-semibold text-foreground/90" htmlFor="account-username">Username</label>
+              <Input id="account-username" value={profileUsername} onChange={(event) => setProfileUsername(event.target.value)} className="mt-2 h-11 border-border bg-muted/40 text-foreground" />
             </div>
             <div>
-              <label className="text-sm font-semibold text-white/90" htmlFor="account-email">Email</label>
-              <Input id="account-email" value={profileEmail} onChange={(event) => setProfileEmail(event.target.value)} className="mt-2 h-11 border-white/[0.08] bg-white/[0.03]" />
+              <label className="text-sm font-semibold text-foreground/90" htmlFor="account-email">Email</label>
+              <Input id="account-email" value={profileEmail} onChange={(event) => setProfileEmail(event.target.value)} className="mt-2 h-11 border-border bg-muted/40 text-foreground" />
             </div>
             <div>
-              <label className="text-sm font-semibold text-white/90" htmlFor="account-avatar">Avatar</label>
+              <label className="text-sm font-semibold text-foreground/90" htmlFor="account-avatar">Avatar</label>
               <div className="mt-2 flex items-center gap-3">
                 <input ref={fileInputRef} id="account-avatar" type="file" accept="image/*" onChange={(e) => setAvatarFile(e.target.files?.[0] ?? null)} className="hidden" />
                 <Button variant="outline" size="sm" onClick={() => fileInputRef.current?.click()}>
@@ -271,8 +271,8 @@ export function NavUser({
             <div className="rounded-lg border border-red-500/20 bg-red-500/10 p-4">
               <div className="flex items-center justify-between gap-4">
                 <div>
-                  <p className="text-sm font-semibold text-red-200">Delete account</p>
-                  <p className="mt-1 text-xs text-red-100/80">
+                  <p className="text-sm font-semibold text-red-600 dark:text-red-200">Delete account</p>
+                  <p className="mt-1 text-xs text-red-500/80 dark:text-red-100/80">
                     This will permanently delete your account and any organizations you own.
                   </p>
                 </div>
@@ -294,7 +294,7 @@ export function NavUser({
         </DialogContent>
       </Dialog>
       <Dialog open={isDeleteOpen} onOpenChange={setIsDeleteOpen}>
-        <DialogContent className="bg-[#0a0a0a] text-white sm:max-w-md">
+        <DialogContent className="bg-background text-foreground sm:max-w-md">
           <DialogHeader>
             <DialogTitle>Delete account</DialogTitle>
             <DialogDescription className="text-muted-foreground">
@@ -302,8 +302,8 @@ export function NavUser({
             </DialogDescription>
           </DialogHeader>
           <div className="mt-4">
-            <label className="text-sm font-semibold text-white/90">Confirmation</label>
-            <Input value={deleteConfirmation} onChange={(e) => setDeleteConfirmation(e.target.value)} placeholder={`delete ${profileUsername}`} className="mt-2 h-11 border-white/[0.08] bg-white/[0.03]" />
+            <label className="text-sm font-semibold text-foreground/90">Confirmation</label>
+            <Input value={deleteConfirmation} onChange={(e) => setDeleteConfirmation(e.target.value)} placeholder={`delete ${profileUsername}`} className="mt-2 h-11 border-border bg-muted/40 text-foreground" />
           </div>
           <DialogFooter>
             <Button variant="secondary" onClick={() => setIsDeleteOpen(false)}>Cancel</Button>

@@ -51,25 +51,25 @@ function QuotaCard({
 }) {
   const percentage = percentUsed(used, limit)
   return (
-    <div className="rounded-2xl border border-white/[0.08] bg-white/[0.035] p-5">
+    <div className="rounded-2xl border border-foreground/[0.08] bg-card/[0.035] p-5">
       <div className="flex items-center justify-between gap-3">
         <div>
-          <p className="text-sm font-medium text-white/86">{label}</p>
-          <p className="mt-1 text-xs text-white/42">{detail}</p>
+          <p className="text-sm font-medium text-foreground/86">{label}</p>
+          <p className="mt-1 text-xs text-foreground/42">{detail}</p>
         </div>
-        <p className="text-right text-sm font-semibold text-white/88">
-          {used} <span className="text-white/35">/ {limitLabel(limit)}</span>
+        <p className="text-right text-sm font-semibold text-foreground/88">
+          {used} <span className="text-foreground/35">/ {limitLabel(limit)}</span>
         </p>
       </div>
 
-      <div className="mt-4 h-2 overflow-hidden rounded-full bg-white/[0.06]">
+      <div className="mt-4 h-2 overflow-hidden rounded-full bg-foreground/[0.06]">
         <div
           className="h-full rounded-full bg-gradient-to-r from-cyan-400 to-blue-500 transition-all"
           style={{ width: `${limitLabel(limit) === "Unlimited" ? 100 : percentage}%` }}
         />
       </div>
 
-      <p className="mt-3 text-xs text-white/42">{limitLabel(limit) === "Unlimited" ? "No enforced cap on this plan." : `${percentage}% of plan quota used.`}</p>
+      <p className="mt-3 text-xs text-foreground/42">{limitLabel(limit) === "Unlimited" ? "No enforced cap on this plan." : `${percentage}% of plan quota used.`}</p>
     </div>
   )
 }
@@ -128,7 +128,7 @@ export function OrgQuotaOverview() {
 
   if (!activeOrg) {
     return (
-      <div className="rounded-2xl border border-white/[0.08] bg-[#111111] p-8 text-sm text-muted-foreground">
+      <div className="rounded-2xl border border-border bg-card p-8 text-sm text-muted-foreground">
         Select an organization to see its usage and plan limits.
       </div>
     )
@@ -136,16 +136,16 @@ export function OrgQuotaOverview() {
 
   return (
     <div className="space-y-6">
-      <div className="rounded-2xl border border-white/[0.08] bg-[#111111] p-6 shadow-[0_24px_80px_rgba(0,0,0,0.25)]">
-        <div className="flex flex-col gap-4 border-b border-white/[0.06] pb-5 sm:flex-row sm:items-start sm:justify-between">
+      <div className="rounded-2xl border border-border bg-card p-6 shadow-[0_24px_80px_rgba(0,0,0,0.25)]">
+        <div className="flex flex-col gap-4 border-b border-foreground/[0.06] pb-5 sm:flex-row sm:items-start sm:justify-between">
           <div>
             <p className="text-xs uppercase tracking-[0.28em] text-muted-foreground">Organization quota</p>
-            <h2 className="mt-2 text-2xl font-semibold text-white">{activeOrg.name}</h2>
+            <h2 className="mt-2 text-2xl font-semibold text-foreground/90">{activeOrg.name}</h2>
             <p className="mt-2 text-sm text-muted-foreground">
               Current plan: {PLAN_LABELS[plan]} · Quotas apply to the active organization, not the individual user.
             </p>
           </div>
-          <div className="rounded-full border border-white/[0.08] px-3 py-1 text-xs text-white/70">
+          <div className="rounded-full border border-foreground/[0.08] px-3 py-1 text-xs text-foreground/70">
             {PLAN_LABELS[plan]} plan
           </div>
         </div>
@@ -172,10 +172,10 @@ export function OrgQuotaOverview() {
         </div>
       </div>
 
-      <div className="rounded-2xl border border-white/[0.08] bg-white/[0.03] p-6">
+      <div className="rounded-2xl border border-foreground/[0.08] bg-foreground/[0.03] p-6">
         <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
           <div>
-            <h3 className="text-lg font-semibold text-white/90">Need more room?</h3>
+            <h3 className="text-lg font-semibold text-foreground/90">Need more room?</h3>
             <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
               Upgrade the organization plan to raise your limits, or contact us if you need a custom arrangement.
             </p>

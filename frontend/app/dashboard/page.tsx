@@ -108,7 +108,7 @@ function renderProjectProviderBadge(project: Project) {
   }
 
   return (
-    <span className="inline-flex items-center gap-2 rounded-lg bg-white/[0.03] border border-white/[0.08] px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.05em] text-muted-foreground/70 shadow-sm">
+    <span className="inline-flex items-center gap-2 rounded-lg bg-muted/40 border border-border px-2.5 py-1 text-[10px] font-black uppercase tracking-[0.05em] text-muted-foreground/70 shadow-sm">
       <Image src={provider.logo} alt={`${provider.name} logo`} width={16} height={16} className="h-4 w-4 object-contain" />
       <span>{provider.name}</span>
     </span>
@@ -129,7 +129,7 @@ export default function Page() {
   const [isLoadingProjects, setIsLoadingProjects] = useState(false)
   const [error, setError] = useState("")
   const [projectToDelete, setProjectToDelete] = useState<Project | null>(null)
-  
+
   const [searchQuery, setSearchQuery] = useState("")
   const [sortOrder, setSortOrder] = useState<"asc" | "desc">("asc")
   const [cloudProviderFilter, setCloudProviderFilter] = useState("all")
@@ -286,8 +286,8 @@ export default function Page() {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <SidebarInset className="bg-[#0a0a0a]">
-        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 border-b border-white/[0.05]">
+      <SidebarInset className="bg-background">
+        <header className="flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 border-b border-border/40">
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ms-1" />
             <Separator
@@ -310,9 +310,9 @@ export default function Page() {
           </div>
         </header>
 
-          <div className="flex flex-1 flex-col gap-10 p-8 pt-10 max-w-7xl mx-auto w-full">
+        <div className="flex flex-1 flex-col gap-10 p-8 pt-10 max-w-7xl mx-auto w-full">
           <div className="flex flex-col gap-8">
-            <h1 className="text-3xl font-bold tracking-tight text-white/90">Projects</h1>
+            <h1 className="text-3xl font-bold tracking-tight text-foreground/90">Projects</h1>
 
             <div className="flex flex-wrap items-center justify-between gap-4">
               <div className="flex flex-1 min-w-[300px] items-center gap-3">
@@ -322,27 +322,27 @@ export default function Page() {
                     placeholder="Search for a project"
                     value={searchQuery}
                     onChange={(e) => setSearchQuery(e.target.value)}
-                    className="pl-10 bg-white/[0.03] border-white/[0.08] focus-visible:border-white/[0.2] focus-visible:ring-0 h-9 text-sm"
+                    className="pl-10 bg-muted/40 border-border focus-visible:border-primary/50 focus-visible:ring-0 h-9 text-sm text-foreground"
                   />
                 </div>
                 <select
                   value={cloudProviderFilter}
                   onChange={(event) => setCloudProviderFilter(event.target.value)}
-                  className="h-9 rounded-lg border border-white/[0.08] bg-[#111111] px-3 text-xs font-medium text-white outline-none [color-scheme:dark] hover:bg-[#161616] focus:border-[#087f9c]/50 focus:ring-4 focus:ring-[#087f9c]/10"
+                  className="h-9 rounded-lg border border-border bg-card px-3 text-xs font-medium text-foreground outline-none hover:bg-muted/50 focus:border-[#087f9c]/50 focus:ring-4 focus:ring-[#087f9c]/10"
                   aria-label="Filter projects by cloud provider"
                 >
-                  <option value="all" className="bg-[#111111] text-white">All providers</option>
+                  <option value="all" className="bg-card text-foreground">All providers</option>
                   {cloudProviders.map((provider) => (
-                    <option key={provider.name} value={provider.name} className="bg-[#111111] text-white">
+                    <option key={provider.name} value={provider.name} className="bg-card text-foreground">
                       {provider.name}
                     </option>
                   ))}
                 </select>
-                <Button 
-                  variant="outline" 
-                  size="sm" 
+                <Button
+                  variant="outline"
+                  size="sm"
                   onClick={() => setSortOrder(prev => prev === "asc" ? "desc" : "asc")}
-                  className="bg-white/[0.03] border-white/[0.08] hover:bg-white/[0.08] gap-2 h-9 text-xs font-medium px-4"
+                  className="bg-muted/40 border-border hover:bg-muted/80 gap-2 h-9 text-xs font-medium px-4 text-foreground"
                 >
                   <ArrowUpDownIcon className="size-3.5 opacity-60" />
                   {sortOrder === "asc" ? "Name (A-Z)" : "Name (Z-A)"}
@@ -350,20 +350,20 @@ export default function Page() {
               </div>
 
               <div className="flex items-center gap-4">
-                <div className="flex items-center rounded-lg bg-white/[0.03] p-1 border border-white/[0.08]">
-                  <Button 
-                    variant="ghost" 
-                    size="icon-sm" 
+                <div className="flex items-center rounded-lg bg-muted/30 p-1 border border-border">
+                  <Button
+                    variant="ghost"
+                    size="icon-sm"
                     onClick={() => setLayoutType("grid")}
-                    className={`h-7 w-7 rounded-md transition-all ${layoutType === "grid" ? "bg-white/[0.08] text-foreground" : "text-muted-foreground hover:text-foreground"}`}
+                    className={`h-7 w-7 rounded-md transition-all ${layoutType === "grid" ? "bg-muted/80 text-foreground" : "text-muted-foreground hover:text-foreground"}`}
                   >
                     <LayoutGridIcon className="size-4" />
                   </Button>
-                  <Button 
-                    variant="ghost" 
-                    size="icon-sm" 
+                  <Button
+                    variant="ghost"
+                    size="icon-sm"
                     onClick={() => setLayoutType("list")}
-                    className={`h-7 w-7 rounded-md transition-all ${layoutType === "list" ? "bg-white/[0.08] text-foreground" : "text-muted-foreground hover:text-foreground"}`}
+                    className={`h-7 w-7 rounded-md transition-all ${layoutType === "list" ? "bg-muted/80 text-foreground" : "text-muted-foreground hover:text-foreground"}`}
                   >
                     <ListIcon className="size-4" />
                   </Button>
@@ -376,9 +376,9 @@ export default function Page() {
                       New project
                     </Button>
                   </SheetTrigger>
-                  <SheetContent className="bg-[#0a0a0a]/95 backdrop-blur-xl border-l border-white/[0.08] text-foreground p-8 sm:max-w-md shadow-2xl">
+                  <SheetContent className="bg-background/95 backdrop-blur-xl border-l border-border text-foreground p-8 sm:max-w-md shadow-2xl">
                     <SheetHeader className="gap-1.5">
-                      <SheetTitle className="text-2xl font-bold tracking-tight text-white/95">
+                      <SheetTitle className="text-2xl font-bold tracking-tight text-foreground/95">
                         {editingProject ? "Edit Project" : "Create New Project"}
                       </SheetTitle>
                       <SheetDescription className="text-muted-foreground/80 text-sm">
@@ -389,45 +389,44 @@ export default function Page() {
                     </SheetHeader>
                     <form onSubmit={handleSubmitProject} className="mt-8 flex flex-col gap-6">
                       <div className="flex flex-col gap-3">
-                        <label htmlFor="name" className="text-sm font-semibold text-white/90">Project Name</label>
+                        <label htmlFor="name" className="text-sm font-semibold text-foreground/90">Project Name</label>
                         <Input
                           id="name"
                           value={newProjectName}
                           onChange={(e) => setNewProjectName(e.target.value)}
                           placeholder="e.g. Production Infrastructure"
-                          className="bg-white/[0.02] border-white/[0.08] hover:bg-white/[0.04] focus-visible:bg-white/[0.05] focus-visible:border-[#087f9c]/50 focus-visible:ring-4 focus-visible:ring-[#087f9c]/10 transition-all h-11 text-base px-4 rounded-xl shadow-inner"
+                          className="bg-muted/10 border-border hover:bg-muted/20 focus-visible:bg-muted/20 focus-visible:border-[#087f9c]/50 focus-visible:ring-4 focus-visible:ring-[#087f9c]/10 transition-all h-11 text-base px-4 rounded-xl shadow-inner text-foreground"
                           autoFocus
                         />
                       </div>
                       <div className="flex flex-col gap-3">
-                        <label htmlFor="location" className="text-sm font-semibold text-white/90">Available Zone</label>
+                        <label htmlFor="location" className="text-sm font-semibold text-foreground/90">Available Zone</label>
                         <select
                           id="location"
                           value={projectLocation}
                           onChange={(e) => setProjectLocation(e.target.value)}
-                          className="h-11 rounded-xl border border-white/[0.08] bg-[#111111] px-4 text-sm text-white outline-none transition-all [color-scheme:dark] hover:bg-[#161616] focus:border-[#087f9c]/50 focus:ring-4 focus:ring-[#087f9c]/10"
+                          className="h-11 rounded-xl border border-border bg-card px-4 text-sm text-foreground outline-none transition-all hover:bg-muted/50 focus:border-[#087f9c]/50 focus:ring-4 focus:ring-[#087f9c]/10"
                         >
                           {availableZones.map((zone) => (
-                            <option key={zone} value={zone} className="bg-[#111111] text-white">{zone}</option>
+                            <option key={zone} value={zone} className="bg-card text-foreground">{zone}</option>
                           ))}
                         </select>
                       </div>
                       <div className="flex flex-col gap-3">
-                        <span className="text-sm font-semibold text-white/90">Cloud Provider</span>
+                        <span className="text-sm font-semibold text-foreground/90">Cloud Provider</span>
                         <div className="grid grid-cols-3 gap-3">
                           {cloudProviders.map((provider) => (
                             <button
                               key={provider.name}
                               type="button"
                               onClick={() => setCloudProviderName(provider.name)}
-                              className={`flex h-20 flex-col items-center justify-center gap-2 rounded-xl border p-2 transition-all ${
-                                cloudProviderName === provider.name
+                              className={`flex h-20 flex-col items-center justify-center gap-2 rounded-xl border p-2 transition-all ${cloudProviderName === provider.name
                                   ? "border-[#087f9c]/60 bg-[#087f9c]/15 ring-4 ring-[#087f9c]/10"
-                                  : "border-white/[0.08] bg-white/[0.02] hover:bg-white/[0.05]"
-                              }`}
+                                  : "border-border bg-card hover:bg-muted/50"
+                                }`}
                             >
                               <Image src={provider.logo} alt={`${provider.name} logo`} width={48} height={32} className="h-8 w-12 object-contain" />
-                              <span className="text-xs font-bold text-white/85">{provider.name}</span>
+                              <span className="text-xs font-bold text-foreground/85">{provider.name}</span>
                             </button>
                           ))}
                         </div>
@@ -447,22 +446,22 @@ export default function Page() {
           {isInitializing ? (
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
               {[1, 2, 3].map((item) => (
-                <div key={item} className="rounded-2xl border border-white/[0.08] bg-[#111111] p-7">
-                  <Skeleton className="h-5 w-32 rounded-md bg-white/[0.04]" />
-                  <Skeleton className="mt-4 h-4 w-48 rounded-md bg-white/[0.04]" />
-                  <Skeleton className="mt-8 h-8 w-24 rounded-md bg-white/[0.04]" />
+                <div key={item} className="rounded-2xl border border-border bg-card p-7">
+                  <Skeleton className="h-5 w-32 rounded-md bg-muted/60" />
+                  <Skeleton className="mt-4 h-4 w-48 rounded-md bg-muted/60" />
+                  <Skeleton className="mt-8 h-8 w-24 rounded-md bg-muted/60" />
                 </div>
               ))}
             </div>
           ) : showProjectSkeletons ? (
             <div className={layoutType === "grid" ? "grid gap-6 md:grid-cols-2 lg:grid-cols-2 xl:grid-cols-2 2xl:grid-cols-3" : "flex flex-col gap-4"}>
               {[1, 2, 3].map((item) => (
-                <div key={item} className={`rounded-2xl border border-white/[0.08] bg-[#111111] p-7 ${layoutType === "grid" ? "min-h-[180px]" : "min-h-[80px]"}`}>
-                  <Skeleton className="h-5 w-36 rounded-md bg-white/[0.04]" />
-                  <Skeleton className="mt-3 h-4 w-48 rounded-md bg-white/[0.04]" />
+                <div key={item} className={`rounded-2xl border border-border bg-card p-7 ${layoutType === "grid" ? "min-h-[180px]" : "min-h-[80px]"}`}>
+                  <Skeleton className="h-5 w-36 rounded-md bg-muted/60" />
+                  <Skeleton className="mt-3 h-4 w-48 rounded-md bg-muted/60" />
                   <div className="mt-8 flex items-center justify-between">
-                    <Skeleton className="h-6 w-24 rounded-md bg-white/[0.04]" />
-                    <Skeleton className="h-8 w-8 rounded-md bg-white/[0.04]" />
+                    <Skeleton className="h-6 w-24 rounded-md bg-muted/60" />
+                    <Skeleton className="h-8 w-8 rounded-md bg-muted/60" />
                   </div>
                 </div>
               ))}
@@ -470,20 +469,20 @@ export default function Page() {
           ) : null}
 
           {!activeOrgId ? (
-            <div className="flex flex-col items-center justify-center p-12 text-center rounded-2xl border border-white/[0.08] bg-white/[0.01]">
-              <h3 className="text-xl font-semibold text-white/90 mb-2">No organization selected</h3>
+            <div className="flex flex-col items-center justify-center p-12 text-center rounded-2xl border border-border bg-card">
+              <h3 className="text-xl font-semibold text-foreground/90 mb-2">No organization selected</h3>
               <p className="text-muted-foreground max-w-sm">
                 Create or join an organization to start adding projects.
               </p>
             </div>
           ) : filteredAndSortedProjects.length === 0 ? (
-            <div className="flex flex-col items-center justify-center p-12 text-center rounded-2xl border border-white/[0.08] bg-white/[0.01]">
-              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-white/[0.03] mb-6">
+            <div className="flex flex-col items-center justify-center p-12 text-center rounded-2xl border border-border bg-card">
+              <div className="flex h-20 w-20 items-center justify-center rounded-full bg-muted/50 mb-6">
                 <SearchIcon className="size-10 text-muted-foreground/50" />
               </div>
-              <h3 className="text-xl font-semibold text-white/90 mb-2">No projects found</h3>
+              <h3 className="text-xl font-semibold text-foreground/90 mb-2">No projects found</h3>
               <p className="text-muted-foreground max-w-sm mb-6">
-                {projects.length === 0 
+                {projects.length === 0
                   ? "You haven't created any projects in this organization yet."
                   : "No projects match your search criteria."}
               </p>
@@ -499,9 +498,8 @@ export default function Page() {
               {filteredAndSortedProjects.map((project: Project) => (
                 <article
                   key={project.id || project.name}
-                  className={`group relative flex rounded-2xl border border-white/[0.08] bg-[#111111] transition-all duration-300 hover:border-white/[0.15] hover:bg-[#161616] hover:shadow-2xl hover:shadow-black/50 ${
-                    layoutType === "grid" ? "flex-col justify-between p-7 min-h-[180px]" : "flex-row items-center justify-between p-5 min-h-[80px]"
-                  }`}
+                  className={`group relative flex rounded-2xl border border-border bg-card transition-all duration-300 hover:border-primary/30 hover:bg-muted/10 hover:shadow-2xl hover:shadow-black/5 ${layoutType === "grid" ? "flex-col justify-between p-7 min-h-[180px]" : "flex-row items-center justify-between p-5 min-h-[80px]"
+                    }`}
                 >
                   <Link
                     href={`/dashboard/${project.id}`}
@@ -514,7 +512,7 @@ export default function Page() {
                   <div className="relative z-10 flex w-full flex-col gap-0 pointer-events-none">
                     <div className={`flex ${layoutType === "grid" ? "items-start justify-between w-full" : "items-center gap-4 w-full"}`}>
                       <div className="space-y-1.5 flex-1">
-                        <h3 className={`font-bold text-white/90 group-hover:text-white transition-colors ${layoutType === "grid" ? "text-xl" : "text-lg"}`}>
+                        <h3 className={`font-bold text-foreground/90 group-hover:text-foreground transition-colors ${layoutType === "grid" ? "text-xl" : "text-lg"}`}>
                           {project.name?.replace(/^"|"$/g, '')}
                         </h3>
                         {layoutType === "grid" && (
@@ -534,13 +532,13 @@ export default function Page() {
                         <DropdownMenuTrigger asChild>
                           <button
                             type="button"
-                            className={`relative z-20 flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground/50 transition-all hover:bg-white/[0.06] hover:text-foreground pointer-events-auto ${layoutType === "grid" ? "-mr-2" : ""}`}
+                            className={`relative z-20 flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground/50 transition-all hover:bg-muted hover:text-foreground pointer-events-auto ${layoutType === "grid" ? "-mr-2" : ""}`}
                             aria-label={`Open actions for ${project.name || "project"}`}
                           >
                             <MoreVerticalIcon className="size-5" />
                           </button>
                         </DropdownMenuTrigger>
-                        <DropdownMenuContent align="end" className="w-36 border-white/[0.08] bg-[#111111] text-white shadow-2xl">
+                        <DropdownMenuContent align="end" className="w-36 border-border bg-card text-foreground shadow-2xl">
                           <DropdownMenuItem
                             onSelect={() => openEditProjectSheet(project)}
                             className="cursor-pointer"

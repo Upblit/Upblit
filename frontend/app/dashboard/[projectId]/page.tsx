@@ -61,9 +61,9 @@ const environments = ["production", "staging", "development"]
 
 function envClass(environment: string) {
   const value = environment.toLowerCase()
-  if (value === "production") return "border-red-500/25 bg-red-500/10 text-red-200"
-  if (value === "staging") return "border-yellow-500/25 bg-yellow-500/10 text-yellow-200"
-  return "border-emerald-500/25 bg-emerald-500/10 text-emerald-200"
+  if (value === "production") return "border-red-500/25 bg-red-500/10 text-red-600 dark:text-red-200"
+  if (value === "staging") return "border-yellow-500/25 bg-yellow-500/10 text-yellow-600 dark:text-yellow-200"
+  return "border-emerald-500/25 bg-emerald-500/10 text-emerald-600 dark:text-emerald-200"
 }
 
 export default function ProjectDetailPage() {
@@ -225,8 +225,8 @@ export default function ProjectDetailPage() {
   return (
     <SidebarProvider>
       <AppSidebar />
-      <SidebarInset className="bg-[#0a0a0a]">
-        <header className="flex h-16 shrink-0 items-center gap-2 border-b border-white/[0.05]">
+      <SidebarInset className="bg-background">
+        <header className="flex h-16 shrink-0 items-center gap-2 border-b border-border/40">
           <div className="flex items-center gap-2 px-4">
             <SidebarTrigger className="-ms-1" />
             <Separator orientation="vertical" className="me-2 data-vertical:h-4 data-vertical:self-auto" />
@@ -251,7 +251,7 @@ export default function ProjectDetailPage() {
         <div className="flex flex-1 flex-col gap-8 p-8 pt-10 max-w-7xl mx-auto w-full">
           <div className="flex flex-col gap-6">
             <div>
-              <h1 className="text-3xl font-bold tracking-tight text-white/90">{project?.name || "Project"}</h1>
+              <h1 className="text-3xl font-bold tracking-tight text-foreground/90">{project?.name || "Project"}</h1>
               <p className="mt-2 text-sm text-muted-foreground">Applications registered to this project.</p>
             </div>
 
@@ -263,14 +263,14 @@ export default function ProjectDetailPage() {
                     placeholder="Search applications"
                     value={searchQuery}
                     onChange={(event) => setSearchQuery(event.target.value)}
-                    className="pl-10 bg-white/[0.03] border-white/[0.08] h-9 text-sm"
+                    className="pl-10 bg-muted/40 border-border h-9 text-sm text-foreground"
                   />
                 </div>
                 <Button
                   variant="outline"
                   size="sm"
                   onClick={() => setSortOrder((value) => value === "asc" ? "desc" : "asc")}
-                  className="bg-white/[0.03] border-white/[0.08] hover:bg-white/[0.08] gap-2 h-9 text-xs"
+                  className="bg-muted/40 border-border hover:bg-muted/80 gap-2 h-9 text-xs text-foreground"
                 >
                   <ArrowUpDownIcon className="size-3.5 opacity-60" />
                   {sortOrder === "asc" ? "Name (A-Z)" : "Name (Z-A)"}
@@ -278,11 +278,11 @@ export default function ProjectDetailPage() {
               </div>
 
               <div className="flex items-center gap-4">
-                <div className="flex items-center rounded-lg bg-white/[0.03] p-1 border border-white/[0.08]">
-                  <Button variant="ghost" size="icon-sm" onClick={() => setLayoutType("grid")} className={layoutType === "grid" ? "h-7 w-7 bg-white/[0.08]" : "h-7 w-7"}>
+                <div className="flex items-center rounded-lg bg-muted/30 p-1 border border-border">
+                  <Button variant="ghost" size="icon-sm" onClick={() => setLayoutType("grid")} className={layoutType === "grid" ? "h-7 w-7 bg-muted/80 text-foreground" : "h-7 w-7 text-muted-foreground"}>
                     <LayoutGridIcon className="size-4" />
                   </Button>
-                  <Button variant="ghost" size="icon-sm" onClick={() => setLayoutType("list")} className={layoutType === "list" ? "h-7 w-7 bg-white/[0.08]" : "h-7 w-7"}>
+                  <Button variant="ghost" size="icon-sm" onClick={() => setLayoutType("list")} className={layoutType === "list" ? "h-7 w-7 bg-muted/80 text-foreground" : "h-7 w-7 text-muted-foreground"}>
                     <ListIcon className="size-4" />
                   </Button>
                 </div>
@@ -294,9 +294,9 @@ export default function ProjectDetailPage() {
                       New application
                     </Button>
                   </SheetTrigger>
-                  <SheetContent className="bg-[#0a0a0a]/95 border-l border-white/[0.08] p-8 sm:max-w-md">
+                  <SheetContent className="bg-background/95 border-l border-border p-8 sm:max-w-md">
                     <SheetHeader className="gap-1.5 p-0">
-                      <SheetTitle className="text-2xl font-bold text-white/95">
+                      <SheetTitle className="text-2xl font-bold text-foreground/95">
                         {editingApplication ? "Edit Application" : "Create Application"}
                       </SheetTitle>
                       <SheetDescription>
@@ -306,10 +306,10 @@ export default function ProjectDetailPage() {
                       </SheetDescription>
                     </SheetHeader>
                     <form onSubmit={submitApplication} className="mt-8 flex flex-col gap-5">
-                      <Input value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} placeholder="Application name" className="bg-white/[0.03] border-white/[0.08] h-11" />
-                      <Input value={form.description} onChange={(event) => setForm({ ...form, description: event.target.value })} placeholder="Description" className="bg-white/[0.03] border-white/[0.08] h-11" />
-                      <select value={form.environment} onChange={(event) => setForm({ ...form, environment: event.target.value })} className="h-11 rounded-xl border border-white/[0.08] bg-[#111111] px-3 text-sm text-white outline-none [color-scheme:dark] hover:bg-[#161616]">
-                        {environments.map((environment) => <option key={environment} value={environment} className="bg-[#111111] text-white">{environment}</option>)}
+                      <Input value={form.name} onChange={(event) => setForm({ ...form, name: event.target.value })} placeholder="Application name" className="bg-muted/10 border-border h-11 text-foreground" />
+                      <Input value={form.description} onChange={(event) => setForm({ ...form, description: event.target.value })} placeholder="Description" className="bg-muted/10 border-border h-11 text-foreground" />
+                      <select value={form.environment} onChange={(event) => setForm({ ...form, environment: event.target.value })} className="h-11 rounded-xl border border-border bg-card px-3 text-sm text-foreground outline-none hover:bg-muted/50">
+                        {environments.map((environment) => <option key={environment} value={environment} className="bg-card text-foreground">{environment}</option>)}
                       </select>
                       <Button disabled={isCreating || !form.name.trim()} className="h-11 bg-[#087f9c] hover:bg-[#0aa1c4] text-white">
                         {isCreating ? (editingApplication ? "Saving..." : "Creating...") : editingApplication ? "Save changes" : "Create application"}
@@ -326,23 +326,23 @@ export default function ProjectDetailPage() {
           {apiKey && (
             <div className="rounded-xl border border-[#087f9c]/30 bg-[#087f9c]/10 p-4">
               <div className="mb-2 flex items-center justify-between gap-3">
-                <h2 className="font-semibold text-white">Generated API key</h2>
-                <Button size="sm" variant="outline" onClick={() => navigator.clipboard.writeText(apiKey)} className="gap-2 border-white/[0.08] bg-white/[0.03]">
+                <h2 className="font-semibold text-foreground">Generated API key</h2>
+                <Button size="sm" variant="outline" onClick={() => navigator.clipboard.writeText(apiKey)} className="gap-2 border-border bg-muted/40 text-foreground">
                   <CopyIcon className="size-4" />
                   Copy
                 </Button>
               </div>
-              <code className="block overflow-x-auto rounded-lg bg-black/30 p-3 text-xs text-[#8ee8f5]">{apiKey}</code>
+              <code className="block overflow-x-auto rounded-lg bg-muted p-3 text-xs text-[#087f9c] dark:text-[#8ee8f5]">{apiKey}</code>
             </div>
           )}
 
           {isLoading ? (
             <div className="grid gap-6 md:grid-cols-2 xl:grid-cols-3">
-              {[1, 2, 3].map((item) => <Skeleton key={item} className="h-44 rounded-2xl bg-white/[0.04]" />)}
+              {[1, 2, 3].map((item) => <Skeleton key={item} className="h-44 rounded-2xl bg-muted/60" />)}
             </div>
           ) : filteredApplications.length === 0 ? (
-            <div className="flex flex-col items-center justify-center rounded-2xl border border-white/[0.08] bg-white/[0.01] p-12 text-center">
-              <h3 className="text-xl font-semibold text-white/90">No applications yet</h3>
+            <div className="flex flex-col items-center justify-center rounded-2xl border border-border bg-card p-12 text-center">
+              <h3 className="text-xl font-semibold text-foreground/90">No applications yet</h3>
               <p className="mt-2 max-w-sm text-muted-foreground">Create one to start ingesting logs, traces, and metrics.</p>
               <Button onClick={() => setIsSheetOpen(true)} className="mt-6 gap-2 bg-[#087f9c] text-white hover:bg-[#0aa1c4]">
                 <PlusIcon className="size-4" />
@@ -352,7 +352,7 @@ export default function ProjectDetailPage() {
           ) : (
             <div className={layoutType === "grid" ? "grid gap-6 md:grid-cols-2 xl:grid-cols-3" : "flex flex-col gap-4"}>
               {filteredApplications.map((application) => (
-                <article key={application.id} className={`group relative rounded-2xl border border-white/[0.08] bg-[#111111] p-6 transition-all hover:border-white/[0.15] hover:bg-[#161616] ${layoutType === "list" ? "flex items-center justify-between gap-5" : ""}`}>
+                <article key={application.id} className={`group relative rounded-2xl border border-border bg-card p-6 transition-all hover:border-primary/30 hover:bg-muted/10 ${layoutType === "list" ? "flex items-center justify-between gap-5" : ""}`}>
                   <Link href={`/dashboard/${projectId}/${application.id}`} className="absolute inset-0 z-0 rounded-2xl" aria-label={`Open ${application.name}`}>
                     <span className="sr-only">Open application</span>
                   </Link>
@@ -360,7 +360,7 @@ export default function ProjectDetailPage() {
                   <div className="relative z-10 pointer-events-none">
                     <div className="flex items-start justify-between gap-3 pr-10">
                       <div>
-                        <h2 className="text-lg font-bold text-white/90">{application.name}</h2>
+                        <h2 className="text-lg font-bold text-foreground/90">{application.name}</h2>
                         <p className="mt-2 line-clamp-2 text-sm text-muted-foreground">{application.description || "No description"}</p>
                       </div>
                       <span className={`rounded-lg border px-2.5 py-1 text-[10px] font-bold uppercase tracking-wide ${envClass(application.environment)}`}>
@@ -373,13 +373,13 @@ export default function ProjectDetailPage() {
                     <DropdownMenuTrigger asChild>
                       <button
                         type="button"
-                        className="absolute right-4 top-4 z-20 flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground/50 transition-all hover:bg-white/[0.06] hover:text-foreground pointer-events-auto"
+                        className="absolute right-4 top-4 z-20 flex h-8 w-8 items-center justify-center rounded-md text-muted-foreground/50 transition-all hover:bg-muted hover:text-foreground pointer-events-auto"
                         aria-label={`Open actions for ${application.name}`}
                       >
                         <MoreVerticalIcon className="size-5" />
                       </button>
                     </DropdownMenuTrigger>
-                    <DropdownMenuContent align="end" className="w-36 border-white/[0.08] bg-[#111111] text-white shadow-2xl">
+                    <DropdownMenuContent align="end" className="w-36 border-border bg-card text-foreground shadow-2xl">
                       <DropdownMenuItem onSelect={() => openEditApplicationSheet(application)} className="cursor-pointer">
                         Edit
                       </DropdownMenuItem>
@@ -389,7 +389,7 @@ export default function ProjectDetailPage() {
                     </DropdownMenuContent>
                   </DropdownMenu>
 
-                  <Button onClick={() => generateApiKey(application.id)} variant="outline" size="sm" className="relative z-20 mt-6 gap-2 border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.08] pointer-events-auto">
+                  <Button onClick={() => generateApiKey(application.id)} variant="outline" size="sm" className="relative z-20 mt-6 gap-2 border-border bg-muted/40 hover:bg-muted/80 pointer-events-auto text-foreground">
                     <KeyRoundIcon className="size-4" />
                     Generate API Key
                   </Button>
@@ -397,7 +397,7 @@ export default function ProjectDetailPage() {
                     onClick={() => openUptimeConnectSheet(application)}
                     variant="outline"
                     size="sm"
-                    className="relative z-20 mt-3 gap-2 border-white/[0.08] bg-white/[0.03] hover:bg-white/[0.08] pointer-events-auto"
+                    className="relative z-20 mt-3 gap-2 border-border bg-muted/40 hover:bg-muted/80 pointer-events-auto text-foreground"
                   >
                     {getUptimeMonitor(application.id) ? "Uptime connected" : "Connect uptime"}
                   </Button>

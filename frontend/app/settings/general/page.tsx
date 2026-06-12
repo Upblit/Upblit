@@ -104,7 +104,7 @@ export default function GeneralSettingsPage() {
 
   return (
     <>
-      <header className="flex h-16 shrink-0 items-center gap-2 border-b border-white/[0.05]">
+      <header className="flex h-16 shrink-0 items-center gap-2 border-b border-foreground/[0.05]">
         <div className="flex items-center gap-2 px-4">
           <SidebarTrigger className="-ms-1" />
           <Separator orientation="vertical" className="me-2 data-vertical:h-4 data-vertical:self-auto" />
@@ -128,29 +128,29 @@ export default function GeneralSettingsPage() {
 
       <main className="mx-auto flex w-full max-w-4xl flex-1 flex-col gap-8 p-8 pt-10">
         {!activeOrg ? (
-          <div className="rounded-2xl border border-white/[0.08] bg-[#111111] p-6 text-sm text-muted-foreground">
+          <div className="rounded-2xl border border-foreground/[0.08] bg-background p-6 text-sm text-muted-foreground">
             Select or create an organization to edit its settings.
           </div>
         ) : (
           <>
-            <section className="rounded-2xl border border-white/[0.08] bg-[#111111] p-6 shadow-[0_24px_80px_rgba(0,0,0,0.25)]">
-              <div className="flex items-center justify-between gap-4 border-b border-white/[0.06] pb-5">
+            <section className="rounded-2xl border border-foreground/[0.08] bg-card p-6 shadow-[0_24px_80px_rgba(0,0,0,0.25)]">
+              <div className="flex items-center justify-between gap-4 border-b border-foreground/[0.06] pb-5">
                 <div>
                   <p className="text-xs uppercase tracking-[0.28em] text-muted-foreground">Organization</p>
-                  <h1 className="mt-2 text-2xl font-semibold text-white">General settings</h1>
+                  <h1 className="mt-2 text-2xl font-semibold text-foreground ">General settings</h1>
                   <p className="mt-2 text-sm text-muted-foreground">
                     Update the active organization name, plan, and logo.
                   </p>
                 </div>
-                <div className="rounded-full border border-white/[0.08] px-3 py-1 text-xs text-white/70">
+                <div className="rounded-full border border-foreground/[0.08] px-3 py-1 text-xs text-foreground/70">
                   ID {activeOrg.id}
                 </div>
               </div>
 
               <form onSubmit={saveOrganization} className="mt-6 grid gap-6 md:grid-cols-[1.3fr_0.7fr]">
                 <div className="space-y-5">
-                  <div className="space-y-2">
-                    <label className="text-sm font-semibold text-white/90" htmlFor="org-name">
+                  <div className="space-y-2 ">
+                    <label className="text-sm font-semibold text-foreground/90" htmlFor="org-name">
                       Organization name
                     </label>
                     <Input
@@ -158,22 +158,22 @@ export default function GeneralSettingsPage() {
                       value={name}
                       onChange={(event) => setName(event.target.value)}
                       placeholder="Acme Inc."
-                      className="h-11 border-white/[0.08] bg-[#0f0f0f] text-white placeholder:text-white/35"
+                      className="h-11 border-foreground/[0.08] bg-input text-foreground placeholder:text-input/35"
                     />
                   </div>
 
                   <div className="space-y-2">
-                    <label className="text-sm font-semibold text-white/90" htmlFor="org-plan">
+                    <label className="text-sm font-semibold text-foreground/90" htmlFor="org-plan">
                       Plan
                     </label>
                     <select
                       id="org-plan"
                       value={plan || "PIRATES"}
                       onChange={(event) => setPlan(event.target.value as Organization["plan"])}
-                      className="h-11 w-full rounded-xl border border-white/[0.08] bg-[#0f0f0f] px-3 text-sm text-white outline-none [color-scheme:dark]"
+                      className="h-11 w-full rounded-xl border border-foreground/[0.08] bg-input px-3 text-sm text-foreground outline-none "
                     >
                       {(["PIRATES", "SUPERNOVA", "WARLORD"] as const).map((item) => (
-                        <option key={item} value={item} className="bg-[#111111] text-white">
+                        <option key={item} value={item} className="bg-card text-foreground">
                           {item}
                         </option>
                       ))}
@@ -187,14 +187,14 @@ export default function GeneralSettingsPage() {
                   </Button>
                 </div>
 
-                <div className="space-y-3">
-                  <p className="text-sm font-semibold text-white/90">Logo</p>
-                  <label className="flex cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-white/[0.12] bg-white/[0.02] px-6 py-10 text-center transition hover:border-[#087f9c]/50 hover:bg-white/[0.04]">
-                    <div className="flex h-14 w-14 items-center justify-center rounded-full bg-[#087f9c]/15 text-[#74d7ea]">
+                <div className="space-y-3 ">
+                  <p className="text-sm font-semibold text-foreground/90">Logo</p>
+                  <label className="flex cursor-pointer flex-col items-center justify-center gap-3 rounded-2xl border border-dashed border-white/[0.12] bg-input/[0.5] px-6 py-10 text-center transition hover:border-[#087f9c]/50 hover:bg-input/[0.04]">
+                    <div className="flex h-14 w-14 items-center justify-center rounded-full bg-input/15 text-[#74d7ea]">
                       <UploadIcon className="h-6 w-6" />
                     </div>
                     <div>
-                      <p className="text-sm font-medium text-white">Upload a new logo</p>
+                      <p className="text-sm font-medium text-foreground">Upload a new logo</p>
                       <p className="mt-1 text-xs text-muted-foreground">PNG, JPG, or SVG</p>
                     </div>
                     <input type="file" accept="image/*" className="hidden" onChange={selectFile} />

@@ -94,9 +94,9 @@ export function UptimeConnectSheet({
 
   return (
     <Sheet open={open} onOpenChange={onOpenChange}>
-      <SheetContent className="bg-[#0a0a0a]/95 border-l border-white/[0.08] p-8 sm:max-w-md">
+      <SheetContent className="bg-background/95 border-l border-border p-8 sm:max-w-md">
         <SheetHeader className="gap-1.5 p-0">
-          <SheetTitle className="text-2xl font-bold text-white/95">
+          <SheetTitle className="text-2xl font-bold text-foreground/95">
             {existingMonitor ? "Uptime connected" : `Connect uptime for ${application?.name ?? "application"}`}
           </SheetTitle>
           <SheetDescription>
@@ -113,16 +113,16 @@ export function UptimeConnectSheet({
               value={url}
               onChange={(event) => setUrl(event.target.value)}
               placeholder="example.com or https://example.com"
-              className="bg-white/[0.03] border-white/[0.08] h-11"
+              className="bg-muted/40 border-border h-11 text-foreground"
               disabled={isSubmitting}
             />
             <p className="text-xs text-muted-foreground">We'll check the site's availability.</p>
           </div>
 
-          <div className="rounded-xl border border-white/[0.08] bg-white/[0.03] p-4 text-sm text-muted-foreground">
+          <div className="rounded-xl border border-border bg-muted/20 p-4 text-sm text-muted-foreground">
             {existingMonitor ? (
               <>
-                Connected URL: <span className="text-white/90">{existingMonitor.url}</span>
+                Connected URL: <span className="text-foreground/90">{existingMonitor.url}</span>
               </>
             ) : (
               <>
@@ -134,7 +134,7 @@ export function UptimeConnectSheet({
           <Button
             type="submit"
             disabled={isSubmitting || !url.trim()}
-            className="h-11 bg-[#087f9c] hover:bg-[#0aa1c4] text-white"
+            className="h-11 bg-accent hover:bg-accent-hover text-white"
           >
             {isSubmitting ? "Saving..." : existingMonitor ? "Save changes" : "Connect uptime"}
           </Button>
@@ -145,7 +145,7 @@ export function UptimeConnectSheet({
                 type="button"
                 onClick={handleToggleActive}
                 disabled={isSubmitting}
-                className="h-11 bg-[#2b8a3e] hover:bg-[#3bb24f] text-white"
+                className="h-11 bg-accent-dark hover:bg-accent-dark-hover text-white"
               >
                 {existingMonitor.active ? "Deactivate" : "Activate"}
               </Button>
@@ -155,7 +155,7 @@ export function UptimeConnectSheet({
                 variant="outline"
                 onClick={handleDelete}
                 disabled={isSubmitting}
-                className="h-11 border-red-500/25 bg-red-500/10 text-red-200 hover:bg-red-500/20 hover:text-red-100"
+                className="h-11 border-red-500/25 bg-red-500/10 text-red-600 dark:text-red-200 hover:bg-red-500/20"
               >
                 Delete monitor
               </Button>

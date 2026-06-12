@@ -91,7 +91,7 @@ public class SecurityConfig {
                                 "/v3/api-docs/**",
                                 "/swagger-ui/**",
                                 "/swagger-ui.html",
-                                "/ping"
+                                "/health"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

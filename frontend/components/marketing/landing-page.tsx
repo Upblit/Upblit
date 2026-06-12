@@ -20,6 +20,8 @@ import {
 import { useUserData } from "@/hooks/use-userData"
 import { loginUrl, SiteNav } from "@/components/marketing/site-nav"
 import { SiteFooter } from "@/components/marketing/site-footer"
+import CardSwap, { Card } from "@/components/CardSwap/CardSwap"
+import SoftAurora from "@/components/SoftAurora/SoftAurora"
 
 const logs = [
   { at: "02:13:41.092", level: "warn", svc: "checkout-api", msg: "p95 crossed 900ms on POST /orders", trace: "tr_8f13a9" },
@@ -72,7 +74,7 @@ const featureRows = [
     lines: ["POST /orders 941ms status=500", "payment.capture 704ms status=timeout", "queue.retry.schedule 88ms status=ok"],
   },
   {
-    eyebrow: "ai docs",
+    eyebrow: "ai docs under development",
     title: "Runbook matches beside the failing span.",
     body: "Operational documents are searched inside tenant boundaries and surfaced as incident context, not as a general-purpose chatbot.",
     lines: ["matched doc: payment queue saturation", "confidence=0.89 tenant=acme-prod", "suggested owner: payments-oncall"],
@@ -80,7 +82,7 @@ const featureRows = [
 ]
 
 const engineeringControls = [
-  "GitHub OAuth sign-in",
+  "GitHub and Google OAuth sign-in",
   "Scoped application API keys",
   "Organization and project boundaries",
   "Trace-aware log context",
@@ -101,17 +103,17 @@ const codeLines = [
 function StatusPill({ children, tone = "muted" }: { children: React.ReactNode; tone?: "cyan" | "amber" | "red" | "muted" }) {
   const color =
     tone === "cyan" ? "border-[#22d3ee]/35 text-[#22d3ee]" :
-    tone === "amber" ? "border-amber-500/35 text-amber-400" :
-    tone === "red" ? "border-red-500/35 text-red-400" :
-    "border-[#1f1f1f] text-[#737373]"
+      tone === "amber" ? "border-amber-500/35 text-amber-400" :
+        tone === "red" ? "border-red-500/35 text-red-400" :
+          "border-[#1f1f1f] text-[#737373]"
 
-  return <span className={`border px-2 py-1 font-mono text-[11px] uppercase ${color}`}>{children}</span>
+  return <span className={`border px-2 py-1 font-mono text-[11px] uppercase tracking-wide ${color}`}>{children}</span>
 }
 
 function SectionHeader({ eyebrow, title, body }: { eyebrow: string; title: string; body: string }) {
   return (
     <div className="max-w-3xl">
-      <p className="font-mono text-xs uppercase text-[#22d3ee]">{eyebrow}</p>
+      <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#22d3ee]">{eyebrow}</p>
       <h2 className="mt-3 font-mono text-3xl font-black leading-tight text-[#f5f5f5] sm:text-4xl">{title}</h2>
       <p className="mt-4 text-sm leading-6 text-[#a3a3a3] sm:text-base">{body}</p>
     </div>
@@ -122,7 +124,7 @@ function TraceRail() {
   return (
     <div className="border border-[#1f1f1f] bg-[#111] p-3 font-mono">
       <div className="mb-3 flex items-center justify-between">
-        <span className="text-xs uppercase text-[#525252]">trace waterfall</span>
+        <span className="text-xs uppercase tracking-wide text-[#525252]">trace waterfall</span>
         <StatusPill tone="red">regressed</StatusPill>
       </div>
       <div className="space-y-2">
@@ -146,11 +148,11 @@ function TraceRail() {
 function LogTable() {
   return (
     <div className="overflow-x-auto border border-[#1f1f1f] bg-[#111] font-mono">
-      <div className="grid min-w-[760px] grid-cols-[92px_72px_130px_1fr_88px] border-b border-[#1f1f1f] px-3 py-2 text-[11px] uppercase text-[#525252]">
+      <div className="grid min-w-[760px] grid-cols-[92px_72px_130px_1fr_88px] border-b border-[#1f1f1f] px-3 py-2 text-[11px] uppercase tracking-wide text-[#525252]">
         <span>time</span><span>level</span><span>service</span><span>message</span><span>context</span>
       </div>
       {logs.map((log) => (
-        <div key={`${log.at}-${log.svc}`} className="grid min-w-[760px] grid-cols-[92px_72px_130px_1fr_88px] border-b border-[#1f1f1f] px-3 py-2 text-xs last:border-b-0">
+        <div key={`${log.at}-${log.svc}`} className="grid min-w-[760px] grid-cols-[92px_72px_130px_1fr_88px] border-b border-[#1f1f1f] px-3 py-2 text-xs transition-colors last:border-b-0 hover:bg-[#161616]">
           <span className="text-[#525252]">{log.at}</span>
           <span className={log.level === "error" ? "text-red-400" : log.level === "warn" ? "text-amber-400" : log.level === "match" ? "text-[#22d3ee]" : "text-[#737373]"}>
             {log.level}
@@ -166,11 +168,11 @@ function LogTable() {
 
 function IncidentCockpit() {
   return (
-    <section id="dashboard" className="border-y border-[#1f1f1f] bg-[#0d0d0d] px-4 py-10 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-[1500px]">
-        <div className="mb-3 flex flex-wrap items-center justify-between gap-2 border border-[#1f1f1f] bg-[#111] px-3 py-2 font-mono">
+    <section id="dashboard" className="border-y border-[#1f1f1f] bg-[#0d0d0d] px-4 py-14 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-[1400px]">
+        <div className="mb-4 flex flex-wrap items-center justify-between gap-2 border border-[#1f1f1f] bg-[#111] px-3 py-2 font-mono">
           <div className="flex min-w-0 items-center gap-3">
-            <CircleDotIcon className="size-4 text-[#22d3ee]" />
+            <CircleDotIcon className="size-4 animate-pulse text-[#22d3ee]" />
             <span className="text-sm text-[#f5f5f5]">incident cockpit / acme-prod / checkout</span>
           </div>
           <div className="flex gap-2">
@@ -185,7 +187,7 @@ function IncidentCockpit() {
             <TraceRail />
             <div className="grid gap-3 sm:grid-cols-2">
               <div className="border border-[#1f1f1f] bg-[#111] p-3 font-mono">
-                <div className="mb-3 text-xs uppercase text-[#525252]">metrics</div>
+                <div className="mb-3 text-xs uppercase tracking-wide text-[#525252]">metrics</div>
                 <div className="grid gap-2">
                   {metrics.map(([label, value, delta]) => (
                     <div key={label} className="flex items-center justify-between border border-[#1f1f1f] bg-[#0a0a0a] px-2 py-2 text-xs">
@@ -197,7 +199,7 @@ function IncidentCockpit() {
                 </div>
               </div>
               <div id="ai-docs" className="border border-[#1f1f1f] bg-[#111] p-3 font-mono">
-                <div className="mb-3 text-xs uppercase text-[#525252]">runbook match</div>
+                <div className="mb-3 text-xs uppercase tracking-wide text-[#525252]">runbook match</div>
                 <div className="space-y-2">
                   {runbook.map((line) => (
                     <p key={line} className="border-l border-[#22d3ee]/45 pl-2 text-xs leading-5 text-[#a3a3a3]">{line}</p>
@@ -214,42 +216,71 @@ function IncidentCockpit() {
 
 function TerminalHero() {
   return (
-    <section className="px-4 pb-8 pt-6 sm:px-6 lg:px-8">
-      <div className="mx-auto grid max-w-[1500px] gap-6 lg:grid-cols-[0.72fr_1.28fr] lg:items-end">
-        <div className="pb-6">
-          <p className="font-mono text-xs uppercase text-[#22d3ee]">upblit observability</p>
-          <h1 className="mt-4 max-w-3xl font-mono text-4xl font-black leading-[0.98] text-[#f5f5f5] sm:text-6xl lg:text-7xl">
-            Read the incident, not five dashboards.
-          </h1>
-          <p className="mt-5 max-w-2xl text-sm leading-6 text-[#a3a3a3] sm:text-base">
-            One surface for logs, traces, metrics, and incident context. No dashboards you have to configure.
-          </p>
-          <div className="mt-7 flex items-center gap-3">
-            <Link href={loginUrl} className="inline-flex h-10 items-center gap-2 border border-[#22d3ee] bg-[#22d3ee] px-3 font-mono text-sm font-semibold text-[#0a0a0a] hover:bg-[#67e8f9]">
-              Sign in <ArrowRightIcon className="size-4" />
-            </Link>
-            <Link href="/docs" className="inline-flex h-10 items-center border border-[#1f1f1f] bg-[#111] px-3 font-mono text-sm text-[#a3a3a3] hover:text-[#f5f5f5]">
-              Docs
-            </Link>
-          </div>
-        </div>
+    <section className="relative overflow-hidden px-4 py-24 sm:px-6 lg:px-8 lg:py-32">
+      <div className="absolute inset-0 z-0">
+        <SoftAurora
+          speed={0.9}
+          scale={2.2}
+          brightness={1.1}
+          color1="#b0c2e0"
+          color2="#06B6D4"
+          noiseFrequency={1.5}
+          noiseAmplitude={3.5}
+          bandHeight={0.65}
+          bandSpread={0.7}
+          octaveDecay={0.16}
+          layerOffset={0}
+          colorSpeed={0.5}
+          enableMouseInteraction
+          mouseInfluence={0.1}
+        />
+      </div>
 
-        <div className="min-w-0 border border-[#1f1f1f] bg-[#111] font-mono">
-          <div className="flex items-center justify-between border-b border-[#1f1f1f] px-3 py-2 text-xs">
-            <span className="flex items-center gap-2 text-[#a3a3a3]"><TerminalIcon className="size-4 text-[#22d3ee]" /> live incident stream</span>
-            <span className="text-[#525252]">prod-us-east-1</span>
-          </div>
-          <div className="overflow-x-auto p-3">
-            <pre className="text-xs leading-6 text-[#a3a3a3]">
-{`$ upblit incident inspect chk-2049 --window 15m
-trace tr_8f13a9  POST /orders  941ms  status=500
-log   warn        checkout-api    p95 crossed 900ms
-log   error       payment-worker  stripe.capture timeout
-metric queue_depth=1840 worker_saturation=0.91
-ai    runbook/payment-queue-saturation.md  score=0.89
-next  drain retry queue, then scale payment-worker by 2`}
-            </pre>
-          </div>
+<div className="relative z-10 mx-auto flex max-w-3xl flex-col items-center text-center pointer-events-auto">        <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#22d3ee] z-10 ">upblit observability</p>
+        <h1 className="mt-4 z-10 font-mono text-4xl font-black leading-[0.98] text-[#f5f5f5] sm:text-6xl lg:text-7xl">
+          Read the incident, not five dashboards.
+        </h1>
+        <p className="mt-5 max-w-2xl text-sm leading-6 text-[#a3a3a3] sm:text-base">
+          One surface for logs, traces, metrics, and incident context. No dashboards you have to configure.
+        </p>
+        <div className="mt-7 flex items-center gap-3">
+          <Link href={loginUrl} className="inline-flex h-10 items-center gap-2 border border-[#22d3ee] bg-[#22d3ee] px-4 font-mono text-sm font-semibold text-[#0a0a0a] transition-colors hover:bg-[#67e8f9] pointer-events-auto">
+            Sign in <ArrowRightIcon className="size-4" />
+          </Link>
+          <Link href="/docs" className="inline-flex h-10 items-center border border-[#1f1f1f] bg-[#111]/60 px-4 font-mono text-sm text-[#a3a3a3] transition-colors hover:border-[#333] hover:text-[#f5f5f5] pointer-events-auto">
+            Docs
+          </Link>
+        </div>
+      </div>
+    </section>
+  )
+}
+
+function ShowcaseSection() {
+  return (
+    <section className="px-4 py-16 sm:px-6 lg:px-8">
+      <div className="mx-auto flex max-w-[1400px] items-center gap-9 text-center">
+        <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#22d3ee]">product tour</p>
+        <h2 className="font-mono text-2xl font-black text-[#f5f5f5] sm:text-3xl">See it on real production data.</h2>
+        <div className="mt-4 w-full max-w-[560px]">
+          <CardSwap
+            cardDistance={50}
+            verticalDistance={50}
+            delay={5000}
+            pauseOnHover={true}
+            width={460}
+            height={320}
+          >
+            <Card>
+              <img src="/showcase/Screenshot 2026-06-12 195843.png" alt="Logs and traces in the incident cockpit" />
+            </Card>
+            <Card>
+              <img src="/showcase/Screenshot 2026-06-12 195902.png" alt="Trace waterfall view" />
+            </Card>
+            <Card>
+              <img src="/showcase/Screenshot 2026-06-12 210421.png" alt="AI runbook matching" />
+            </Card>
+          </CardSwap>
         </div>
       </div>
     </section>
@@ -258,8 +289,8 @@ next  drain retry queue, then scale payment-worker by 2`}
 
 function ArchitectureSection() {
   return (
-    <section id="architecture" className="px-4 py-14 sm:px-6 lg:px-8">
-      <div className="mx-auto grid max-w-[1500px] gap-8 lg:grid-cols-[0.7fr_1.3fr] lg:items-start">
+    <section id="architecture" className="px-4 py-16 sm:px-6 lg:px-8">
+      <div className="mx-auto grid max-w-[1400px] gap-8 lg:grid-cols-[0.7fr_1.3fr] lg:items-start">
         <SectionHeader
           eyebrow="architecture"
           title="Runtime signal to incident review."
@@ -267,7 +298,7 @@ function ArchitectureSection() {
         />
         <div className="grid gap-3 sm:grid-cols-2">
           {architectureNodes.map((node) => (
-            <article key={node.title} className="border border-[#1f1f1f] bg-[#111] p-4">
+            <article key={node.title} className="border border-[#1f1f1f] bg-[#111] p-4 transition-colors hover:border-[#2a2a2a]">
               <node.icon className="size-5 text-[#22d3ee]" />
               <h3 className="mt-5 font-mono text-lg font-bold text-[#f5f5f5]">{node.title}</h3>
               <p className="mt-2 text-sm leading-6 text-[#a3a3a3]">{node.body}</p>
@@ -281,22 +312,22 @@ function ArchitectureSection() {
 
 function FeatureSection() {
   return (
-    <section id="features" className="border-y border-[#1f1f1f] bg-[#0d0d0d] px-4 py-14 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-[1500px]">
+    <section id="features" className="border-y border-[#1f1f1f] bg-[#0d0d0d] px-4 py-16 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-[1400px]">
         <SectionHeader
           eyebrow="surfaces"
           title="Logs, traces, and runbooks stay in the same room."
           body="The page still covers the product areas. The difference is that each one now looks like an operating surface instead of a feature card."
         />
-        <div className="mt-8 grid gap-3 lg:grid-cols-3">
+        <div className="mt-10 grid gap-3 lg:grid-cols-3">
           {featureRows.map((row) => (
-            <article key={row.title} className="border border-[#1f1f1f] bg-[#111] p-4">
-              <p className="font-mono text-xs uppercase text-[#22d3ee]">{row.eyebrow}</p>
+            <article key={row.title} className="border border-[#1f1f1f] bg-[#111] p-4 transition-colors hover:border-[#2a2a2a]">
+              <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#22d3ee]">{row.eyebrow}</p>
               <h3 className="mt-3 font-mono text-xl font-black text-[#f5f5f5]">{row.title}</h3>
               <p className="mt-3 text-sm leading-6 text-[#a3a3a3]">{row.body}</p>
               <div className="mt-5 space-y-2 font-mono">
                 {row.lines.map((line) => (
-                  <p key={line} className="border border-[#1f1f1f] bg-[#0a0a0a] px-2 py-2 text-xs text-[#737373]">{line}</p>
+                  <p key={line} className="overflow-x-auto whitespace-nowrap border border-[#1f1f1f] bg-[#0a0a0a] px-2 py-2 text-xs text-[#737373]">{line}</p>
                 ))}
               </div>
             </article>
@@ -309,15 +340,15 @@ function FeatureSection() {
 
 function DeveloperSection() {
   return (
-    <section id="developers" className="px-4 py-14 sm:px-6 lg:px-8">
-      <div className="mx-auto grid max-w-[1500px] gap-8 lg:grid-cols-[1fr_0.9fr] lg:items-center">
+    <section id="developers" className="px-4 py-16 sm:px-6 lg:px-8">
+      <div className="mx-auto grid max-w-[1400px] gap-10 lg:grid-cols-[1fr_0.9fr] lg:items-center">
         <div className="border border-[#1f1f1f] bg-[#111] font-mono">
           <div className="border-b border-[#1f1f1f] px-3 py-2 text-xs text-[#525252]">sdk-ingest.ts</div>
           <div className="space-y-2 p-3">
             {codeLines.map((line, index) => (
-              <div key={line} className="flex gap-4 border border-[#1f1f1f] bg-[#0a0a0a] px-3 py-2 text-sm">
+              <div key={line} className="flex gap-4 overflow-x-auto border border-[#1f1f1f] bg-[#0a0a0a] px-3 py-2 text-sm">
                 <span className="text-[#525252]">{index + 1}</span>
-                <span className="text-[#a3a3a3]">{line}</span>
+                <span className="whitespace-nowrap text-[#a3a3a3]">{line}</span>
               </div>
             ))}
           </div>
@@ -334,7 +365,7 @@ function DeveloperSection() {
               { icon: Layers3Icon, text: "Organization, project, and application hierarchy." },
               { icon: FileSearchIcon, text: "Docs and runbooks linked into telemetry analysis." },
             ].map((item) => (
-              <div key={item.text} className="flex gap-3 border border-[#1f1f1f] bg-[#111] p-4">
+              <div key={item.text} className="flex gap-3 border border-[#1f1f1f] bg-[#111] p-4 transition-colors hover:border-[#2a2a2a]">
                 <item.icon className="mt-0.5 size-5 shrink-0 text-[#22d3ee]" />
                 <p className="text-sm leading-6 text-[#a3a3a3]">{item.text}</p>
               </div>
@@ -348,8 +379,8 @@ function DeveloperSection() {
 
 function SecuritySection() {
   return (
-    <section id="security" className="border-y border-[#1f1f1f] bg-[#0d0d0d] px-4 py-14 sm:px-6 lg:px-8">
-      <div className="mx-auto grid max-w-[1500px] gap-8 lg:grid-cols-[0.7fr_1.3fr]">
+    <section id="security" className="border-y border-[#1f1f1f] bg-[#0d0d0d] px-4 py-16 sm:px-6 lg:px-8">
+      <div className="mx-auto grid max-w-[1400px] gap-8 lg:grid-cols-[0.7fr_1.3fr]">
         <SectionHeader
           eyebrow="controls"
           title="Practical boundaries for an engineering-led observability system."
@@ -357,8 +388,8 @@ function SecuritySection() {
         />
         <div className="grid gap-3 sm:grid-cols-2">
           {engineeringControls.map((item) => (
-            <div key={item} className="flex items-center gap-3 border border-[#1f1f1f] bg-[#111] p-4">
-              <LockKeyholeIcon className="size-4 text-[#22d3ee]" />
+            <div key={item} className="flex items-center gap-3 border border-[#1f1f1f] bg-[#111] p-4 transition-colors hover:border-[#2a2a2a]">
+              <LockKeyholeIcon className="size-4 shrink-0 text-[#22d3ee]" />
               <span className="text-sm text-[#a3a3a3]">{item}</span>
             </div>
           ))}
@@ -370,16 +401,16 @@ function SecuritySection() {
 
 function FinalCta() {
   return (
-    <section id="pricing" className="px-4 py-12 sm:px-6 lg:px-8">
-      <div className="mx-auto flex max-w-[1500px] flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+    <section id="pricing" className="px-4 py-16 sm:px-6 lg:px-8">
+      <div className="mx-auto flex max-w-[1400px] flex-col gap-6 border border-[#1f1f1f] bg-[#111] p-8 sm:flex-row sm:items-center sm:justify-between">
         <div>
-          <p className="font-mono text-xs uppercase text-[#525252]">for production review</p>
-          <h2 className="mt-2 font-mono text-2xl font-black text-[#f5f5f5]">Open the workspace. Follow the trace.</h2>
+          <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#525252]">for production review</p>
+          <h2 className="mt-2 font-mono text-2xl font-black text-[#f5f5f5] sm:text-3xl">Open the workspace. Follow the trace.</h2>
           <p className="mt-3 max-w-2xl text-sm leading-6 text-[#a3a3a3]">
             Move from projects and applications into API keys, telemetry, logs, traces, and AI-assisted incident context.
           </p>
         </div>
-        <Link href={loginUrl} className="inline-flex h-10 w-fit items-center gap-2 border border-[#22d3ee] bg-[#22d3ee] px-3 font-mono text-sm font-semibold text-[#0a0a0a] hover:bg-[#67e8f9]">
+        <Link href={loginUrl} className="inline-flex h-10 w-fit shrink-0 items-center gap-2 border border-[#22d3ee] bg-[#22d3ee] px-4 font-mono text-sm font-semibold text-[#0a0a0a] transition-colors hover:bg-[#67e8f9]">
           Sign in <GitBranchIcon className="size-4" />
         </Link>
       </div>
@@ -398,6 +429,7 @@ export function LandingPage() {
     <main className="min-h-svh bg-[#0a0a0a] text-[#f5f5f5]">
       <SiteNav />
       <TerminalHero />
+      <ShowcaseSection />
       <IncidentCockpit />
       <ArchitectureSection />
       <FeatureSection />

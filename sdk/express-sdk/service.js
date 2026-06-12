@@ -5,7 +5,7 @@ let API_KEY = null;
 let traceBuffer = [];
 let logBuffer = [];
 
-const API_URL = "https://ingest.upblit.com/";
+const API_URL = "https://ingest.upblit.com";
 const TRACE_URL = API_URL+"/ingest/traces";
 const LOG_URL = API_URL+"/ingest/logs";
 

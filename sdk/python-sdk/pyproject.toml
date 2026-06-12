@@ -1,0 +1,26 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "upblit-fastapi"
+version = "1.0.0"
+description = "The Upblit SDK for FastAPI and ASGI applications"
+readme = "README.md"
+requires-python = ">=3.9"
+license = { text = "MIT" }
+authors = [{ name = "Debashis Mitra" }]
+keywords = ["upblit", "fastapi", "asgi", "tracing", "logging"]
+classifiers = [
+    "Framework :: FastAPI",
+    "Framework :: AsyncIO",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3 :: Only",
+]
+
+[project.optional-dependencies]
+fastapi = ["fastapi>=0.95"]
+
+[tool.setuptools.packages.find]
+where = ["."]
+include = ["upblit*"]

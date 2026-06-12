@@ -9,7 +9,7 @@ import (
 	"strings"
 	"time"
 
-	"upblitpinger/internal/alerts"
+	_ "upblitpinger/internal/alerts"
 	"upblitpinger/internal/domain"
 )
 
@@ -27,13 +27,13 @@ type AlertPublisher interface {
 }
 
 type Worker struct {
-	monitors MonitorStore
-	history  HistoryStore
-	alerts   AlertPublisher
-	alertSubject string
+	monitors         MonitorStore
+	history          HistoryStore
+	alerts           AlertPublisher
+	alertSubject     string
 	alertThresholdMs int64
-	interval time.Duration
-	client   *http.Client
+	interval         time.Duration
+	client           *http.Client
 }
 
 func New(monitors MonitorStore, history HistoryStore, alertPublisher AlertPublisher, alertSubject string, alertThresholdMs int64, interval time.Duration) *Worker {

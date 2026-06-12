@@ -40,11 +40,11 @@ interface LogsTableProps {
 
 function getLevelColor(level: string): string {
   const upper = level.toUpperCase()
-  if (upper === "ERROR") return "bg-red-500/10 text-red-200 border-red-500/25"
-  if (upper === "WARN" || upper === "WARNING") return "bg-yellow-500/10 text-yellow-200 border-yellow-500/25"
-  if (upper === "INFO") return "bg-blue-500/10 text-blue-200 border-blue-500/25"
-  if (upper === "DEBUG") return "bg-purple-500/10 text-purple-200 border-purple-500/25"
-  return "bg-gray-500/10 text-gray-200 border-gray-500/25"
+  if (upper === "ERROR") return "bg-red-200/10 text-red-500 border-red-500/25"
+  if (upper === "WARN" || upper === "WARNING") return "bg-yellow-200/10 text-yellow-500 border-yellow-500/25"
+  if (upper === "INFO") return "bg-blue-200/10 text-blue-500 border-blue-500/25"
+  if (upper === "DEBUG") return "bg-purple-200/10 text-purple-500 border-purple-500/25"
+  return "bg-gray-500/10 text-gray-500 border-gray-500/25"
 }
 
 export function LogsTable({ logs, pagination, actions }: LogsTableProps) {
@@ -99,7 +99,7 @@ export function LogsTable({ logs, pagination, actions }: LogsTableProps) {
             placeholder="Search logs..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 bg-white/[0.03] border-white/[0.08] h-9 text-sm"
+            className="pl-10 bg-background/40 border-white/[0.08] h-9 text-sm"
           />
         </div>
 
@@ -123,11 +123,11 @@ export function LogsTable({ logs, pagination, actions }: LogsTableProps) {
       </div>
 
       {/* Logs Table */}
-      <div className="rounded-lg border border-white/[0.08] bg-white/[0.01] overflow-hidden">
+      <div className="rounded-lg border border-white/[0.08] bg-background/40 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-white/[0.08] bg-white/[0.02]">
+              <tr className="border-b border-white/[0.08] bg-background/40">
                 <th className="px-6 py-3 text-left font-medium text-muted-foreground">Level</th>
                 <th className="px-6 py-3 text-left font-medium text-muted-foreground">Message</th>
                 <th className="px-6 py-3 text-left font-medium text-muted-foreground">Trace ID</th>
@@ -137,13 +137,13 @@ export function LogsTable({ logs, pagination, actions }: LogsTableProps) {
             </thead>
             <tbody>
               {filteredLogs.map((log, idx) => (
-                <tr key={idx} className="border-b border-white/[0.05] hover:bg-white/[0.02] transition">
+                <tr key={idx} className="border-b border-white/[0.05] hover:bg-background/40 transition">
                   <td className="px-6 py-3">
                     <span className={`inline-block px-2.5 py-1 rounded-md border text-[10px] font-bold uppercase tracking-wide ${getLevelColor(log.level || "unknown")}`}>
                       {log.level || "UNKNOWN"}
                     </span>
                   </td>
-                  <td className="px-6 py-3 text-white/80 max-w-xs truncate">{log.message}</td>
+                  <td className="px-6 py-3 text-foreground/80 max-w-xs truncate">{log.message}</td>
                   <td className="px-6 py-3 font-mono text-[10px] text-muted-foreground">{log.traceId}</td>
                   <td className="px-6 py-3 text-muted-foreground text-xs">
                     {new Date(log.timestamp).toLocaleString()}

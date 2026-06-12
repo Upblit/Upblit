@@ -39,10 +39,10 @@ interface TracesTableProps {
 }
 
 function getStatusColor(status: number): string {
-  if (status < 300) return "text-green-400 bg-green-500/10"
-  if (status < 400) return "text-blue-400 bg-blue-500/10"
-  if (status < 500) return "text-yellow-400 bg-yellow-500/10"
-  return "text-red-400 bg-red-500/10"
+  if (status < 300) return "text-green-400 <bg-green-2></bg-green-2>00/10"
+  if (status < 400) return "text-blue-400 bg-blue-200/10"
+  if (status < 500) return "text-yellow-400 bg-yellow-200/10"
+  return "text-red-400 bg-red-200/10"
 }
 
 function getStatusText(status: number): string {
@@ -168,7 +168,7 @@ export function TracesTable({ traces, pagination, actions }: TracesTableProps) {
             placeholder="Search traces..."
             value={searchQuery}
             onChange={(e) => setSearchQuery(e.target.value)}
-            className="pl-10 bg-white/[0.03] border-white/[0.08] h-9 text-sm"
+            className="pl-10 bg-background/40 border-white/[0.08] h-9 text-sm"
           />
         </div>
 
@@ -197,11 +197,11 @@ export function TracesTable({ traces, pagination, actions }: TracesTableProps) {
       </div>
 
       {/* Traces Table */}
-      <div className="rounded-lg border border-white/[0.08] bg-white/[0.01] overflow-hidden">
+      <div className="rounded-lg border border-white/[0.08] bg-background/40 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-white/[0.08] bg-white/[0.02]">
+              <tr className="border-b border-white/[0.08] bg-background/40 ">
                 <th className="px-6 py-3 text-left font-medium text-muted-foreground w-8"></th>
                 <th className="px-6 py-3 text-left font-medium text-muted-foreground">Status</th>
                 <th className="px-6 py-3 text-left font-medium text-muted-foreground">Method</th>
@@ -225,7 +225,7 @@ export function TracesTable({ traces, pagination, actions }: TracesTableProps) {
                         {hasMultipleSpans && (
                           <button
                             onClick={() => toggleTraceExpanded(group.traceId)}
-                            className="text-muted-foreground hover:text-white p-0 flex items-center justify-center"
+                            className="text-muted-foreground hover:text-foreground p-0 flex items-center justify-center"
                           >
                             {isExpanded ? (
                               <ChevronDownIcon className="size-4" />
@@ -246,17 +246,17 @@ export function TracesTable({ traces, pagination, actions }: TracesTableProps) {
                         </span>
                       </td>
                       <td className="px-4 py-3 flex-1 min-w-0">
-                        <p className="text-white/80 truncate text-xs">
+                        <p className="text-foreground/80 truncate text-xs">
                           {group.mainSpan.requestURL}
                         </p>
                       </td>
                       <td className="px-4 py-3 text-right font-mono text-[10px] w-24">
-                        <span className={group.mainSpan.durationMs > 1000 ? "text-yellow-400" : "text-white/80"}>
+                        <span className={group.mainSpan.durationMs > 1000 ? "text-yellow-400" : "text-foreground/80"}>
                           {group.mainSpan.durationMs}ms
                         </span>
                       </td>
                       <td className="px-4 py-3 w-16">
-                        <span className="text-xs text-muted-foreground bg-white/[0.05] px-2 py-1 rounded inline-block">
+                        <span className="text-xs text-muted-foreground bg-background/40 px-2 py-1 rounded inline-block">
                           {group.spans.length}
                         </span>
                       </td>
@@ -279,7 +279,7 @@ export function TracesTable({ traces, pagination, actions }: TracesTableProps) {
                     {isExpanded && hasMultipleSpans && (
                       <>
                         {group.spans.map((span, idx) => (
-                          <tr key={idx} className="border-b border-white/[0.05] bg-white/[0.01] hover:bg-white/[0.02] transition">
+                          <tr key={idx} className="border-b border-white/[0.05] bg-background/40 hover:bg-background/60 transition">
                             <td className="px-3 py-2 w-8">
                               {span.parentSpanId && (
                                 <div className="text-muted-foreground text-xs text-center">→</div>

@@ -202,7 +202,7 @@ export default function ApplicationDetailPage() {
                   <ArrowLeftIcon className="size-4" />
                 </Button>
                 <h1 className="text-3xl font-bold tracking-tight text-foreground/90">
-                  {isLoadingApp ? "Loading..." : application?.name || "Application"}
+                  {application?.name || "Application"}
                 </h1>
               </div>
               <p className="text-sm text-muted-foreground ml-11">{application?.description || "Application monitoring"}</p>

@@ -134,7 +134,7 @@ export function UptimeConnectSheet({
           <Button
             type="submit"
             disabled={isSubmitting || !url.trim()}
-            className="h-11 bg-accent hover:bg-accent-hover text-white"
+            className="h-11 bg-accent hover:bg-accent-hover text-primary-foreground"
           >
             {isSubmitting ? "Saving..." : existingMonitor ? "Save changes" : "Connect uptime"}
           </Button>

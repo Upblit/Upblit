@@ -220,7 +220,7 @@ export function MetricsChart({ metrics }: MetricsChartProps) {
         <div className="overflow-x-auto">
           <table className="w-full text-sm">
             <thead>
-              <tr className="border-b border-white/[0.08] bg-white/[0.02]">
+              <tr className="border-b border-white/[0.08] bg-background/40">
                 <th className="px-6 py-3 text-left font-medium text-muted-foreground">Time</th>
                 <th className="px-6 py-3 text-right font-medium text-muted-foreground">Requests</th>
                 <th className="px-6 py-3 text-right font-medium text-muted-foreground">Errors</th>
@@ -232,9 +232,9 @@ export function MetricsChart({ metrics }: MetricsChartProps) {
             </thead>
             <tbody>
               {chartData.map((row, idx) => (
-                <tr key={idx} className="border-b border-white/[0.05] hover:bg-white/[0.02] transition">
+                <tr key={idx} className="border-b border-white/[0.05] hover:bg-background/40 transition">
                   <td className="px-6 py-3 text-muted-foreground text-xs">{row.timestamp}</td>
-                  <td className="px-6 py-3 text-right text-white/90">{row.requests.toLocaleString()}</td>
+                  <td className="px-6 py-3 text-right text-foreground/90">{row.requests.toLocaleString()}</td>
                   <td className="px-6 py-3 text-right">
                     <span className={row.errors > 0 ? "text-red-400" : "text-green-400"}>
                       {row.errors}
@@ -245,9 +245,9 @@ export function MetricsChart({ metrics }: MetricsChartProps) {
                       {row.errorRate}%
                     </span>
                   </td>
-                  <td className="px-6 py-3 text-right text-white/80 text-xs">{row.minLatency}ms</td>
-                  <td className="px-6 py-3 text-right text-white/80 text-xs">{row.avgLatency}ms</td>
-                  <td className="px-6 py-3 text-right text-white/80 text-xs">{row.maxLatency}ms</td>
+                  <td className="px-6 py-3 text-right text-foreground/80 text-xs">{row.minLatency}ms</td>
+                  <td className="px-6 py-3 text-right text-foreground/80 text-xs">{row.avgLatency}ms</td>
+                  <td className="px-6 py-3 text-right text-foreground/80 text-xs">{row.maxLatency}ms</td>
                 </tr>
               ))}
             </tbody>
@@ -266,18 +266,18 @@ interface StatCardProps {
 }
 
 function StatCard({ label, value, unit, variant = "default" }: StatCardProps) {
-  let borderColor = "border-white/[0.08]"
-  let bgColor = "bg-white/[0.01]"
-  let textColor = "text-white/90"
+  let borderColor = "border-background/40"
+  let bgColor = "bg-background/40"
+  let textColor = "text-foreground/90"
 
   if (variant === "error") {
     borderColor = "border-red-500/25"
-    bgColor = "bg-red-500/10"
-    textColor = "text-red-200"
+    bgColor = "bg-red-200/10"
+    textColor = "text-red-500"
   } else if (variant === "warning") {
     borderColor = "border-yellow-500/25"
-    bgColor = "bg-yellow-500/10"
-    textColor = "text-yellow-200"
+    bgColor = "bg-yellow-200/10"
+    textColor = "text-yellow-500"
   }
 
   return (

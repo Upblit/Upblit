@@ -62,22 +62,22 @@ const architectureNodes = [
 
 const featureRows = [
   {
-    eyebrow: "logs",
-    title: "Search production logs without losing trace context.",
-    body: "Rows keep the service, route, severity, payload, and trace ID visible. Responders can scan the system state without opening a stack of detached dashboards.",
-    lines: ["level=warn service=checkout-api route=/orders trace=tr_8f13a9", "level=error service=payment-worker op=stripe.capture", "level=match service=ai-runbook doc=payment-queue-saturation"],
+    eyebrow: "setup",
+    title: "One middleware call.",
+    body: "Drop the SDK into any Express app and requests start tracing immediately.",
+    lines: ["npm install upblit-express", "app.use(upblit(apiKey))"],
   },
   {
     eyebrow: "traces",
-    title: "Waterfalls that show where the request bent.",
-    body: "Span timing, status, and parent-child relationships sit beside the logs that explain them. Latency stops being an abstract chart.",
-    lines: ["POST /orders 941ms status=500", "payment.capture 704ms status=timeout", "queue.retry.schedule 88ms status=ok"],
+    title: "Wrap the calls that matter.",
+    body: "Service and downstream calls become spans automatically, no manual timing code.",
+    lines: ["upblit.service('users.getById', fn)", "upblit.call('stripe.capture', fn)"],
   },
   {
-    eyebrow: "ai docs under development",
-    title: "Runbook matches beside the failing span.",
-    body: "Operational documents are searched inside tenant boundaries and surfaced as incident context, not as a general-purpose chatbot.",
-    lines: ["matched doc: payment queue saturation", "confidence=0.89 tenant=acme-prod", "suggested owner: payments-oncall"],
+    eyebrow: "logs",
+    title: "Logs land in trace context.",
+    body: "Every log call is tied to the request that triggered it.",
+    lines: ["upblit.log('user loaded')", "upblit.log('fatal', 'capture failed')"],
   },
 ]
 
@@ -316,8 +316,8 @@ function FeatureSection() {
       <div className="mx-auto max-w-[1400px]">
         <SectionHeader
           eyebrow="surfaces"
-          title="Logs, traces, and runbooks stay in the same room."
-          body="The page still covers the product areas. The difference is that each one now looks like an operating surface instead of a feature card."
+          title="The SDK in three calls."
+          body="Install it, wrap your calls, and log inside trace context."
         />
         <div className="mt-10 grid gap-3 lg:grid-cols-3">
           {featureRows.map((row) => (
@@ -327,7 +327,7 @@ function FeatureSection() {
               <p className="mt-3 text-sm leading-6 text-[#a3a3a3]">{row.body}</p>
               <div className="mt-5 space-y-2 font-mono">
                 {row.lines.map((line) => (
-                  <p key={line} className="overflow-x-auto whitespace-nowrap border border-[#1f1f1f] bg-[#0a0a0a] px-2 py-2 text-xs text-[#737373]">{line}</p>
+                  <p key={line} className="break-all border border-[#1f1f1f] bg-[#0a0a0a] px-2 py-2 text-xs text-[#737373]">{line}</p>
                 ))}
               </div>
             </article>

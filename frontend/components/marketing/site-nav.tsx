@@ -2,11 +2,12 @@
 
 import Image from "next/image"
 import Link from "next/link"
-import { ArrowRightIcon, ExternalLinkIcon, LogInIcon, StarIcon } from "lucide-react"
+import { ArrowRightIcon, ExternalLinkIcon, LogInIcon, MenuIcon, StarIcon } from "lucide-react"
 import { motion } from "framer-motion"
 import { usePathname } from "next/navigation"
 import { useEffect, useState } from "react"
 import { Button } from "@/components/ui/button"
+import { Sheet, SheetContent, SheetHeader, SheetTitle } from "@/components/ui/sheet"
 import { cn } from "@/lib/utils"
 import { patreonUrl } from "@/lib/support-links"
 import { getStoredValidToken } from "@/lib/auth-session"
@@ -26,6 +27,7 @@ export function SiteNav() {
   const pathname = usePathname()
   const [stars, setStars] = useState(null)
   const [hasValidSession, setHasValidSession] = useState(false)
+  const [mobileMenuOpen, setMobileMenuOpen] = useState(false)
 
   useEffect(() => {
     setHasValidSession(Boolean(getStoredValidToken()))
@@ -138,8 +140,52 @@ export function SiteNav() {
               )}
             </Link>
           </Button>
+          <Button
+            variant="ghost"
+            size="icon"
+            aria-label="Open menu"
+            className="text-white/70 hover:bg-white/[0.06] hover:text-white lg:hidden"
+            onClick={() => setMobileMenuOpen(true)}
+          >
+            <MenuIcon className="size-5" />
+          </Button>
         </div>
       </nav>
+
+      <Sheet open={mobileMenuOpen} onOpenChange={setMobileMenuOpen}>
+        <SheetContent side="right" className="w-4/5 border-white/[0.08] bg-[#090b0d] text-white sm:max-w-xs">
+          <SheetHeader>
+            <SheetTitle className="text-left text-white">Menu</SheetTitle>
+          </SheetHeader>
+          <div className="flex flex-col gap-1 px-4">
+            {navItems.map((item) =>
+              item.external ? (
+                <a
+                  key={`m-${item.href}-${item.label}`}
+                  href={item.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className="flex items-center gap-1.5 rounded-lg px-3 py-3 text-base font-medium text-white/70 transition hover:bg-white/[0.06] hover:text-white"
+                >
+                  {item.label}
+                  <ExternalLinkIcon className="size-3.5 opacity-45" />
+                </a>
+              ) : (
+                <Link
+                  key={`m-${item.href}-${item.label}`}
+                  href={item.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={cn(
+                    "rounded-lg px-3 py-3 text-base font-medium transition",
+                    pathname === item.href ? "bg-white/[0.065] text-white" : "text-white/70 hover:bg-white/[0.06] hover:text-white"
+                  )}
+                >
+                  {item.label}
+                </Link>
+              )
+            )}
+          </div>
+        </SheetContent>
+      </Sheet>
     </motion.header>
   )
 }

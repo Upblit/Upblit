@@ -3,6 +3,7 @@
   margin: 0 auto;
   perspective: 900px;
   overflow: visible;
+  max-width: 100%;
 }
 
 .card {
@@ -14,6 +15,7 @@
   background: #111;
   box-shadow: 0 20px 60px -20px rgba(0, 0, 0, 0.6);
   overflow: hidden;
+  max-width: 92vw;
 
   transform-style: preserve-3d;
   will-change: transform;
@@ -31,11 +33,13 @@
 @media (max-width: 768px) {
   .card-swap-container {
     transform: scale(0.85);
+    transform-origin: center center;
   }
 }
 
 @media (max-width: 480px) {
   .card-swap-container {
-    transform: scale(0.65);
+    transform: scale(0.62);
+    transform-origin: center center;
   }
 }

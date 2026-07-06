@@ -1,0 +1,203 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+  --bg-color: #0d1117;
+  --surface-color: #161b22;
+  --surface-border: #30363d;
+  --text-primary: #c9d1d9;
+  --text-secondary: #8b949e;
+  --accent-healthy: #238636;
+  --accent-degraded: #d29922;
+  --accent-outage: #da3633;
+  --font-sans: 'Inter', sans-serif;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  font-family: var(--font-sans);
+  background-color: var(--bg-color);
+  color: var(--text-primary);
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.container {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 40px 20px;
+  width: 100%;
+  flex: 1;
+}
+
+/* Animations */
+@keyframes pulse {
+  0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(var(--pulse-color), 0.7); }
+  70% { transform: scale(1); box-shadow: 0 0 0 10px rgba(var(--pulse-color), 0); }
+  100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(var(--pulse-color), 0); }
+}
+
+@keyframes slideUp {
+  from { opacity: 0; transform: translateY(20px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes shimmer {
+  0% { background-position: -1000px 0; }
+  100% { background-position: 1000px 0; }
+}
+
+.animate-slide-up {
+  animation: slideUp 0.5s ease-out forwards;
+}
+
+/* Glassmorphism Cards */
+.glass-panel {
+  background: rgba(22, 27, 34, 0.7);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid var(--surface-border);
+  border-radius: 12px;
+  padding: 24px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.glass-panel:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 24px rgba(0, 0, 0, 0.2);
+}
+
+/* Header */
+.header {
+  text-align: center;
+  margin-bottom: 40px;
+}
+
+.title {
+  font-size: 2.5rem;
+  font-weight: 700;
+  margin-bottom: 16px;
+  background: linear-gradient(135deg, #e6edf3 0%, #7d8590 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.subtitle {
+  color: var(--text-secondary);
+  font-size: 1.1rem;
+}
+
+/* Status Banner */
+.status-banner {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 24px 32px;
+  border-radius: 16px;
+  margin-bottom: 40px;
+  border: 1px solid var(--surface-border);
+  background: var(--surface-color);
+}
+
+.status-banner.operational {
+  border-color: rgba(35, 134, 54, 0.4);
+  box-shadow: 0 0 20px rgba(35, 134, 54, 0.1);
+}
+.status-banner.degraded {
+  border-color: rgba(210, 153, 34, 0.4);
+  box-shadow: 0 0 20px rgba(210, 153, 34, 0.1);
+}
+.status-banner.outage {
+  border-color: rgba(218, 54, 51, 0.4);
+  box-shadow: 0 0 20px rgba(218, 54, 51, 0.1);
+}
+
+.status-banner-content h2 {
+  font-size: 1.5rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.status-banner-content p {
+  color: var(--text-secondary);
+  font-size: 0.9rem;
+}
+
+/* Service Grid */
+.services-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+  gap: 20px;
+}
+
+/* Service Card */
+.service-card {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.service-info h3 {
+  font-size: 1.1rem;
+  font-weight: 600;
+  margin-bottom: 4px;
+}
+.service-url {
+  font-size: 0.8rem;
+  color: var(--text-secondary);
+  font-family: monospace;
+}
+
+.status-badge {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 6px 12px;
+  border-radius: 20px;
+  font-size: 0.85rem;
+  font-weight: 500;
+  border: 1px solid var(--surface-border);
+}
+
+.status-badge.healthy {
+  color: #3fb950;
+  background: rgba(46, 160, 67, 0.1);
+  border-color: rgba(46, 160, 67, 0.4);
+}
+.status-badge.degraded {
+  color: #d29922;
+  background: rgba(210, 153, 34, 0.1);
+  border-color: rgba(210, 153, 34, 0.4);
+}
+
+.status-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+}
+.status-dot.healthy {
+  background-color: #3fb950;
+  --pulse-color: 63, 185, 80;
+  animation: pulse 2s infinite;
+}
+.status-dot.degraded {
+  background-color: #d29922;
+  --pulse-color: 210, 153, 34;
+  animation: pulse 2s infinite;
+}
+
+/* Loading Skeleton */
+.skeleton {
+  background: linear-gradient(90deg, var(--surface-color) 25%, var(--surface-border) 50%, var(--surface-color) 75%);
+  background-size: 1000px 100%;
+  animation: shimmer 2s infinite linear;
+  border-radius: 8px;
+}
+.skeleton-title { height: 24px; width: 60%; margin-bottom: 8px; }
+.skeleton-subtitle { height: 16px; width: 40%; }
+.skeleton-banner { height: 100px; width: 100%; margin-bottom: 40px; border-radius: 16px; }
+.skeleton-card { height: 80px; width: 100%; border-radius: 12px; }

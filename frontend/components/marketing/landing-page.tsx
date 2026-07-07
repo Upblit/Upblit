@@ -112,7 +112,7 @@ function StatusPill({ children, tone = "muted" }: { children: React.ReactNode; t
 
 function SectionHeader({ eyebrow, title, body }: { eyebrow: string; title: string; body: string }) {
   return (
-    <div className="max-w-3xl">
+    <div className="max-w-xl lg:max-w-3xl">
       <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#22d3ee]">{eyebrow}</p>
       <h2 className="mt-3 font-mono text-3xl font-black leading-tight text-[#f5f5f5] sm:text-4xl">{title}</h2>
       <p className="mt-4 text-sm leading-6 text-[#a3a3a3] sm:text-base">{body}</p>
@@ -168,8 +168,8 @@ function LogTable() {
 
 function IncidentCockpit() {
   return (
-    <section id="dashboard" className="border-y border-[#1f1f1f] bg-[#0d0d0d] px-4 py-14 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-[1400px]">
+    <section id="dashboard" className="border-y border-[#1f1f1f] bg-[#0d0d0d] px-4 py-16 lg:py-24 sm:px-6 lg:px-8">
+      <div className="mx-auto max-w-7xl">
         <div className="mb-4 flex flex-wrap items-center justify-between gap-2 border border-[#1f1f1f] bg-[#111] px-3 py-2 font-mono">
           <div className="flex min-w-0 items-center gap-3">
             <CircleDotIcon className="size-4 animate-pulse text-[#22d3ee]" />
@@ -181,7 +181,7 @@ function IncidentCockpit() {
           </div>
         </div>
 
-        <div className="grid gap-3 lg:grid-cols-[1.2fr_0.8fr]">
+        <div className="grid grid-cols-1 gap-6 xl:grid-cols-[1.25fr_0.75fr]">
           <LogTable />
           <div className="grid gap-3">
             <TraceRail />
@@ -216,7 +216,7 @@ function IncidentCockpit() {
 
 function TerminalHero() {
   return (
-    <section className="relative overflow-hidden px-4 py-24 sm:px-6 lg:px-8 lg:py-32">
+    <section className="relative overflow-hidden px-4 py-20 sm:px-6 sm:py-24 lg:px-8 lg:py-32">
       <div className="absolute inset-0 z-0">
         <SoftAurora
           speed={0.9}
@@ -236,7 +236,7 @@ function TerminalHero() {
         />
       </div>
 
-<div className="relative z-10 mx-auto flex max-w-3xl flex-col items-center text-center pointer-events-auto">        <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#22d3ee] z-10 ">upblit observability</p>
+<div className="relative z-10 mx-auto flex max-w-xl lg:max-w-3xl flex-col items-center text-center pointer-events-auto">        <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#22d3ee] z-10 ">upblit observability</p>
         <h1 className="mt-4 z-10 font-mono text-4xl font-black leading-[0.98] text-[#f5f5f5] sm:text-6xl lg:text-7xl">
           Read the incident, not five dashboards.
         </h1>
@@ -258,29 +258,31 @@ function TerminalHero() {
 
 function ShowcaseSection() {
   return (
-    <section className="overflow-x-hidden px-4 py-16 sm:px-6 lg:px-8">
-      <div className="mx-auto flex max-w-[1400px] flex-col items-center gap-9 text-center">
+    <section className="overflow-x-hidden px-4 py-16 sm:px-6 lg:px-8 overflow-hidden">
+      <div className="mx-auto flex max-w-7xl flex-col items-center gap-12 text-center lg:flex-row lg:items-center lg:justify-between lg:text-left">
         <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#22d3ee]">product tour</p>
         <h2 className="font-mono text-2xl font-black text-[#f5f5f5] sm:text-3xl">See it on real production data.</h2>
-        <div className="mt-4 flex w-full max-w-[560px] justify-center overflow-hidden">
-          <CardSwap
-            cardDistance={50}
-            verticalDistance={50}
-            delay={5000}
-            pauseOnHover={true}
-            width={460}
-            height={320}
-          >
-            <Card>
-              <img src="/showcase/Screenshot 2026-06-12 195843.png" alt="Logs and traces in the incident cockpit" />
-            </Card>
-            <Card>
-              <img src="/showcase/Screenshot 2026-06-12 195902.png" alt="Trace waterfall view" />
-            </Card>
-            <Card>
-              <img src="/showcase/Screenshot 2026-06-12 210421.png" alt="AI runbook matching" />
-            </Card>
-          </CardSwap>
+        <div className="mt-8 flex w-full justify-center lg:justify-end">
+          <div className="mx-auto w-full max-w-sm sm:max-w-md lg:max-w-lg">
+            <CardSwap
+              cardDistance={40}
+              verticalDistance={40}
+              delay={6500}
+              pauseOnHover
+              width={360}
+              height={260}
+            >
+              <Card>
+                <img src="/showcase/Screenshot 2026-06-12 195843.png" alt="Logs and traces in the incident cockpit" />
+              </Card>
+              <Card>
+                <img src="/showcase/Screenshot 2026-06-12 195902.png" alt="Trace waterfall view" />
+              </Card>
+              <Card>
+                <img src="/showcase/Screenshot 2026-06-12 210421.png" alt="AI runbook matching" />
+              </Card>
+            </CardSwap>
+          </div>
         </div>
       </div>
     </section>
@@ -290,7 +292,7 @@ function ShowcaseSection() {
 function ArchitectureSection() {
   return (
     <section id="architecture" className="px-4 py-16 sm:px-6 lg:px-8">
-      <div className="mx-auto grid max-w-[1400px] gap-8 lg:grid-cols-[0.7fr_1.3fr] lg:items-start">
+      <div className="mx-auto grid max-w-7xl gap-8 grid-cols-1 gap-10 xl:grid-cols-[0.7fr_1.3fr] lg:items-start">
         <SectionHeader
           eyebrow="architecture"
           title="Runtime signal to incident review."
@@ -313,13 +315,13 @@ function ArchitectureSection() {
 function FeatureSection() {
   return (
     <section id="features" className="border-y border-[#1f1f1f] bg-[#0d0d0d] px-4 py-16 sm:px-6 lg:px-8">
-      <div className="mx-auto max-w-[1400px]">
+      <div className="mx-auto max-w-7xl">
         <SectionHeader
           eyebrow="surfaces"
           title="Logs, traces, and runbooks stay in the same room."
           body="The page still covers the product areas. The difference is that each one now looks like an operating surface instead of a feature card."
         />
-        <div className="mt-10 grid gap-3 lg:grid-cols-3">
+        <div className="mt-10 grid gap-3 lg:grid-cols-1 md:grid-cols-2 xl:grid-cols-3">
           {featureRows.map((row) => (
             <article key={row.title} className="border border-[#1f1f1f] bg-[#111] p-4 transition-colors hover:border-[#2a2a2a]">
               <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#22d3ee]">{row.eyebrow}</p>
@@ -341,7 +343,7 @@ function FeatureSection() {
 function DeveloperSection() {
   return (
     <section id="developers" className="px-4 py-16 sm:px-6 lg:px-8">
-      <div className="mx-auto grid max-w-[1400px] gap-10 lg:grid-cols-[1fr_0.9fr] lg:items-center">
+      <div className="mx-auto grid max-w-7xl gap-10 lg:grid-cols-[1fr_0.9fr] lg:items-center">
         <div className="border border-[#1f1f1f] bg-[#111] font-mono">
           <div className="border-b border-[#1f1f1f] px-3 py-2 text-xs text-[#525252]">sdk-ingest.ts</div>
           <div className="space-y-2 p-3">
@@ -380,7 +382,7 @@ function DeveloperSection() {
 function SecuritySection() {
   return (
     <section id="security" className="border-y border-[#1f1f1f] bg-[#0d0d0d] px-4 py-16 sm:px-6 lg:px-8">
-      <div className="mx-auto grid max-w-[1400px] gap-8 lg:grid-cols-[0.7fr_1.3fr]">
+      <div className="mx-auto grid max-w-7xl gap-8 grid-cols-1 gap-10 xl:grid-cols-[0.7fr_1.3fr]">
         <SectionHeader
           eyebrow="controls"
           title="Practical boundaries for an engineering-led observability system."
@@ -402,7 +404,7 @@ function SecuritySection() {
 function FinalCta() {
   return (
     <section id="pricing" className="px-4 py-16 sm:px-6 lg:px-8">
-      <div className="mx-auto flex max-w-[1400px] flex-col gap-6 border border-[#1f1f1f] bg-[#111] p-8 sm:flex-row sm:items-center sm:justify-between">
+      <div className="mx-auto flex max-w-7xl flex-col gap-6 border border-[#1f1f1f] bg-[#111] p-8 sm:flex-row sm:items-center sm:justify-between">
         <div>
           <p className="font-mono text-xs uppercase tracking-[0.2em] text-[#525252]">for production review</p>
           <h2 className="mt-2 font-mono text-2xl font-black text-[#f5f5f5] sm:text-3xl">Open the workspace. Follow the trace.</h2>

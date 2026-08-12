@@ -25,6 +25,8 @@
 
 ## 🧠 What is Upblit?
 
+> 🔭 **Note:** Upblit is now focused purely on **observability** — monitoring, logging, and tracing for modern applications.
+
 **Upblit** is an open-source **auto-deployment and build orchestration system** — built to simplify **modern fullstack deployment** using Java, Maven, and Go.  
 It’s like Devops-team, but open, agentic, and customizable — empowering teams to deploy web apps, microservices, and AI models with zero manual ops.
 

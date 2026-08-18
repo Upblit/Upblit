@@ -173,3 +173,8 @@ We follow the [Contributor Covenant](CODE_OF_CONDUCT.md) to ensure a respectful,
 <p align="center">
   <em>“Deploy beyond limits — Upblit automates your journey from code to cloud.” </em> <img width="20" height="20" alt="imageedit_1_8143812801" src="https://github.com/user-attachments/assets/4fae4dc7-2d85-4fdf-ba40-0a48512bd020" />
 </p>
+
+
+## README Update: Observability Focus
+
+Documentation reference and guidelines for #38.

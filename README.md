@@ -1,13 +1,11 @@
-# [Upblit](https://upblit.dev) : `Think.Build.Deploy.Scale🧠`
-
+# [Upblit](https://upblit.dev) : Centralized Observability Platform 
 
 <p align="center">
-
-  <img src="https://github.com/user-attachments/assets/afe6181b-af66-4b3b-8d4e-eeb0d7c5f941" width="2048" height="1152" alt="Upblit Banner">
+  <img src="https://github.com/user-attachments/assets/73d51355-65f5-426d-b8f0-c268222da66c" width="2048" height="1152" alt="Upblit Banner">
 </p>
 
 <p align="center">
-  <em>Agentic Auto-Deployment Platform — Built with Java, Maven, Next.js & Go.</em>
+  <em>Open-source Observability Platform - Built with Java, Go, Next.js & Node.js.</em>
 </p>
 
 <p align="center">
@@ -19,63 +17,100 @@
 
 ---
 
+##  What is Upblit?
+
+**Upblit** is an open-source **observability platform** that gives developers full visibility into their applications — traces, logs, metrics, and uptime — all in one place.
+
+Instrument your app with one of the SDKs, point it at the ingestor, and get a live view of what's happening inside your services.
+
+>  **Instrument → Ingest → Analyze → Alert**
+> All in one platform. No proprietary lock-in.
+
+---
+
+##  Architecture
+
+| Component | Language | Description |
+|---|---|---|
+|  **Backend** | Java + Spring Boot | REST API, auth, org/project management, uptime CRUD, telemetry query layer |
+|  **Dashboard** | Next.js (TypeScript) | UI for traces, logs, metrics, monitors, and settings |
+|  **Ingestor** | Go + Gin | Receives traces and logs via HTTP, publishes to Kafka, stores in MongoDB |
+|  **Pinger** | Go | Polls uptime monitors every 30 seconds, writes results to MongoDB |
+|  **Status Gate** | Next.js | Public status page for your services |
+|  **SDKs** | JS/Go/Python | Middleware libraries to instrument your apps |
+|  **Email** | Node.js | Transactional email sender (onboarding, verification, invites) |
+
+---
+
+##  Tech Stack
+
 <p align="center">
-  <img src="https://capsule-render.vercel.app/api?type=rect&color=0:0f0c29,100:302b63&height=2"/>
+  <img src="https://skillicons.dev/icons?i=java,maven,go,nextjs,docker,kafka,mongodb,postgres,linux,git,github" alt="Tech Stack" />
 </p>
 
-## 🧠 What is Upblit?
-
-**Upblit** is an open-source **auto-deployment and build orchestration system** — built to simplify **modern fullstack deployment** using Java, Maven, and Go.  
-It’s like Devops-team, but open, agentic, and customizable — empowering teams to deploy web apps, microservices, and AI models with zero manual ops.
-
-> ⚙️ **Code → Build → Deploy → Scale**  
-> All automated. All from your repo.
-
----
-
-## 🧩 Core Architecture
-
-| Component | Description |
-|------------|-------------|
-| 🖥️ **Backend (Java + Maven)** | Handles builds, environments, deploy triggers, and logs. |
-| 🌐 **Frontend (Next.js)** | A dashboard for managing projects, deployments, and insights. |
-| 💻 **CLI (Go)** | Command-line access to deploy, monitor, and interact with Upblit APIs. |
-| 🧠 **Agentic Core (WIP)** | An AI-powered orchestrator for smart build predictions and scaling. |
+- **Backend:** Java 21 + Spring Boot, Spring Security, JWT/OAuth2, PostgreSQL, MongoDB
+- **Dashboard:** Next.js, TypeScript, Tailwind CSS, shadcn/ui
+- **Ingestor:** Go, Gin, Kafka, NATS, MongoDB
+- **Pinger:** Go, PostgreSQL, MongoDB
+- **SDKs:** JavaScript (Express), Go, Python
+- **Infrastructure:** Docker, docker-compose, Prometheus, Logstash, Filebeat
 
 ---
 
-## ⚙️ Tech Stack
+##  How It Works
 
-<p align="center">
-  <img src="https://skillicons.dev/icons?i=java,maven,go,azure,nextjs,docker,kubernetes,postgres,linux,git,github" alt="Tech Stack" />
-</p>
-
-- **Backend:** Java + Maven (Spring Boot)
-- **Frontend:** Next.js (TypeScript)
-- **CLI:** Go
-- **Containerization:** Docker, Kubernetes
-- **Database:** PostgreSQL
+```
+Your App (instrumented with an Upblit SDK)
+      │
+      │  POST /ingest/traces
+      │  POST /ingest/logs
+      ▼
+  [ Ingestor :9000 ]  ──Kafka──▶  Workers  ──▶  MongoDB
+                                                   │
+  [ Pinger :8085 ]  ──polls uptime──▶  MongoDB     │
+                                                   │
+  [ Backend :8080 ]  ◀──────── queries ────────────┘
+      │
+      ▼
+  [ Dashboard :3000 ]  ──  view traces, logs, metrics, uptime
+```
 
 ---
 
-## 🚀 Getting Started
+## 📦 SDKs
 
-### 🧰 Prerequisites
+Upblit provides drop-in middleware for your existing stack:
+
+| SDK | Location | What it does |
+|---|---|---|
+| **Express** | `sdk/express-sdk/` | Traces HTTP requests, batches and sends spans to the ingestor |
+| **Go** | `sdk/go-sdk/` | Middleware for HTTP tracing, context propagation, span helpers |
+| **Python** | `sdk/python-sdk/` | Middleware, transport layer, and trace types for Python apps |
+
+---
+
+##  Getting Started
+
+### Prerequisites
+
 - Java 21+
 - Maven 3.9+
 - Node.js 18+
-- Docker
-- Git
+- Go 1.21+
+- Docker + Docker Compose
+- Kafka (or use the provided compose stack)
+- MongoDB + PostgreSQL
 
-### ⚡ Setup
+### Infrastructure
+
+Spin up Kafka, MongoDB, PostgreSQL, and supporting services:
 
 ```bash
-# Clone the repository
-git clone https://github.com/Debashismitra01/Upblit.git
-cd Upblit
-````
+cd infrastructure
+docker compose -f docker-compose.infra.yml up -d
+```
 
-#### Backend
+### Backend
 
 ```bash
 cd backend
@@ -83,62 +118,79 @@ mvn clean install
 mvn spring-boot:run
 ```
 
-#### Frontend
+### Ingestor
 
 ```bash
-cd ../frontend
+cd ingestor
+go run main.go
+```
+
+Runs on `:9000`. Requires `MONGO_URI`, `KAFKAADR`, and optionally `NATS_URL` in `.env`.
+
+### Pinger
+
+```bash
+cd pinger
+go run ./cmd/upblitpinger
+```
+
+Runs on `:8085`. Requires `POSTGRES_URL` and `MONGODB_URI`.
+
+### Dashboard
+
+```bash
+cd frontend
 npm install
 npm run dev
 ```
 
-Then open **[http://localhost:3000](http://localhost:3000)** to see the dashboard.
+Open [http://localhost:3000](http://localhost:3000).
 
-#### CLI
-
-Build the `upblit` CLI (Go) and use it to authenticate, select orgs/projects/apps, generate API keys, and query recent telemetry:
+### Status Page
 
 ```bash
-cd Upblit/UpblitCLI
+cd status-gate
+npm install
+npm run dev
+```
+
+### CLI
+
+```bash
+cd UpblitCLI
 go build -o upblit .
 
-# Login via browser
 ./upblit login
-
-# List organizations
 ./upblit org list
-
-# Create an app (requires a selected project)
-./upblit app create my-service --env staging -d "Description"
 ```
 
 ---
 
----
-
-## 🧑‍💻 Contributing
+##  Contributing
 
 Contributions are highly appreciated!
-We’re part of **Hacktoberfest 2025**, so PRs with the `hacktoberfest` label count toward your badge 🎉
+We're part of **Hacktoberfest 2025**, so PRs with the `hacktoberfest` label count toward your badge 🎉
 
 **Ways to contribute:**
 
-* 🐞 Fix bugs & enhance features
-* 🚀 Add new deployment strategies
-* 📖 Improve documentation or write tutorials
-* 🧩 Extend CLI or Java module integrations
+-  Fix bugs and improve existing features
+-  Add new SDK integrations or improve existing ones
+-  Build new dashboard views or charts
+-  Improve documentation or write tutorials
+-  Extend alerting and notification channels
 
 Read [CONTRIBUTING.md](CONTRIBUTING.md) for full guidelines.
 
 ---
 
-## 🏆 Upblit Contributor Badge
+##  Upblit Contributor Badge
 
 Earn the `Upblit Contributor` badge by:
 
-1. Submitting a meaningful PR that gets merged 🧩
-2. Following contribution and code standards 🧠
-3. Helping make deployments smarter 🚀
-4. 🧰 No spammy PRs — quality > quantity 😎
+1. Submitting a meaningful PR that gets merged 
+2. Following contribution and code standards 
+3. Helping make observability smarter 
+4. No spammy PRs — quality > quantity 
 
 ---
 
@@ -149,13 +201,13 @@ See [LICENSE](LICENSE) for details.
 
 ---
 
-## 💬 Code of Conduct
+##  Code of Conduct
 
 We follow the [Contributor Covenant](CODE_OF_CONDUCT.md) to ensure a respectful, harassment-free space.
 
 ---
 
-## 🌐 Connect
+##  Connect
 
 <p align="center">
   <a href="https://github.com/Debashismitra01">
@@ -171,5 +223,6 @@ We follow the [Contributor Covenant](CODE_OF_CONDUCT.md) to ensure a respectful,
 </p>
 
 <p align="center">
-  <em>“Deploy beyond limits — Upblit automates your journey from code to cloud.” </em> <img width="20" height="20" alt="imageedit_1_8143812801" src="https://github.com/user-attachments/assets/4fae4dc7-2d85-4fdf-ba40-0a48512bd020" />
+  <em>"Built with Passion and a cup of coffee" </em>
 </p>
+
